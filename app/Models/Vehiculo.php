@@ -12,7 +12,7 @@ class Vehiculo extends Model
     protected $fillable = [
         'placa', 'propietario', 'categoria', 'marca', 'modelo', 'anio_fabricacion',
         'kilometraje', 'combustible', 'vin_serie', 'numero_motor', 'carroceria',
-        'marca_carroceria', 'ejes_ruedas', 'asientos_pasajeros', 'largo', 'ancho',
+        'marca_carroceria', 'ejes', 'ruedas', 'asientos', 'pasajeros', 'largo', 'ancho',
         'alto', 'color', 'peso_neto', 'peso_bruto', 'peso_util'
     ];
 
