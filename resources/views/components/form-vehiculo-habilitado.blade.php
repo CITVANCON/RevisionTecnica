@@ -1,7 +1,7 @@
 <div class="max-w-5xl m-auto  bg-white rounded-lg shadow-md" id="datosVehiculo">
     <div class="flex items-center justify-between bg-accent py-4 px-6 rounded-t-lg">
         <span class="text-lg font-semibold text-white">Datos del vehículo</span>
-        <a class="px-3 py-1 text-sm font-bold text-gray-100 transition-colors duration-300 transform bg-secondary rounded cursor-pointer hover:bg-primary"
+        <a class="px-3 py-1 text-sm font-bold text-gray-100 transition-colors duration-300 transform bg-orange-500 rounded cursor-pointer hover:bg-orange-600"
             tabindex="0" role="button">Nuevo</a>
     </div>
     <div class="mt-2 mb-6 px-8 py-2">
@@ -17,6 +17,7 @@
                     wire:keydown.enter="buscarVehiculo" maxlength="6" />
                 <x-input-error for="placa" />
             </div>
+            {{--
             <div>
                 <x-label value="Categoria:" />
                 <select wire:model="categoria"
@@ -47,6 +48,7 @@
                 </select>
                 <x-input-error for="categoria" />
             </div>
+            --}}
             <div>
                 <x-label value="Marca:" />
                 <x-input type="text" class="w-full" wire:model="marca" />
@@ -172,7 +174,7 @@
         </div>
         <div class="mt-4  mb-2 flex flex-row justify-center items-center">
             <button wire:click="guardaVehiculo" wire:loading.attr="disabled" wire:target="guardaVehiculo"
-                class="hover:cursor-pointer focus:ring-2 focus:ring-offset-2 focus:ring-amber-600 sm:mt-0 inline-flex items-center justify-center px-6 py-3 bg-orange-400 hover:bg-orange-500 focus:outline-none rounded">
+                class="hover:cursor-pointer focus:ring-2 focus:ring-offset-2 focus:ring-amber-600 sm:mt-0 inline-flex items-center justify-center px-6 py-3 bg-orange-500 hover:bg-orange-600 focus:outline-none rounded">
                 <p class="text-sm font-medium leading-none text-white">
                     <span wire:loading wire:target="guardaVehiculo">
                         <i class="fas fa-spinner animate-spin"></i>

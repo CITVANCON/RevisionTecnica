@@ -8,18 +8,19 @@
     <div class="mt-2 mb-6 px-8 py-2">
         <div class="mb-2">
             <x-label value="Propietario:" />
-            <x-input type="text" class="w-full" wire:model="vehiculo.propietario" maxlength="245" />
-            <x-input-error for="vehiculo.propietario" />
+            <x-input type="text" class="w-full" wire:model="m_propietario" maxlength="245" />
+            <x-input-error for="m_propietario" />
         </div>
         <div class="grid grid-cols-1 gap-8 sm:grid-cols-3">
             <div>
                 <x-label value="Placa:" />
-                <x-input list="vehiculos" type="text" class="w-full" wire:model="vehiculo.placa" />
-                <x-input-error for="placa" />
+                <x-input list="vehiculos" type="text" class="w-full" wire:model="m_placa" />
+                <x-input-error for="m_placa" />
             </div>
+            {{--
             <div>
                 <x-label value="Categoria:" />
-                <select wire:model="vehiculo.categoria"
+                <select wire:model="m_categoria"
                     class="bg-gray-50 border-indigo-500 rounded-md outline-none block w-full ">
                     <option value="">Seleccione</option>
                     <option value="NE">NE</option>
@@ -45,124 +46,125 @@
                     <option value="M3-C2">M3-C2</option>
                     <option value="M3-C3">M3-C3</option>
                 </select>
-                <x-input-error for="categoria" />
+                <x-input-error for="m_categoria" />
             </div>
+            --}}
             <div>
                 <x-label value="Marca:" />
-                <x-input type="text" class="w-full" wire:model="vehiculo.marca" />
-                <x-input-error for="vehiculo.marca" />
+                <x-input type="text" class="w-full" wire:model="m_marca" />
+                <x-input-error for="m_marca" />
             </div>
             <div>
                 <x-label value="Modelo:" />
-                <x-input type="text" class="w-full" wire:model="vehiculo.modelo" />
-                <x-input-error for="vehiculo.modelo" />
+                <x-input type="text" class="w-full" wire:model="m_modelo" />
+                <x-input-error for="m_modelo" />
             </div>
             <div>
                 <x-label value="Año de fabricación:" />
-                <x-input type="text" class="w-full" wire:model="vehiculo.anio_fabricacion" type="number"
+                <x-input type="text" class="w-full" wire:model="m_anio_fabricacion" type="number"
                     inputmode="numeric" />
-                <x-input-error for="vehiculo.anio_fabricacion" />
+                <x-input-error for="m_anio_fabricacion" />
             </div>
             <div>
                 <x-label value="Kilometraje:" />
-                <x-input type="text" class="w-full" wire:model="vehiculo.kilometraje" />
-                <x-input-error for="vehiculo.kilometraje" />
+                <x-input type="text" class="w-full" wire:model="m_kilometraje" />
+                <x-input-error for="m_kilometraje" />
             </div>
             <div>
                 <x-label value="Combustible:" />
-                <x-input type="text" class="w-full" wire:model="vehiculo.combustible" />
-                <x-input-error for="vehiculo.combustible" />
+                <x-input type="text" class="w-full" wire:model="m_combustible" />
+                <x-input-error for="m_combustible" />
             </div>
             <div>
                 <x-label value="VIN / N° Serie:" />
-                <x-input type="text" class="w-full" wire:model="vehiculo.vin_serie" />
-                <x-input-error for="vehiculo.vin_serie" />
+                <x-input type="text" class="w-full" wire:model="m_vin_serie" />
+                <x-input-error for="m_vin_serie" />
             </div>
             <div>
                 <x-label value="N° Serie Motor:" />
-                <x-input type="text" class="w-full" wire:model="vehiculo.numero_motor" />
-                <x-input-error for="vehiculo.numero_motor" />
+                <x-input type="text" class="w-full" wire:model="m_numero_motor" />
+                <x-input-error for="m_numero_motor" />
             </div>
             <div>
                 <x-label value="Carroceria:" />
-                <x-input type="text" class="w-full" wire:model="vehiculo.carroceria" />
-                <x-input-error for="vehiculo.carroceria" />
+                <x-input type="text" class="w-full" wire:model="m_carroceria" />
+                <x-input-error for="m_carroceria" />
             </div>
             <div>
                 <x-label value="Marca carroceria:" />
-                <x-input type="text" class="w-full" wire:model="vehiculo.marca_carroceria"  />
-                <x-input-error for="vehiculo.marca_carroceria" />
+                <x-input type="text" class="w-full" wire:model="m_marca_carroceria"  />
+                <x-input-error for="m_marca_carroceria" />
             </div>
             <div>
                 <x-label value="Color:" />
-                <x-input type="text" class="w-full" wire:model="vehiculo.color" />
-                <x-input-error for="vehiculo.color" />
+                <x-input type="text" class="w-full" wire:model="m_color" />
+                <x-input-error for="m_color" />
             </div>
             <div class="flex flex-row">
                 <div class="w-1/2">
                     <x-label value="Ejes:" />
-                    <x-input type="text" class="w-5/6" wire:model="vehiculo.ejes" type="number"
+                    <x-input type="text" class="w-5/6" wire:model="m_ejes" type="number"
                         inputmode="numeric" />
-                    <x-input-error for="vehiculo.ejes" />
+                    <x-input-error for="m_ejes" />
                 </div>
                 <div class="w-1/2">
                     <x-label value="Ruedas:" />
-                    <x-input type="text" class="w-5/6" wire:model="vehiculo.ruedas" type="number"
+                    <x-input type="text" class="w-5/6" wire:model="m_ruedas" type="number"
                         inputmode="numeric" />
-                    <x-input-error for="vehiculo.ruedas" />
+                    <x-input-error for="m_ruedas" />
                 </div>
             </div>
             <div class="flex flex-row">
                 <div class="w-1/2">
                     <x-label value="Asientos:" />
-                    <x-input type="text" class="w-5/6" wire:model="vehiculo.asientos" type="number"
+                    <x-input type="text" class="w-5/6" wire:model="m_asientos" type="number"
                         inputmode="numeric" />
-                    <x-input-error for="vehiculo.asientos" />
+                    <x-input-error for="m_asientos" />
                 </div>
                 <div class="w-1/2">
                     <x-label value="Pasajeros:" />
-                    <x-input type="text" class="w-5/6" wire:model="vehiculo.pasajeros" type="number"
+                    <x-input type="text" class="w-5/6" wire:model="m_pasajeros" type="number"
                         inputmode="numeric" />
-                    <x-input-error for="vehiculo.pasajeros" />
+                    <x-input-error for="m_pasajeros" />
                 </div>
             </div>
             <div class="flex flex-row w-full justify-center m-auto">
                 <div class="w-1/3">
                     <x-label value="Largo:" />
-                    <x-input type="text" class="w-5/6" wire:model="vehiculo.largo" type="number"
+                    <x-input type="text" class="w-5/6" wire:model="m_largo" type="number"
                         inputmode="numeric" />
-                    <x-input-error for="vehiculo.largo" />
+                    <x-input-error for="m_largo" />
                 </div>
                 <div class="w-1/3">
                     <x-label value="Ancho:" />
-                    <x-input type="text" class="w-5/6" wire:model="vehiculo.ancho" type="number"
+                    <x-input type="text" class="w-5/6" wire:model="m_ancho" type="number"
                         inputmode="numeric" />
-                    <x-input-error for="vehiculo.ancho" />
+                    <x-input-error for="m_ancho" />
                 </div>
                 <div class="w-1/3">
                     <x-label value="Altura:" inputmode="numeric" />
-                    <x-input type="text" class="w-5/6" wire:model="vehiculo.alto" type="number" />
-                    <x-input-error for="vehiculo.alto" />
+                    <x-input type="text" class="w-5/6" wire:model="m_alto" type="number" />
+                    <x-input-error for="m_alto" />
                 </div>
             </div>            
             <div class="flex flex-row w-full justify-center m-auto">
                 <div class="w-1/3">
                     <x-label value="Peso Neto:" />
-                    <x-input type="text" class="w-5/6" wire:model="vehiculo.peso_neto" type="number"
+                    <x-input type="text" class="w-5/6" wire:model="m_peso_neto" type="number"
                         inputmode="numeric" />
-                    <x-input-error for="vehiculo.peso_neto" />
+                    <x-input-error for="m_peso_neto" />
                 </div>
                 <div class="w-1/3">
                     <x-label value="Peso Bruto:" />
-                    <x-input type="text" class="w-5/6" wire:model="vehiculo.peso_bruto" type="number"
+                    <x-input type="text" class="w-5/6" wire:model="m_peso_bruto" type="number"
                         inputmode="numeric" />
-                    <x-input-error for="vehiculo.peso_bruto" />
+                    <x-input-error for="m_peso_bruto" />
                 </div>
                 <div class="w-1/3">
                     <x-label value="Carga Util:" />
-                    <x-input type="text" class="w-5/6" wire:model="vehiculo.peso_util" type="number"
+                    <x-input type="text" class="w-5/6" wire:model="m_peso_util" type="number"
                         inputmode="numeric" />
-                    <x-input-error for="vehiculo.peso_util" />
+                    <x-input-error for="m_peso_util" />
                 </div>
             </div>
         </div>
