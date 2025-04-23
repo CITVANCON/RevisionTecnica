@@ -103,35 +103,76 @@
                     <x-input-error for="numero_documento" />
                 </div>
             </div>
-            <!-- Ubigeo, Celular, Correo -->
-            <div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-3">
-                <div class="flex flex-col w-full">
-                    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-2">
+            <!-- Dirección, Celular, Correo -->
+            <div class="mt-4 flex flex-col sm:flex-row gap-4">
+                <!-- Dirección -->
+                <div class="flex flex-col flex-[1.5]">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2">
                         <x-label value="Dirección:" class="text-white min-w-[80px]" />
-                        <x-input type="text" class="w-full sm:flex-1" wire:model="direccion" />
+                        <x-input type="text" class="w-full" wire:model="direccion" />
                     </div>
                     <x-input-error for="direccion" />
                 </div>
-
-                <div class="flex flex-col w-full">
-                    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-2">
+                <!-- Celular -->
+                <div class="flex flex-col flex-1">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2">
                         <x-label value="Celular:" class="text-white min-w-[80px]" />
-                        <x-input type="tel" class="w-full sm:flex-1" wire:model="celular" />
+                        <x-input type="tel" class="w-full" wire:model="celular" />
                     </div>
                     <x-input-error for="celular" />
                 </div>
-
-                <div class="flex flex-col w-full">
-                    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-2">
+                <!-- Correo -->
+                <div class="flex flex-col flex-[1.5]">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2">
                         <x-label value="Correo:" class="text-white min-w-[80px]" />
-                        <x-input type="email" class="w-full sm:flex-1" wire:model="correo" />                        
+                        <x-input type="email" class="w-full" wire:model="correo" />
                     </div>
                     <x-input-error for="correo" />
                 </div>
             </div>
-
             <div class="mt-4"></div>
+        </div>
+    </div>
 
+    <div class="max-w-5xl m-auto bg-accent rounded-lg shadow-md">
+        <div class="mt-2 mb-6 px-8 py-2">
+            <!-- Tipo poliza, N° poliza, FechaInicio, FechaFin -->
+            <div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-4">
+                <div class="flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-2">
+                    <x-label value="Tipo Póliza:" class="text-white min-w-[80px]" />
+                    <x-input type="text" class="w-full sm:flex-1" wire:model="tipopoliza" />
+                    <x-input-error for="tipopoliza" />
+                </div>
+                <div class="flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-2">
+                    <x-label value="N° Póliza:" class="text-white min-w-[80px]" />
+                    <x-input type="text" class="w-full sm:flex-1" wire:model="num_poliza" />
+                    <x-input-error for="num_poliza" />
+                </div>
+                <div class="flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-2">
+                    <x-label value="Fecha de Inicio:" class="text-white min-w-[80px]" />
+                    <x-date-picker wire:model="fechaInicio" placeholder="Fecha de inicio..."
+                        class="bg-gray-50 mx-2 border-orange-300 rounded-md outline-none ml-1 block w-full truncate" />
+                    <x-input-error for="fechaInicio" />
+                </div>
+                <div class="flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-2">
+                    <x-label value="Fecha de Fin:" class="text-white min-w-[80px]" />
+                    <x-date-picker wire:model="fechaFin" placeholder="Fecha de inicio..."
+                        class="bg-gray-50 mx-2 border-orange-300 rounded-md outline-none ml-1 block w-full truncate" />
+                    <x-input-error for="fechaFin" />
+                </div>
+            </div>
+            <!-- Aseguradora -->
+            <div class="mt-4 mb-4 flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
+                <x-label value="Aseguradora:" class="text-white min-w-[80px]" />
+                <x-select wire:model="aseguradora_id" class="w-full sm:flex-1">
+                    <option value="">Seleccionar</option>
+                    @foreach ($aseguradoras as $id => $descripcion)
+                        <option value="{{ $id }}">{{ $descripcion }}</option>
+                    @endforeach
+                </x-select>
+                <x-input-error for="aseguradora_id" />
+            </div>
+            <div class="mt-4"></div>
         </div>
     </div>
 

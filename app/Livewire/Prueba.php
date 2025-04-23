@@ -3,8 +3,10 @@
 namespace App\Livewire;
 
 use App\Models\Ambito;
+use App\Models\Aseguradora;
 use App\Models\Categoria;
 use App\Models\Clase;
+use App\Models\InspeccionAseguradora;
 use App\Models\InspeccionFinalizada;
 use App\Models\InspeccionPropuesta;
 use App\Models\InspeccionServicioAmbito;
@@ -21,11 +23,13 @@ class Prueba extends Component
     // variable para cargar el vehiculo
     public $vehiculo;
     // variables para los tipos (selects)
-    public $servicios, $ambitos, $clases, $subclases, $categorias, $tiposVehiculo, $tiposDocumento;
+    public $servicios, $ambitos, $clases, $subclases, $categorias, $tiposVehiculo, $tiposDocumento, $aseguradoras;
+
     // variables para alta vehiculo
     public $servicio_id, $ambito_id, $clase_id, $subclase_id, $categoria_id, $tipovehiculo_id;
     public $tipodocumentoidentidad_id, $numero_documento;
     public $direccion, $celular, $correo;
+    public $tipopoliza, $num_poliza, $fechaInicio, $fechaFin, $aseguradora_id;
 
     protected $listeners = ['cargaVehiculo' => 'carga'];
 
@@ -44,6 +48,13 @@ class Prueba extends Component
             'direccion' => 'nullable|string|max:255',
             'celular' => 'nullable|string|max:9',
             'correo' => 'nullable|email|max:50',
+
+            'aseguradora_id' => 'required|exists:aseguradora,id',
+            'tipopoliza' => 'nullable|string',
+            'num_poliza' => 'nullable|string',
+            'fechaInicio' => 'nullable|date',
+            'fechaFin' => 'nullable|date|after_or_equal:fechaInicio',
+
         ];
     }
 
@@ -57,6 +68,7 @@ class Prueba extends Component
         $this->categorias = Categoria::all();
         $this->tiposVehiculo = Tipovehiculo::pluck('descripcion', 'id');
         $this->tiposDocumento = Tipodocumentoidentidad::pluck('descripcion', 'id');
+        $this->aseguradoras = Aseguradora::pluck('descripcion', 'id');
     }
 
     public function carga($id)
@@ -125,7 +137,17 @@ class Prueba extends Component
         $inspeccionVehiculo->inspeccion_propuesta_id = $propuesta->id;
         $inspeccionVehiculo->save();
 
-        // 4. Guardar información de la inspección finalizada
+        // 4. Guardar información de la inspección aseguradora
+        $inspeccionAseguradora = new InspeccionAseguradora();
+        $inspeccionAseguradora->idAseguradora = $this->aseguradora_id;
+        $inspeccionAseguradora->tipopoliza = $this->tipopoliza;
+        $inspeccionAseguradora->num_poliza = $this->num_poliza;
+        $inspeccionAseguradora->fechaInicio = $this->fechaInicio;
+        $inspeccionAseguradora->fechaFin = $this->fechaFin;
+        $inspeccionAseguradora->inspeccion_propuesta_id = $propuesta->id;
+        $inspeccionAseguradora->save();
+
+        // 5. Guardar información de la inspección finalizada
         $inspeccionFinalizada = new InspeccionFinalizada();
         $inspeccionFinalizada->idVehiculo = $this->vehiculo->id;
         $inspeccionFinalizada->idClase = $this->clase_id;
@@ -141,6 +163,6 @@ class Prueba extends Component
             icono: "success"
         );
 
-        $this->resetExcept('vehiculo', 'servicios', 'ambitos', 'clases', 'subclases', 'categorias', 'tiposVehiculo', 'tiposDocumento'); //
+        $this->resetExcept('vehiculo', 'servicios', 'ambitos', 'clases', 'subclases', 'categorias', 'tiposVehiculo', 'tiposDocumento', 'aseguradoras');
     }
 }

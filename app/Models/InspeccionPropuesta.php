@@ -34,4 +34,11 @@ class InspeccionPropuesta extends Model
     {
         return $this->hasOne(InspeccionFinalizada::class);
     }
+
+    // Relación con InspeccionAseguradora
+    public function aseguradora()
+    {
+        return $this->hasOne(InspeccionAseguradora::class);
+    }
+
 }

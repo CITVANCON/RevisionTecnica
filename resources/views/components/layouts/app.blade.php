@@ -13,6 +13,11 @@
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
+    {{-- Agregue esto para date-picker--}}
+    <!-- Flatpickr CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+
 
     <!-- Styles -->
     @livewireStyles
@@ -34,6 +39,15 @@
 
     <!-- Livewire Scripts -->
     @livewireScripts
+
+    {{-- Agregue esto para date-picker y comente xq da error
+    <!-- Alpine.js (si aún no está cargado) -->
+    <script src="https://unpkg.com/alpinejs" defer></script>--}}
+
+     {{-- Agregue esto para date-picker --}}
+    <!-- Flatpickr JS -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    
 
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

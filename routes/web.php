@@ -1,5 +1,6 @@
 <?php
 
+use App\Livewire\FormVehiculo;
 use App\Livewire\Prueba;
 use Illuminate\Support\Facades\Route;
 
@@ -34,5 +35,5 @@ Route::middleware([
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
-    Route::get('/altavehiculo', Prueba::class);
+    Route::get('/altavehiculo', Prueba::class)->name('altavehiculo');
 });

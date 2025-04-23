@@ -155,6 +155,49 @@ Change class "fixed" to "sticky" in "navbar" (l. 33) so the navbar doesn't hide 
                                 <span class="select-none">Inicio</span>
                             </a>
                         </li>
+                        <li>
+                            <a class="flex items-center rounded py-3 pl-3 pr-4 space-x-6 text-gray-50 hover:bg-accent"
+                                href="{{ route('altavehiculo') }}">
+                                <i class="fas fa-car-side -mt-1"></i>
+                                <span class="select-none">Alta de Vehículo</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="flex items-center rounded py-3 pl-3 pr-4 space-x-6 text-gray-50 hover:bg-accent"
+                                href="">
+                                <i class="fas fa-folder-open -mt-1"></i> <!-- Expedientes -->
+                                <span class="select-none">Expedientes</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="flex items-center rounded py-3 pl-3 pr-4 space-x-6 text-gray-50 hover:bg-accent"
+                                href="">
+                                <i class="fas fa-clipboard-check -mt-1"></i> <!-- Línea de Inspección -->
+                                <span class="select-none">Linea de Inspección</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="flex items-center rounded py-3 pl-3 pr-4 space-x-6 text-gray-50 hover:bg-accent"
+                                href="">
+                                <i class="fas fa-tools -mt-1"></i> <!-- Miscelánea -->
+                                <span class="select-none">Miscelánea</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="flex items-center rounded py-3 pl-3 pr-4 space-x-6 text-gray-50 hover:bg-accent"
+                                href="">
+                                <i class="fas fa-file-invoice -mt-1"></i> <!-- Albaranes -->
+                                <span class="select-none">Albaranes</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="flex items-center rounded py-3 pl-3 pr-4 space-x-6 text-gray-50 hover:bg-accent"
+                                href="">
+                                <i class="fas fa-print -mt-1"></i> <!-- Reimpresión -->
+                                <span class="select-none">Reimpresion</span>
+                            </a>
+                        </li>
+                        
 
                     </ul>
                 </div>
