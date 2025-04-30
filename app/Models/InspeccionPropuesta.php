@@ -41,4 +41,23 @@ class InspeccionPropuesta extends Model
         return $this->hasOne(InspeccionAseguradora::class);
     }
 
+    // Relación con medicion frenos
+    public function medicionFrenos()
+    {
+        return $this->hasOne(MedicionFreno::class);
+    }
+
+    // Relación con medicion alineador
+    public function medicionAlineador()
+    {
+        return $this->hasOne(MedicionAlineador::class);
+    }
+
+    // Relación con medicion luces
+    public function medicionLuz()
+    {
+        return $this->hasOne(MedicionLuz::class);
+    }
+
+
 }

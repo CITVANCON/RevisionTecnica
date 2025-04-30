@@ -1,4 +1,4 @@
-<div class="block justify-center mt-2 pt-4 max-h-max pb-4">
+<div class="block justify-center pt-4 max-h-max pb-4">
     <h1 class="text-center text-xl my-4 font-bold text-secondary">REALIZAR ALTA DE INSPECCION</h1>
 
     <!-- SERVICIO -->

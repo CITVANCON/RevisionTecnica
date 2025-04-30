@@ -1,6 +1,7 @@
 <?php
 
-use App\Livewire\FormVehiculo;
+use App\Livewire\EditarLineaInspeccion;
+use App\Livewire\Linea;
 use App\Livewire\Prueba;
 use Illuminate\Support\Facades\Route;
 
@@ -35,5 +36,12 @@ Route::middleware([
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
+
+
     Route::get('/altavehiculo', Prueba::class)->name('altavehiculo');
+
+
+    Route::get('/lineainspeccion', Linea::class)->name('lineainspeccion');
+    Route::get('/lineainspeccion/{idPropuesta}', EditarLineaInspeccion::class)->name('editar-lineainspeccion');
+
 });

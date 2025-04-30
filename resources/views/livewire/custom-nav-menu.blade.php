@@ -171,7 +171,7 @@ Change class "fixed" to "sticky" in "navbar" (l. 33) so the navbar doesn't hide 
                         </li>
                         <li>
                             <a class="flex items-center rounded py-3 pl-3 pr-4 space-x-6 text-gray-50 hover:bg-accent"
-                                href="">
+                                href="{{ route('lineainspeccion') }}">
                                 <i class="fas fa-clipboard-check -mt-1"></i> <!-- Línea de Inspección -->
                                 <span class="select-none">Linea de Inspección</span>
                             </a>
