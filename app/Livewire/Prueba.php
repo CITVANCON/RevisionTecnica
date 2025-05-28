@@ -7,6 +7,7 @@ use App\Models\Aseguradora;
 use App\Models\Categoria;
 use App\Models\Clase;
 use App\Models\InspeccionAseguradora;
+use App\Models\InspeccionComplementaria;
 use App\Models\InspeccionFinalizada;
 use App\Models\InspeccionPropuesta;
 use App\Models\InspeccionServicioAmbito;
@@ -24,7 +25,6 @@ class Prueba extends Component
     public $vehiculo;
     // variables para los tipos (selects)
     public $servicios, $ambitos, $clases, $subclases, $categorias, $tiposVehiculo, $tiposDocumento, $aseguradoras;
-
     // variables para alta vehiculo
     public $servicio_id, $ambito_id, $clase_id, $subclase_id, $categoria_id, $tipovehiculo_id;
     public $tipodocumentoidentidad_id, $numero_documento;
@@ -71,6 +71,19 @@ class Prueba extends Component
         $this->aseguradoras = Aseguradora::pluck('descripcion', 'id');
     }
 
+    public function updatedServicioId($value)
+    {
+        if ($value == 2) {
+            $this->ambito_id = 3;
+            $this->clase_id = 1;
+            $this->subclase_id = 2;
+        } /*else {
+            $this->ambito_id = null;
+            $this->clase_id = null;
+            $this->subclase_id = null;
+        }*/
+    }
+
     public function carga($id)
     {
         $this->vehiculo = Vehiculo::find($id);
@@ -86,12 +99,7 @@ class Prueba extends Component
         $this->validate();
 
         if (!$this->vehiculo) {
-            $this->dispatch(
-                'minAlert',
-                titulo: "AVISO DEL SISTEMA",
-                mensaje: "Primero debes registrar un vehículo.",
-                icono: "warning"
-            );
+            $this->dispatch('minAlert', titulo: "AVISO DEL SISTEMA", mensaje: "Primero debes registrar un vehículo.", icono: "warning");
             return;
         }
 
@@ -155,14 +163,16 @@ class Prueba extends Component
         $inspeccionFinalizada->inspeccion_propuesta_id = $propuesta->id;
         $inspeccionFinalizada->save();
 
-        // Confirmación
-        $this->dispatch(
-            'minAlert',
-            titulo: "¡BUEN TRABAJO!",
-            mensaje: "Proceso de alta vehiculo registrado con éxito.",
-            icono: "success"
-        );
+        if ($this->servicio_id == 2) {
+            $inspeccionComplementaria = new InspeccionComplementaria();
+            $inspeccionComplementaria->idVehiculo = $this->vehiculo->id;
+            $inspeccionComplementaria->idTipoComplementaria = 12; // ID fijo según tu requerimiento
+            $inspeccionComplementaria->inspeccion_propuesta_id = $propuesta->id;
+            $inspeccionComplementaria->save();
+        }
 
+        // Confirmación
+        $this->dispatch('minAlert', titulo: "¡BUEN TRABAJO!", mensaje: "Proceso de alta vehiculo registrado con éxito.", icono: "success");
         $this->resetExcept('vehiculo', 'servicios', 'ambitos', 'clases', 'subclases', 'categorias', 'tiposVehiculo', 'tiposDocumento', 'aseguradoras');
     }
 }

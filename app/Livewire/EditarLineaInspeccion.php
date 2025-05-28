@@ -8,16 +8,11 @@ use Livewire\Component;
 class EditarLineaInspeccion extends Component
 {
     public $idPropuesta, $propuesta;
-    public $mostrarSubopciones = true;
     public $seccionActiva = null;
+    public $subseccionActiva = null;
 
 
     protected $listeners = ["refrescaPropuesta"];
-
-    /*public function mount()
-    {
-        $this->propuesta = InspeccionPropuesta::find($this->idPropuesta);
-    }*/
 
     public function mount($idPropuesta)
     {
@@ -33,6 +28,12 @@ class EditarLineaInspeccion extends Component
     public function mostrarSeccion($seccion)
     {
         $this->seccionActiva = $this->seccionActiva === $seccion ? null : $seccion;
+        $this->subseccionActiva = null; // Resetear subsección al cambiar de sección
+    }
+
+    public function mostrarSubseccion($subseccion)
+    {
+        $this->subseccionActiva = $this->subseccionActiva === $subseccion ? null : $subseccion;
     }
 
     public function render()

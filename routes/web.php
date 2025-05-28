@@ -3,6 +3,7 @@
 use App\Livewire\EditarLineaInspeccion;
 use App\Livewire\Linea;
 use App\Livewire\Prueba;
+use App\Livewire\SubirFotografias;
 use Illuminate\Support\Facades\Route;
 
 /*Route::get('/', function () {
@@ -43,5 +44,7 @@ Route::middleware([
 
     Route::get('/lineainspeccion', Linea::class)->name('lineainspeccion');
     Route::get('/lineainspeccion/{idPropuesta}', EditarLineaInspeccion::class)->name('editar-lineainspeccion');
+
+    Route::get('/subir-fotografias', SubirFotografias::class)->name('subirFotografias');
 
 });

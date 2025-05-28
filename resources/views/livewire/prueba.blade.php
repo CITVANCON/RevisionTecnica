@@ -7,7 +7,7 @@
             <!-- Servicio -->
             <div class="mt-4 mb-4 flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
                 <x-label value="Servicio:" class="text-white min-w-[80px]" />
-                <x-select wire:model="servicio_id" class="w-full sm:flex-1">
+                <x-select wire:model.lazy="servicio_id" class="w-full sm:flex-1">
                     <option value="">Seleccionar</option>
                     @foreach ($servicios as $id => $descripcion)
                         <option value="{{ $id }}">{{ $descripcion }}</option>

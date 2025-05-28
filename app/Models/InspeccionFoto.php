@@ -9,10 +9,19 @@ class InspeccionFoto extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['inspeccion_id', 'url_foto', 'descripcion'];
+    protected $table = 'inspeccion_fotos';
 
-    public function inspeccion()
+    protected $fillable = [
+        'inspeccion_propuesta_id',
+        'tipo_foto', // enum('Izquierda', 'Centro', 'Derecha')
+        'nombre',
+        'ruta',
+        'extension',
+        'estado',
+    ];
+
+    public function propuesta()
     {
-        return $this->belongsTo(Inspeccion::class);
+        return $this->belongsTo(InspeccionPropuesta::class, 'inspeccion_propuesta_id');
     }
 }

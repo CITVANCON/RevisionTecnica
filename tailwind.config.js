@@ -37,6 +37,10 @@ export default {
                     DEFAULT: '#F97316',
                 },
             },
+            gridTemplateColumns: {
+                14: 'repeat(14, minmax(0, 1fr))',
+                7: 'repeat(7, minmax(0, 1fr))',
+            },
         },
     },
 

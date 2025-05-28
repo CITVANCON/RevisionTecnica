@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -59,5 +60,35 @@ class InspeccionPropuesta extends Model
         return $this->hasOne(MedicionLuz::class);
     }
 
+    // Relación con InspeccionFoto
+    public function fotos()
+    {
+        //return $this->hasMany(InspeccionFoto::class);
+        return $this->hasMany(InspeccionFoto::class, 'inspeccion_propuesta_id');
+    }
 
+
+
+    //SCOPES PARA FILTROS
+
+    /*public function scopePropuesta(Builder $query, string $search)
+    {
+        return $search
+            ? $query->where('num_propuesta', 'like', '%' . $search . '%')
+            : $query;
+    }*/
+
+    public function scopePropuesta(Builder $query, ?string $search): Builder
+    {
+        return $search
+            ? $query->where('num_propuesta', 'like', '%' . $search . '%')
+            : $query;
+    }
+
+    public function scopeEstado(Builder $query, ?string $search): Builder
+    {
+        return $search
+            ? $query->where('estado', $search)
+            : $query;
+    }
 }
