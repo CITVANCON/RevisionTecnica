@@ -90,15 +90,6 @@
         </x-slot>
 
         <x-slot name="content">
-            {{--
-            <div class="mb-4">
-                <x-label value="Fotos:" />
-                <x-input wire:model="fotosnuevas" type="file" accept=".jpg,.png,.jpeg,.gif,.bmp,.tif,.tiff"
-                    multiple id="fotos-{{ $identificador }}" class="w-full" />
-                <x-input-error for="fotosnuevas" />
-                <x-input-error for="fotosnuevas.*" />
-            </div>
-            --}}
             <div class="mb-4">
                 <x-label value="Foto Izquierda:" />
                 <x-input type="file" wire:model="fotoIzquierda" accept="image/*" />
@@ -129,7 +120,7 @@
             </h1>
             <hr />
             @if (count($files) || $fotoIzquierda || $fotoCentro || $fotoDerecha)
-                <section class="mt-4 overflow-hidden border-dotted border-2 text-gray-700 " {{-- wire:model="fotoIzquierda,fotoCentro,fotoDerecha" --}}>
+                <section class="mt-4 overflow-hidden border-dotted border-2 text-gray-700 ">
                     <div class="container px-5 py-2 mx-auto lg:px-32">
                         <div class="flex flex-wrap -m-1 md:-m-2">
                             {{-- Imágenes guardadas previamente --}}
@@ -152,8 +143,9 @@
                                         <img alt="preview"
                                             class="mx-auto object-cover w-36 h-36 rounded-lg border-2 border-lime-500"
                                             src="{{ $fotoIzquierda->temporaryUrl() }}">
-                                        <a class="flex" wire:click=""><i
-                                                class="fas fa-trash mt-1 mx-auto hover:text-orange-500"></i></a>
+                                            <a class="flex" wire:click="removePreview('Izquierda')">
+                                                <i class="fas fa-trash mt-1 mx-auto hover:text-orange-500"></i>
+                                            </a>
                                     </div>
                                 </div>
                             @endif
@@ -164,8 +156,9 @@
                                         <img alt="preview"
                                             class="mx-auto object-cover w-36 h-36 rounded-lg border-2 border-lime-500"
                                             src="{{ $fotoCentro->temporaryUrl() }}">
-                                        <a class="flex" wire:click=""><i
-                                                class="fas fa-trash mt-1 mx-auto hover:text-orange-500"></i></a>
+                                        <a class="flex" wire:click="removePreview('Centro')">
+                                            <i class="fas fa-trash mt-1 mx-auto hover:text-orange-500"></i>
+                                        </a>
                                     </div>
                                 </div>
                             @endif
@@ -176,8 +169,9 @@
                                         <img alt="preview"
                                             class="mx-auto object-cover w-36 h-36 rounded-lg border-2 border-lime-500"
                                             src="{{ $fotoDerecha->temporaryUrl() }}">
-                                        <a class="flex" wire:click=""><i
-                                                class="fas fa-trash mt-1 mx-auto hover:text-orange-500"></i></a>
+                                        <a class="flex" wire:click="removePreview('Derecha')">
+                                            <i class="fas fa-trash mt-1 mx-auto hover:text-orange-500"></i>
+                                        </a>
                                     </div>
                                 </div>
                             @endif

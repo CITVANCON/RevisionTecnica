@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\InspeccionFoto;
 use App\Models\InspeccionPropuesta;
+use Illuminate\Support\Facades\Storage;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
 use Livewire\Component;
@@ -82,9 +83,13 @@ class SubirFotografias extends Component
 
         foreach ($tipos as $tipo => $archivo) {
             if ($archivo) {
-                $path = $archivo->store('public/inspeccion_fotos');
-                $nombre = $archivo->getClientOriginalName();
+
                 $extension = $archivo->getClientOriginalExtension();
+                $nombreLimpio = strtolower(str_replace(' ', '_', $tipo)); // Por si hay espacios
+                $nombreArchivo = $this->propuesta->id . '-' . $nombreLimpio . '.' . $extension;
+
+                // Guardamos en public/inspeccion_fotos con nombre personalizado
+                $path = $archivo->storeAs('inspeccion_fotos', $nombreArchivo, 'public');
 
                 // Si ya existe una foto de este tipo, actualizarla
                 $foto = InspeccionFoto::updateOrCreate(
@@ -93,7 +98,7 @@ class SubirFotografias extends Component
                         'tipo_foto' => $tipo,
                     ],
                     [
-                        'nombre' => $nombre,
+                        'nombre' => $nombreArchivo,
                         'ruta' => $path,
                         'extension' => $extension,
                         'estado' => 1,
@@ -104,5 +109,30 @@ class SubirFotografias extends Component
 
         $this->editando = false;
         $this->dispatch('minAlert', titulo: "¡BUEN TRABAJO!", mensaje: "Fotos guardadas correctamente.", icono: "success");
+    }
+
+    public function deleteFile($id)
+    {
+        $foto = InspeccionFoto::find($id);
+        if ($foto) {
+            // Borra el archivo físicamente si existe
+            if (Storage::disk('public')->exists($foto->ruta)) {
+                Storage::disk('public')->delete($foto->ruta);
+            }
+            $foto->delete(); // Borra el registro en la BD
+            $this->files = InspeccionFoto::where('inspeccion_propuesta_id', $this->propuesta->id)->get();
+            $this->dispatch('minAlert', titulo: "Eliminado", mensaje: "Foto eliminada correctamente", icono: "success");
+        }
+    }
+
+    public function removePreview($tipo)
+    {
+        if ($tipo === 'Izquierda') {
+            $this->fotoIzquierda = null;
+        } elseif ($tipo === 'Centro') {
+            $this->fotoCentro = null;
+        } elseif ($tipo === 'Derecha') {
+            $this->fotoDerecha = null;
+        }
     }
 }
