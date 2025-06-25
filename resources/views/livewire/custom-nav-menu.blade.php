@@ -197,7 +197,7 @@ Change class "fixed" to "sticky" in "navbar" (l. 33) so the navbar doesn't hide 
                         {{--             OPCIONES PARA EXPEDIENTES                 --}}
                         <li>
                             <a class="flex items-center rounded py-3 pl-3 pr-4 space-x-6 text-gray-50 hover:bg-accent"
-                                href="">
+                                href="{{ route('expedientes') }}">
                                 <i class="fas fa-folder-open -mt-1"></i> <!-- Expedientes -->
                                 <span class="select-none">Expedientes</span>
                             </a>

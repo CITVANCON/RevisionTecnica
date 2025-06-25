@@ -3,6 +3,7 @@
 use App\Http\Controllers\PdfController;
 use App\Livewire\AdministracionInspecciones;
 use App\Livewire\EditarLineaInspeccion;
+use App\Livewire\Expedientes;
 use App\Livewire\Linea;
 use App\Livewire\Prueba;
 use App\Livewire\SubirFotografias;
@@ -52,6 +53,8 @@ Route::middleware([
 
     //Ruta para admin inspecciones
     Route::get('/Admin-inspecciones', AdministracionInspecciones::class)->name('AdminInspecciones');
+
+    Route::get('/Expedientes', Expedientes::class)->name('expedientes');
 
 
     //RUTAS PARA STREAM Y DESCARGA DE PDFS

@@ -6,6 +6,7 @@ use App\Models\Ambito;
 use App\Models\Aseguradora;
 use App\Models\Categoria;
 use App\Models\Clase;
+use App\Models\Expediente;
 use App\Models\InspeccionAseguradora;
 use App\Models\InspeccionComplementaria;
 use App\Models\InspeccionFinalizada;
@@ -117,59 +118,68 @@ class Prueba extends Component
             $existe = InspeccionPropuesta::where('num_propuesta', $nuevoNumero)->exists();
         } while ($existe);
 
-
         // 1. Crear propuesta
-        $propuesta = new InspeccionPropuesta();
-        $propuesta->num_propuesta = $nuevoNumero;
-        $propuesta->fecha_creacion = now();
-        $propuesta->estado = 1;
-        $propuesta->save();
+        $propuesta = InspeccionPropuesta::create([
+            'num_propuesta' => $nuevoNumero,
+            'fecha_creacion' => now(),
+            'estado' => 1,
+        ]);
 
         // 2. Crear relación servicio - ámbito
-        $servicioAmbito = new InspeccionServicioAmbito();
-        $servicioAmbito->idServicio = $this->servicio_id;
-        $servicioAmbito->idAmbito = $this->ambito_id;
-        $servicioAmbito->inspeccion_propuesta_id = $propuesta->id;
-        $servicioAmbito->save();
+        InspeccionServicioAmbito::create([
+            'idServicio' => $this->servicio_id,
+            'idAmbito' => $this->ambito_id,
+            'inspeccion_propuesta_id' => $propuesta->id,
+        ]);
 
         // 3. Guardar datos del vehículo (asociados a la propuesta)
-        $inspeccionVehiculo = new InspeccionVehiculo();
-        $inspeccionVehiculo->idVehiculo = $this->vehiculo->id;
-        $inspeccionVehiculo->idTipovehiculo = $this->tipovehiculo_id;
-        $inspeccionVehiculo->idCategoria = $this->categoria_id;
-        $inspeccionVehiculo->idTipodocumento = $this->tipodocumentoidentidad_id;
-        $inspeccionVehiculo->num_documento = $this->numero_documento;
-        $inspeccionVehiculo->direccion = $this->direccion;
-        $inspeccionVehiculo->celular = $this->celular;
-        $inspeccionVehiculo->correo = $this->correo;
-        $inspeccionVehiculo->inspeccion_propuesta_id = $propuesta->id;
-        $inspeccionVehiculo->save();
+        InspeccionVehiculo::create([
+            'idVehiculo' => $this->vehiculo->id,
+            'idTipovehiculo' => $this->tipovehiculo_id,
+            'idCategoria' => $this->categoria_id,
+            'idTipodocumento' => $this->tipodocumentoidentidad_id,
+            'num_documento' => $this->numero_documento,
+            'direccion' => $this->direccion,
+            'celular' => $this->celular,
+            'correo' => $this->correo,
+            'inspeccion_propuesta_id' => $propuesta->id,
+        ]);
 
         // 4. Guardar información de la inspección aseguradora
-        $inspeccionAseguradora = new InspeccionAseguradora();
-        $inspeccionAseguradora->idAseguradora = $this->aseguradora_id;
-        $inspeccionAseguradora->tipopoliza = $this->tipopoliza;
-        $inspeccionAseguradora->num_poliza = $this->num_poliza;
-        $inspeccionAseguradora->fechaInicio = $this->fechaInicio;
-        $inspeccionAseguradora->fechaFin = $this->fechaFin;
-        $inspeccionAseguradora->inspeccion_propuesta_id = $propuesta->id;
-        $inspeccionAseguradora->save();
+        InspeccionAseguradora::create([
+            'idAseguradora' => $this->aseguradora_id,
+            'tipopoliza' => $this->tipopoliza,
+            'num_poliza' => $this->num_poliza,
+            'fechaInicio' => $this->fechaInicio,
+            'fechaFin' => $this->fechaFin,
+            'inspeccion_propuesta_id' => $propuesta->id,
+        ]);
 
         // 5. Guardar información de la inspección finalizada
-        $inspeccionFinalizada = new InspeccionFinalizada();
-        $inspeccionFinalizada->idVehiculo = $this->vehiculo->id;
-        $inspeccionFinalizada->idClase = $this->clase_id;
-        $inspeccionFinalizada->idSubclase = $this->subclase_id;
-        $inspeccionFinalizada->inspeccion_propuesta_id = $propuesta->id;
-        $inspeccionFinalizada->save();
+        InspeccionFinalizada::create([
+            'idVehiculo' => $this->vehiculo->id,
+            'idClase' => $this->clase_id,
+            'idSubclase' => $this->subclase_id,
+            'inspeccion_propuesta_id' => $propuesta->id,
+        ]);
 
+        // 6. Si aplica, guardar inspección complementaria
         if ($this->servicio_id == 2) {
-            $inspeccionComplementaria = new InspeccionComplementaria();
-            $inspeccionComplementaria->idVehiculo = $this->vehiculo->id;
-            $inspeccionComplementaria->idTipoComplementaria = 12; // ID fijo según tu requerimiento
-            $inspeccionComplementaria->inspeccion_propuesta_id = $propuesta->id;
-            $inspeccionComplementaria->save();
+            InspeccionComplementaria::create([
+                'idVehiculo' => $this->vehiculo->id,
+                'idTipoComplementaria' => 12,
+                'inspeccion_propuesta_id' => $propuesta->id,
+            ]);
         }
+
+        // 7. Crear expediente
+        Expediente::create([
+            'placa' => $this->vehiculo->placa,
+            'num_propuesta' => $nuevoNumero,
+            'estado' => 1,
+        ]);
+
+
 
         // Confirmación
         $this->dispatch('minAlert', titulo: "¡BUEN TRABAJO!", mensaje: "Proceso de alta vehiculo registrado con éxito.", icono: "success");
