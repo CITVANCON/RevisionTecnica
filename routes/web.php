@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MTCSoapController;
 use App\Http\Controllers\PdfController;
 use App\Livewire\AdministracionInspecciones;
 use App\Livewire\EditarLineaInspeccion;
@@ -66,4 +67,24 @@ Route::middleware([
         Route::get('/inspeccion/{id}/descargar', 'descargarPdfInspeccion')->name("descargarInspeccion");
         
     });
+
+
+    //Rutas para procesos de INTEROPERABILIDAD (soap)
+    Route::get('/mtc/iniciar', [MTCSoapController::class, 'iniciarOperacion']);
+    //Route::get('/mtc/consultar-vehiculo', [MTCSoapController::class, 'consultarVehiculo']);
+    Route::get('/mtc/registrar-poliza', [MTCSoapController::class, 'registrarPoliza']);
+    Route::get('/mtc/registrar-resultado', [MTCSoapController::class, 'registrarResultadoRevision']);
+    Route::get('/mtc/actualizar-poliza', [MTCSoapController::class, 'actualizarPoliza']);
+    Route::get('/mtc/anular-certificado', [MTCSoapController::class, 'anularCertificado']);
+    Route::get('/mtc/cerrar-operaciones', [MTCSoapController::class, 'cerrarOperaciones']);
+
+    // Llamar al método del controlador desde el componente usando Http::post(...)
+    Route::post('/mtc/consultar-vehiculo', [MTCSoapController::class, 'consultarVehiculo'])->name('mtc.consultarVehiculo');
+
+
+
+
+
+
+    
 });

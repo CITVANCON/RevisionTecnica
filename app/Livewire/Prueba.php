@@ -18,6 +18,9 @@ use App\Models\Subclase;
 use App\Models\Tipodocumentoidentidad;
 use App\Models\Tipovehiculo;
 use App\Models\Vehiculo;
+use App\Services\MTCSoapService;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 
 class Prueba extends Component
@@ -184,5 +187,49 @@ class Prueba extends Component
         // Confirmación
         $this->dispatch('minAlert', titulo: "¡BUEN TRABAJO!", mensaje: "Proceso de alta vehiculo registrado con éxito.", icono: "success");
         $this->resetExcept('vehiculo', 'servicios', 'ambitos', 'clases', 'subclases', 'categorias', 'tiposVehiculo', 'tiposDocumento', 'aseguradoras');
+
+        /*
+         $response = Http::post(route('mtc.consultarVehiculo'), [
+            'placa'          => $this->vehiculo->placa,
+            'categoria'      => $this->categoria_id,
+            'tipo_servicio'  => $this->servicio_id,
+            'tipo_ambito'    => $this->ambito_id,
+            'tipo_inspeccion'=> 1 // puedes cambiarlo si lo manejas
+        ]);
+        if ($response->successful()) {
+            $resultado = $response->json();
+            // Aquí puedes usar los datos devueltos como:
+            // $resultado['NUM_FICHA'], etc.
+            $this->dispatch('minAlert', titulo: "CONSULTA MTC", mensaje: "MTC respondió: " . json_encode($resultado), icono: "info");
+        } else {
+            $this->dispatch('minAlert', titulo: "ERROR MTC", mensaje: "No se pudo consultar el vehículo en MTC", icono: "error");
+        }
+        */
+
+        $params = [
+            'CIOD_CITV'     => 'ABCDEF01072025XYZ',
+            'PLACA'         => $this->vehiculo->placa,
+            'CATEGORIA'     => $this->categoria_id,
+            'TIPSERVICIO'   => $this->servicio_id,
+            'TIPAMBITO'     => $this->ambito_id,
+            'TIPINSPECCION' => 1,
+        ];
+
+        // ✅ Aquí es donde debes loguear, ya que el controlador no se usa
+        Log::info('🛰 Enviando datos al MTC desde Livewire:', $params);
+
+        try {
+            $response = app(MTCSoapService::class)->consultarVehiculo($params);
+
+            Log::info('📩 Respuesta simulada del MTC:', (array) $response);
+
+            $this->dispatch('minAlert', titulo: "CONSULTA MTC", mensaje: "MTC respondió: " . json_encode($response), icono: "info");
+        } catch (\Exception $e) {
+            Log::error('❌ Error en la llamada SOAP desde Livewire:', [
+                'mensaje' => $e->getMessage(),
+                'params' => $params,
+            ]);
+            $this->dispatch('minAlert', titulo: "ERROR MTC", mensaje: "Fallo en consulta MTC: " . $e->getMessage(), icono: "error");
+        }
     }
 }
