@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\Vehiculo;
+use Livewire\WithDispatchable;
 use Livewire\Component;
 
 class FormVehiculo extends Component
@@ -24,6 +25,41 @@ class FormVehiculo extends Component
     //VARIABLES DEL COMPONENTE
     public Vehiculo $vehiculo;
     public $estado, $vehiculos, $busqueda;
+
+    protected $listeners = ['cargarDatosVehiculo' => 'cargarDesdeRespuesta']; // cargamos datos de respuesta mtc
+    public function cargarDesdeRespuesta(array $datos)
+    {
+        $this->placa = $datos['PLACA'] ?? $this->placa;
+        $this->categoria = $datos['CATEGORIA'] ?? null;
+        $this->marca = $datos['MARCA'] ?? null;
+        $this->modelo = $datos['MODELO'] ?? null;
+        $this->anio_fabricacion = $datos['AÑOFAB'] ?? null;
+        $this->combustible = $datos['COMBUSTIBLE'] ?? null;
+        $this->vin_serie = $datos['VINSERCHA'] ?? null;
+        $this->numero_motor = $datos['NUMEROMOTOR'] ?? null;
+        $this->carroceria = $datos['CARROCERIA'] ?? null;
+        $this->ejes = $datos['NUMEROEJES'] ?? null;
+        $this->ruedas = $datos['NUMERORUEDAS'] ?? null;
+        $this->asientos = $datos['NUMEROASIENTOS'] ?? null;
+        $this->pasajeros = $datos['NUMEROPASAJEROS'] ?? null;
+        $this->largo = $datos['LARGO'] ?? null;
+        $this->ancho = $datos['ANCHO'] ?? null;
+        $this->alto = $datos['ALTO'] ?? null;
+        $this->color = $datos['COLOR'] ?? null;
+        $this->peso_neto = $datos['PESONETO'] ?? null;
+        $this->peso_bruto = $datos['PESOBRUTO'] ?? null;
+        $this->peso_util = $datos['PESOUTIL'] ?? null;
+        // Emitir hacia componente Prueba
+        $this->dispatch('actualizarCategoria', $this->categoria)->to('prueba');
+    }
+
+    public function buscarVehiculo()
+    {
+        if (strlen($this->placa) >= 6) {
+            $this->dispatch('consultarDatosMTC', $this->placa)->to('prueba');
+        }
+    }
+
 
     public function mount()
     {
@@ -250,7 +286,7 @@ class FormVehiculo extends Component
     }
 
     //revisa la existencia del vehiculo en nuestra base de datos y los devuelve en caso de encontrarlo
-    public function buscarVehiculo()
+    /*public function buscarVehiculo()
     {
         $this->validate(['placa' => 'min:3|max:7']);
 
@@ -266,7 +302,7 @@ class FormVehiculo extends Component
                 icono: "warning"
             );
         }
-    }
+    }*/
 
     public function seleccionaVehiculo(vehiculo $veh)
     {

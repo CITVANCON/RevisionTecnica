@@ -5,11 +5,13 @@
             tabindex="0" role="button">Nuevo</a>
     </div>
     <div class="mt-2 mb-6 px-8 py-2">
+        {{--
         <div class="mb-2">
             <x-label value="Propietario:" />
             <x-input type="text" class="w-full" wire:model="propietario" maxlength="245" />
             <x-input-error for="propietario" />
         </div>
+        --}}
         <div class="grid grid-cols-1 gap-8 sm:grid-cols-3">
             <div>
                 <x-label value="Placa:" />

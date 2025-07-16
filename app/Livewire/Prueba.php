@@ -26,7 +26,7 @@ use Livewire\Component;
 class Prueba extends Component
 {
     // variable para cargar el vehiculo
-    public $vehiculo;
+    public $vehiculo, $placa;
     // variables para los tipos (selects)
     public $servicios, $ambitos, $clases, $subclases, $categorias, $tiposVehiculo, $tiposDocumento, $aseguradoras;
     // variables para alta vehiculo
@@ -35,7 +35,13 @@ class Prueba extends Component
     public $direccion, $celular, $correo;
     public $tipopoliza, $num_poliza, $fechaInicio, $fechaFin, $aseguradora_id;
 
-    protected $listeners = ['cargaVehiculo' => 'carga'];
+    //protected $listeners = ['cargaVehiculo' => 'carga'];
+    protected $listeners = [
+        'cargaVehiculo' => 'carga',
+        'consultarDatosMTC' => 'consultarDatosMTC',
+        'actualizarCategoria' => 'setCategoriaFromForm'
+    ];
+
 
     protected function rules()
     {
@@ -75,6 +81,15 @@ class Prueba extends Component
         $this->aseguradoras = Aseguradora::pluck('descripcion', 'id');
     }
 
+    public function setCategoriaFromForm($categoria)
+    {
+        $categoriaObj = Categoria::where('identificacion', $categoria)->first();
+        if ($categoriaObj) {
+            $this->categoria_id = $categoriaObj->id;
+        }
+    }
+
+
     public function updatedServicioId($value)
     {
         if ($value == 2) {
@@ -97,6 +112,39 @@ class Prueba extends Component
     {
         return view('livewire.prueba');
     }
+
+    public function consultarDatosMTC()
+    {
+        /*if (!$this->vehiculo->placa) {
+            $this->dispatch('minAlert', titulo: "AVISO", mensaje: "Debe ingresar una placa válida.", icono: "warning");
+            return;
+        }*/
+
+        /*if (!$this->categoria_id || !$this->servicio_id || !$this->ambito_id) {
+            $this->dispatch('minAlert', titulo: "AVISO", mensaje: "Completa Servicio, Categoría y Ámbito antes de consultar.", icono: "warning");
+            return;
+        }*/
+
+        $params = [
+            'CIOD_CITV'     => 'ABCDEF01072025XYZ',
+            'PLACA'         => $this->placa,
+            'CATEGORIA'     => $this->categoria_id,
+            'TIPSERVICIO'   => $this->servicio_id,
+            'TIPAMBITO'     => $this->ambito_id,
+            'TIPINSPECCION' => 1,
+        ];
+
+        try {
+            $response = app(MTCSoapService::class)->consultarVehiculo($params);
+            // 👇 Enviamos al componente FormVehiculo
+            $this->dispatch('cargarDatosVehiculo', datos: $response)->to('form-vehiculo');
+
+            $this->dispatch('minAlert', titulo: "MTC", mensaje: "Datos del vehículo recibidos correctamente.", icono: "success");
+        } catch (\Exception $e) {
+            $this->dispatch('minAlert', titulo: "ERROR MTC", mensaje: "Fallo al consultar MTC: " . $e->getMessage(), icono: "error");
+        }
+    }
+
 
     public function certificar()
     {
@@ -186,26 +234,10 @@ class Prueba extends Component
 
         // Confirmación
         $this->dispatch('minAlert', titulo: "¡BUEN TRABAJO!", mensaje: "Proceso de alta vehiculo registrado con éxito.", icono: "success");
-        $this->resetExcept('vehiculo', 'servicios', 'ambitos', 'clases', 'subclases', 'categorias', 'tiposVehiculo', 'tiposDocumento', 'aseguradoras');
+        //$this->resetExcept('vehiculo', 'servicios', 'ambitos', 'clases', 'subclases', 'categorias', 'tiposVehiculo', 'tiposDocumento', 'aseguradoras');
+        // El reset se tendria que mover al final
 
-        /*
-         $response = Http::post(route('mtc.consultarVehiculo'), [
-            'placa'          => $this->vehiculo->placa,
-            'categoria'      => $this->categoria_id,
-            'tipo_servicio'  => $this->servicio_id,
-            'tipo_ambito'    => $this->ambito_id,
-            'tipo_inspeccion'=> 1 // puedes cambiarlo si lo manejas
-        ]);
-        if ($response->successful()) {
-            $resultado = $response->json();
-            // Aquí puedes usar los datos devueltos como:
-            // $resultado['NUM_FICHA'], etc.
-            $this->dispatch('minAlert', titulo: "CONSULTA MTC", mensaje: "MTC respondió: " . json_encode($resultado), icono: "info");
-        } else {
-            $this->dispatch('minAlert', titulo: "ERROR MTC", mensaje: "No se pudo consultar el vehículo en MTC", icono: "error");
-        }
-        */
-
+        // --- Aquí viene el consumo real del servicio MTC ---
         $params = [
             'CIOD_CITV'     => 'ABCDEF01072025XYZ',
             'PLACA'         => $this->vehiculo->placa,
@@ -215,21 +247,42 @@ class Prueba extends Component
             'TIPINSPECCION' => 1,
         ];
 
-        // ✅ Aquí es donde debes loguear, ya que el controlador no se usa
-        Log::info('🛰 Enviando datos al MTC desde Livewire:', $params);
-
         try {
             $response = app(MTCSoapService::class)->consultarVehiculo($params);
 
-            Log::info('📩 Respuesta simulada del MTC:', (array) $response);
+            // Supongamos que esta es la respuesta simulada del MTC
+            $datosVehiculo = [
+                'PLACA' => $this->vehiculo->placa,
+                'CATEGORIA' => 'M3',
+                'MARCA' => 'TOYOTA',
+                'MODELO' => 'HIACE',
+                'AÑOFAB' => 2020,
+                'COMBUSTIBLE' => 'GASOLINA',
+                'VINSERCHA' => 'JHFSK123456789',
+                'NUMEROMOTOR' => 'ENG987654',
+                'CARROCERIA' => 'MINIBUS',
+                'NUMEROEJES' => 2,
+                'NUMERORUEDAS' => 6,
+                'NUMEROASIENTOS' => 15,
+                'NUMEROPASAJEROS' => 14,
+                'LARGO' => 5.1,
+                'ANCHO' => 1.9,
+                'ALTO' => 2.0,
+                'COLOR' => 'ROJO',
+                'PESONETO' => 1500,
+                'PESOBRUTO' => 2500,
+                'PESOUTIL' => 1000,
+            ];
 
-            $this->dispatch('minAlert', titulo: "CONSULTA MTC", mensaje: "MTC respondió: " . json_encode($response), icono: "info");
+            // Emitimos los datos al componente hijo
+            $this->dispatch('cargarDatosVehiculo', datos: $datosVehiculo)->to('form-vehiculo');
+
+            $this->dispatch('minAlert', titulo: "CONSULTA MTC", mensaje: "MTC respondió correctamente: " . json_encode($response), icono: "info");
         } catch (\Exception $e) {
-            Log::error('❌ Error en la llamada SOAP desde Livewire:', [
-                'mensaje' => $e->getMessage(),
-                'params' => $params,
-            ]);
             $this->dispatch('minAlert', titulo: "ERROR MTC", mensaje: "Fallo en consulta MTC: " . $e->getMessage(), icono: "error");
         }
+
+        // ✅ Finalmente reset
+        $this->resetExcept('vehiculo', 'servicios', 'ambitos', 'clases', 'subclases', 'categorias', 'tiposVehiculo', 'tiposDocumento', 'aseguradoras');
     }
 }

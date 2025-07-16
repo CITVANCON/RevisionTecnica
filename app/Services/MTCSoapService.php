@@ -52,13 +52,41 @@ class MTCSoapService
     }*/
     public function consultarVehiculo(array $params)
     {
-        return $this->soap->call("{$this->serviceName}.Add", [
-            'parameters' => [
-                'intA' => 11,
-                'intB' => 4,
-            ],
-        ]);
+        // Simulación de respuesta
+        return [
+            'NUM_FICHA' => 'aaaammdd+Placa+000001',
+            'PLACA' => $params['PLACA'],
+            'CATEGORIA' => 'M3',
+            'MARCA' => 'TOYOTA',
+            'MODELO' => 'HIACE',
+            'AÑOFAB' => 2020,
+            'COMBUSTIBLE' => 'GASOLINA',
+            'VINSERCHA' => 'JHFSK123456789',
+            'NUMEROMOTOR' => 'ENG987654',
+            'CARROCERIA' => 'MINIBUS',
+            'NUMEROEJES' => 2,
+            'NUMERORUEDAS' => 6,
+            'NUMEROASIENTOS' => 15,
+            'NUMEROPASAJEROS' => 14,
+            'LARGO' => 5.1,
+            'ANCHO' => 1.9,
+            'ALTO' => 2.0,
+            'COLOR' => 'ROJO',
+            'PESONETO' => 1500,
+            'PESOBRUTO' => 2500,
+            'PESOUTIL' => 1000,
+            'NUMDOC_ULTREV' => 'C-2018-000-000-548754 I-2018-000-000-000145',
+            'FECDOC_ULTREV' => 'ddmmaaaa',
+            'RAZSOCCITV_ULTREV' => 'Empresa CITV S.A.C.',
+            'OBS_ULTREV' => 'H.3.1.4 D.1.7',
+            'TPPOLIZA' => 'SOAT',
+            'NUMPOLIZA' => 'X45Y777444H55',
+            'FECINIPOLIZA' => '10/02/2018',
+            'FECFINPOLIZA' => '10/02/2018',
+            'MENSAJE' => 'MSJ01',
+        ];
     }
+
 
 
 

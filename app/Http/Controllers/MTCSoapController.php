@@ -78,19 +78,16 @@ class MTCSoapController extends Controller
         ];
 
         // 📝 Log temporal de datos recibidos
-        Log::info('🔍 Datos recibidos desde Livewire:', $params);
+        //Log::info('🔍 Datos recibidos desde Livewire:', $params);
 
         try {
             $response = $this->mtc->consultarVehiculo($params);
             // 📝 Log temporal de respuesta del servicio SOAP
-            Log::info('📩 Respuesta del servicio SOAP:', (array) $response);
+            //Log::info('📩 Respuesta del servicio SOAP:', (array) $response);
             return response()->json($response);
         } catch (\Exception $e) {
             // 🛑 Log de errores también
-            Log::error('❌ Error al consumir SOAP consultarVehiculo:', [
-                'message' => $e->getMessage(),
-                'params' => $params,
-            ]);
+            // Log::error('❌ Error al consumir SOAP consultarVehiculo:', [ 'message' => $e->getMessage(), 'params' => $params, ]);
             return response()->json(['error' => $e->getMessage()]);
         }
     }
