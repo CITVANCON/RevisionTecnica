@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\MTCSoapService;
-use Illuminate\Support\Facades\Log;
+use Exception;
 
 class MTCSoapController extends Controller
 {
@@ -14,8 +14,47 @@ class MTCSoapController extends Controller
     {
         $this->mtc = $mtc;
     }
+    
+    public function iniciarOperacion(Request $request)
+    {
+        // Los valores de ejemplo proporcionados en la documentación.
+        // Cuando tengas las credenciales reales, deberás reemplazar estos valores.
+        $params = [
+            'CodEntidad' => 'EC000025', // Casing ajustado según el WSDL
+            'CodLocal'   => 'L000036',  // Casing ajustado según el WSDL
+            'CodIV'      => 'XYL54ENGMKA49FG21', // Casing ajustado según el WSDL
+        ];
 
-    /*public function iniciarOperacion()
+        try {
+            // Llama al método del servicio que se encarga de la comunicación SOAP
+            $response = $this->mtc->autenticarOperacion($params);
+
+            // La respuesta del servicio será un objeto.
+            // Según el WSDL y la documentación, la respuesta de AutentificaInicioOperacionResponse
+            // contiene un elemento 'AutentificaInicioOperacionResult' de tipo 'Retorno'.
+            // El objeto 'Retorno' tiene 'Codigo' y 'Mensaje'.
+            // Accedemos a los resultados de la siguiente manera:
+            $result = $response->AutentificaInicioOperacionResult;
+
+            return response()->json([
+                'status'  => 'success',
+                'codigo'  => $result->Codigo,
+                'mensaje' => $result->Mensaje,
+                // Si 'RetVal' contiene algo útil, también podrías incluirlo:
+                // 'retVal'  => $result->RetVal,
+            ]);
+        } catch (Exception $e) {
+            // Captura cualquier excepción que ocurra durante la llamada SOAP
+            // y devuelve una respuesta JSON con el error.
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Error al iniciar la operación: ' . $e->getMessage()
+            ], 500); // Código de estado HTTP 500 para errores del servidor
+        }
+    }
+
+    // 1. Autentificación de inicio de operaciones diarias
+    public function iniciarOperacion2()
     {
         $params = [
             'CODENTIDA' => 'EC000025',
@@ -29,10 +68,8 @@ class MTCSoapController extends Controller
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()]);
         }
-    }*/
-
-    // 1. Autentificación de inicio de operaciones diarias
-    public function iniciarOperacion()
+    }    
+    /*public function iniciarOperacion()
     {
         $params = [
             'a' => 10,
@@ -45,7 +82,7 @@ class MTCSoapController extends Controller
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()]);
         }
-    }
+    }*/
 
     // 2. Generando el número de ficha por vehículo
     /*public function consultarVehiculo()
@@ -69,25 +106,19 @@ class MTCSoapController extends Controller
     public function consultarVehiculo(Request $request)
     {
         $params = [
-            'CIOD_CITV'     => 'ABCDEF01072025XYZ', // Puedes luego cambiar por variable dinámica
+            
             'PLACA'         => $request->input('placa'),
             'CATEGORIA'     => $request->input('categoria'),
             'TIPSERVICIO'   => $request->input('tipo_servicio'),
             'TIPAMBITO'     => $request->input('tipo_ambito'),
             'TIPINSPECCION' => $request->input('tipo_inspeccion', 1), // por defecto 1
+            'CIOD_CITV'     => 'ABCDEF01072025XYZ', // Puedes luego cambiar por variable dinámica
         ];
-
-        // 📝 Log temporal de datos recibidos
-        //Log::info('🔍 Datos recibidos desde Livewire:', $params);
 
         try {
             $response = $this->mtc->consultarVehiculo($params);
-            // 📝 Log temporal de respuesta del servicio SOAP
-            //Log::info('📩 Respuesta del servicio SOAP:', (array) $response);
             return response()->json($response);
         } catch (\Exception $e) {
-            // 🛑 Log de errores también
-            // Log::error('❌ Error al consumir SOAP consultarVehiculo:', [ 'message' => $e->getMessage(), 'params' => $params, ]);
             return response()->json(['error' => $e->getMessage()]);
         }
     }
