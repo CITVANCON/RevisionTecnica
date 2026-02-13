@@ -8,6 +8,7 @@ use App\Livewire\Expedientes;
 use App\Livewire\Linea;
 use App\Livewire\Prueba;
 use App\Livewire\SubirFotografias;
+use App\Livewire\Usuarios;
 use Illuminate\Support\Facades\Route;
 
 /*Route::get('/', function () {
@@ -56,6 +57,8 @@ Route::middleware([
     Route::get('/Admin-inspecciones', AdministracionInspecciones::class)->name('AdminInspecciones');
 
     Route::get('/Expedientes', Expedientes::class)->name('expedientes');
+
+    Route::get('/Usuarios', Usuarios::class)->name('Usuarios');
 
 
     //RUTAS PARA STREAM Y DESCARGA DE PDFS
