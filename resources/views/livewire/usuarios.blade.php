@@ -50,10 +50,10 @@
                         <tbody>
                             @foreach ($usuarios as $item)
                                 <tr wire:key="user-{{ $item->id }}">
-                                    <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                    <td class="px-4 py-4 border-b border-gray-200 bg-white text-sm">
                                         {{ $item->id }}
                                     </td>
-                                    <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                    <td class="px-4 py-4 border-b border-gray-200 bg-white text-sm">
                                         <div class="flex items-center">
                                             <div class="flex-shrink-0 w-10 h-10">
                                                 <img class="w-full h-full rounded-full object-cover" src="{{ $item->profile_photo_url }}" alt="{{ $item->name }}">
@@ -63,12 +63,12 @@
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                    <td class="px-4 py-4 border-b border-gray-200 bg-white text-sm">
                                         {{ $item->email }}
                                     </td>
-                                    <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm text-right">
+                                    <td class="px-4 py-4 border-b border-gray-200 bg-white text-sm text-right">
                                         <button wire:click="edit({{ $item->id }})" class="py-2 px-3 rounded-md bg-lime-500 font-bold text-white hover:bg-lime-600 transition">
-                                            <i class="fas fa-edit"></i>
+                                            <i class="fa-solid fa-pencil"></i>
                                         </button>
                                     </td>
                                 </tr>
