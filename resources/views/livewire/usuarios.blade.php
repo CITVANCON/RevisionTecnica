@@ -8,7 +8,7 @@
                     </h2>
                     <span class="text-xs">Todos los usuarios registrados</span>
                 </div>
-                
+
                 <div class="w-full items-center md:flex md:justify-between">
                     <div class="flex bg-gray-50 items-center p-2 rounded-md mb-4">
                         <span>Mostrar</span>
@@ -68,7 +68,7 @@
                                     </td>
                                     <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm text-right">
                                         <button wire:click="edit({{ $item->id }})" class="py-2 px-3 rounded-md bg-lime-500 font-bold text-white hover:bg-lime-600 transition">
-                                            <i class="fas fa-edit"></i>EDIT
+                                            <i class="fas fa-edit"></i>
                                         </button>
                                     </td>
                                 </tr>
@@ -76,7 +76,7 @@
                         </tbody>
                     </table>
                 </div>
-                
+
                 <div class="mt-4">
                     {{ $usuarios->links() }}
                 </div>
