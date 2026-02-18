@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
@@ -19,6 +20,7 @@ class User extends Authenticatable
     use HasProfilePhoto;
     use Notifiable;
     use TwoFactorAuthenticatable;
+    use HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -29,6 +31,15 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'dni',
+        'celular',
+        'direccion',
+        'fecha_nacimiento',
+        'numero_cuenta',
+        'sistema_pensionario',
+        'asignacion_familiar',
+        'beneficios',
+        'ruta_firma',
     ];
 
     /**
@@ -62,6 +73,17 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'fecha_nacimiento' => 'date',
+            'asignacion_familiar' => 'boolean',
         ];
+    }
+
+    /**
+     * Relación con el contrato de RR.HH.
+     * Un usuario tiene un contrato principal/actual.
+     */
+    public function contrato()
+    {
+        return $this->hasOne(Contrato::class, 'user_id');
     }
 }

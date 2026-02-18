@@ -1,0 +1,84 @@
+
+-- CREAR TABLA CONTRATOS
+CREATE TABLE `contratos` (
+  `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  `user_id` BIGINT UNSIGNED NOT NULL,
+
+  `fecha_ingreso` DATE NOT NULL,
+  `fecha_inicio_contrato` DATE NOT NULL,
+  `fecha_vencimiento` DATE DEFAULT NULL,  
+
+  `cargo` VARCHAR(150) NOT NULL,
+  `tipo_contrato` VARCHAR(100) DEFAULT 'Plazo Fijo',
+  
+  `sueldo_bruto` DECIMAL(10, 2) NOT NULL DEFAULT '0.00',
+  `sueldo_neto` DECIMAL(10, 2) NOT NULL DEFAULT '0.00',
+  
+  `status` ENUM('Activo', 'Vencido', 'Finalizado') DEFAULT 'Activo',
+  `contrato_path` VARCHAR(255) DEFAULT NULL,
+  `created_at` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+ 
+  CONSTRAINT `fk_contratos_user` FOREIGN KEY (`user_id`) 
+    REFERENCES `users` (`id`) ON DELETE CASCADE
+);
+
+
+-- AGREGAR CAMPOS TABLA USERS
+ALTER TABLE `users` 
+ADD COLUMN `dni` VARCHAR(15) UNIQUE AFTER `profile_photo_path`,
+ADD COLUMN `celular` VARCHAR(20) NULL AFTER `dni`,
+ADD COLUMN `direccion` VARCHAR(255) NULL AFTER `celular`,
+ADD COLUMN `fecha_nacimiento` DATE NULL AFTER `direccion`,
+ADD COLUMN `numero_cuenta` VARCHAR(50) NULL AFTER `fecha_nacimiento`,
+ADD COLUMN `sistema_pensionario` VARCHAR(50) NULL AFTER `numero_cuenta`,
+ADD COLUMN `asignacion_familiar` TINYINT(1) DEFAULT 0 AFTER `sistema_pensionario`,
+ADD COLUMN `beneficios` VARCHAR(250) DEFAULT 'General' AFTER `asignacion_familiar`,
+ADD COLUMN `ruta_firma` VARCHAR(2048) NULL AFTER `beneficios`;
+
+
+-- 1. Tabla de saldos de vacaciones
+CREATE TABLE `vacaciones` (
+  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `idContrato` BIGINT UNSIGNED NOT NULL,
+  `dias_ganados` INT NOT NULL DEFAULT 0,
+  `dias_tomados` INT NOT NULL DEFAULT 0,
+  `dias_restantes` INT NOT NULL DEFAULT 0,
+  `created_at` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `vacaciones_idcontrato_foreign` (`idContrato`)
+);
+
+-- 2. Tabla de detalle de vacaciones asignadas/tomadas
+CREATE TABLE `vacacion_asignada` (
+  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `idVacacion` BIGINT UNSIGNED NOT NULL,
+  `tipo` VARCHAR(255) DEFAULT NULL,
+  `razon` TEXT DEFAULT NULL,
+  `d_tomados` INT DEFAULT NULL,
+  `f_inicio` DATE DEFAULT NULL,
+  `observacion` TEXT DEFAULT NULL,
+  `especial` TINYINT(1) DEFAULT 0, -- 1 para sí, 0 para no
+  `created_at` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `vacacion_asignada_idvacacion_foreign` (`idVacacion`)
+);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -194,10 +194,10 @@
                     </div>
                 </section>
             @else
-                <section class="h-full overflow-auto p-8 w-full h-full flex flex-col">
+                <section class="h-full overflow-auto p-8 w-full flex flex-col">
                     <ul id="" class="flex flex-1 flex-wrap -m-1">
                         <li id=""
-                            class="h-full w-full text-center flex flex-col items-center justify-center items-center">
+                            class="h-full w-full text-center flex flex-col items-center justify-center">
                             <img class="mx-auto w-32"
                                 src="https://user-images.githubusercontent.com/507615/54591670-ac0a0180-4a65-11e9-846c-e55ffce0fe7b.png"
                                 alt="no data" />

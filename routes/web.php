@@ -6,7 +6,11 @@ use App\Livewire\AdministracionInspecciones;
 use App\Livewire\EditarLineaInspeccion;
 use App\Livewire\Expedientes;
 use App\Livewire\Linea;
+use App\Livewire\Permisos;
 use App\Livewire\Prueba;
+use App\Livewire\Roles;
+use App\Livewire\RRHH\Contratos;
+use App\Livewire\RRHH\GestionarVacaciones;
 use App\Livewire\SubirFotografias;
 use App\Livewire\Usuarios;
 use Illuminate\Support\Facades\Route;
@@ -58,7 +62,15 @@ Route::middleware([
 
     Route::get('/Expedientes', Expedientes::class)->name('expedientes');
 
-    Route::get('/Usuarios', Usuarios::class)->name('Usuarios');
+
+    Route::get('/contratos', Contratos::class)->name('contratos'); //->middleware('can:rrhh.contratos')
+    Route::get('/rrhh/vacaciones/contrato/{idContrato}', GestionarVacaciones::class)->name('rrhh.vacaciones.index');
+
+
+    // Rutas para usuarios y roles
+    Route::get('/Usuarios', Usuarios::class)->middleware('can:usuarios')->name('usuarios');
+    Route::get('/Roles', Roles::class)->middleware('can:usuarios.roles')->name('usuarios.roles');
+    Route::get('/Permisos', Permisos::class)->middleware('can:usuarios.permisos')->name('usuarios.permisos');
 
 
     //RUTAS PARA STREAM Y DESCARGA DE PDFS
@@ -68,7 +80,9 @@ Route::middleware([
         Route::get('/inspeccion/{id}', 'generaPdfInspeccion')->name("inspeccion");
         //Rutas para descargar certificado anual GNV
         Route::get('/inspeccion/{id}/descargar', 'descargarPdfInspeccion')->name("descargarInspeccion");
-        
+
+        Route::get('/rrhh/contrato/{id}/pdf', 'generarContrato')->name('rrhh.contrato.pdf');
+
     });
 
 
@@ -89,5 +103,5 @@ Route::middleware([
 
 
 
-    
+
 });
