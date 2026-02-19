@@ -170,6 +170,10 @@
                                                 class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white transition border-b border-gray-100">
                                                 <i class="fas fa-calendar-alt w-5 mr-2 text-blue-500"></i> Vacaciones
                                             </a>
+                                            <a href="{{ route('rrhh.documentos', $item->user->id) }}"
+                                                class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white transition border-b border-gray-100">
+                                                <i class="fas fa-folder-open w-5 mr-2 text-orange-500"></i> Documentos
+                                            </a>
                                             @hasanyrole('Administrador del sistema|administrador')
                                                 <button wire:click="$dispatch('editar-contrato', { id: {{ $item->id }} })" @click="open = false"
                                                     class="w-full text-left flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-lime-500 hover:text-white transition">

@@ -11,6 +11,7 @@ use App\Livewire\Prueba;
 use App\Livewire\Roles;
 use App\Livewire\RRHH\Contratos;
 use App\Livewire\RRHH\GestionarVacaciones;
+use App\Livewire\RRHH\GestionDocumentos;
 use App\Livewire\SubirFotografias;
 use App\Livewire\Usuarios;
 use Illuminate\Support\Facades\Route;
@@ -65,6 +66,8 @@ Route::middleware([
 
     Route::get('/contratos', Contratos::class)->name('contratos'); //->middleware('can:rrhh.contratos')
     Route::get('/rrhh/vacaciones/contrato/{idContrato}', GestionarVacaciones::class)->name('rrhh.vacaciones.index');
+    // Ruta para el Legajo Digital
+    Route::get('/rrhh/documentos/{id?}', GestionDocumentos::class)->name('rrhh.documentos');
 
 
     // Rutas para usuarios y roles

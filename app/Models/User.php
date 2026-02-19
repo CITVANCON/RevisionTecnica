@@ -86,4 +86,11 @@ class User extends Authenticatable
     {
         return $this->hasOne(Contrato::class, 'user_id');
     }
+
+
+    //Relación con los documentos del legajo digital.
+    public function documentos()
+    {
+        return $this->hasMany(DocumentoUsuario::class, 'user_id');
+    }
 }

@@ -70,9 +70,48 @@ CREATE TABLE `vacacion_asignada` (
 
 
 
+-- 1. Tabla de Tipos de Documentos
+-- Permite clasificar qué se está subiendo (DNI, Antecedentes, etc.)
+CREATE TABLE tipo_documentos (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    requerido BOOLEAN DEFAULT FALSE,
+    vencible BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- 2. Tabla de Documentos de Usuarios (Legajo Digital)
+-- Almacena la información de los archivos físicos
+CREATE TABLE documentos_usuarios (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT UNSIGNED NOT NULL,
+    tipo_documento_id BIGINT UNSIGNED NOT NULL,
+    nombre VARCHAR(255),
+    ruta VARCHAR(255) NOT NULL,
+    extension VARCHAR(10),
+    fecha_emision DATE NULL,
+    fecha_expiracion DATE NULL,
+    estado ENUM('Pendiente', 'Aprobado', 'Rechazado') DEFAULT 'Pendiente',
+    observaciones TEXT NULL,
+    created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_documentos_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT fk_documentos_tipo FOREIGN KEY (tipo_documento_id) REFERENCES tipo_documentos(id)
+);
 
 
+INSERT INTO tipo_documentos (nombre, requerido, vencible, created_at, updated_at) VALUES 
+('DNI (Copia Legible)', 1, 1, NOW(), NOW()),
+('Antecedentes Penales', 1, 1, NOW(), NOW()),
+('Antecedentes Policiales', 1, 1, NOW(), NOW()),
+('Certificado de Estudios', 0, 0, NOW(), NOW()),
+('Currículum Vitae (CV)', 1, 0, NOW(), NOW());
 
+
+INSERT INTO tipo_documentos (nombre, requerido, vencible, created_at, updated_at) 
+VALUES ('Contrato Firmado', 1, 0, NOW(), NOW());
 
 
 
