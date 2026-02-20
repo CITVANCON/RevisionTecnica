@@ -37,4 +37,9 @@ class Contrato extends Model
     public function vacaciones() {
         return $this->hasOne(Vacacion::class, 'idContrato');
     }
+
+    public function planillas()
+    {
+        return $this->hasMany(Planilla::class, 'contrato_id');
+    }
 }

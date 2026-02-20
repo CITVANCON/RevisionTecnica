@@ -155,7 +155,7 @@ Change class "fixed" to "sticky" in "navbar" (l. 33) so the navbar doesn't hide 
                             </a>
                         </li>
 
-                        {{--             OPCIONES PARA ADM INSPECCIONES                 --}}
+                        {{--             OPCIONES PARA ADM INSPECCIONES
                         <li class="text-gray-50 py-3 pl-3 pr-4 hover:bg-accent focus:bg-accent rounded"
                             x-data="{ Open: false }">
                             <div class="inline-flex  items-center justify-between w-full  transition-colors duration-150 text-gray-500  cursor-pointer"
@@ -185,8 +185,8 @@ Change class "fixed" to "sticky" in "navbar" (l. 33) so the navbar doesn't hide 
 
                             </div>
                         </li>
-
-                        {{--             OPCIONES PARA ALTA VEHICULO                 --}}
+                        --}}
+                        {{--             OPCIONES PARA ALTA VEHICULO
                         <li>
                             <a class="flex items-center rounded py-3 pl-3 pr-4 space-x-6 text-gray-50 hover:bg-accent"
                                 href="{{ route('altavehiculo') }}">
@@ -194,7 +194,8 @@ Change class "fixed" to "sticky" in "navbar" (l. 33) so the navbar doesn't hide 
                                 <span class="select-none">Alta de Vehículo</span>
                             </a>
                         </li>
-                        {{--             OPCIONES PARA EXPEDIENTES                 --}}
+                        --}}
+                        {{--             OPCIONES PARA EXPEDIENTES
                         <li>
                             <a class="flex items-center rounded py-3 pl-3 pr-4 space-x-6 text-gray-50 hover:bg-accent"
                                 href="{{ route('expedientes') }}">
@@ -202,7 +203,8 @@ Change class "fixed" to "sticky" in "navbar" (l. 33) so the navbar doesn't hide 
                                 <span class="select-none">Expedientes</span>
                             </a>
                         </li>
-                        {{--             OPCIONES PARA LINEA                 --}}
+                        --}}
+                        {{--             OPCIONES PARA LINEA
                         <li>
                             <a class="flex items-center rounded py-3 pl-3 pr-4 space-x-6 text-gray-50 hover:bg-accent"
                                 href="{{ route('lineainspeccion') }}">
@@ -210,13 +212,9 @@ Change class "fixed" to "sticky" in "navbar" (l. 33) so the navbar doesn't hide 
                                 <span class="select-none">Linea de Inspección</span>
                             </a>
                         </li>
-
-                        {{--
-                        @can('opciones.')
-                        @endcan
                         --}}
 
-                        {{--             OPCIONES PARA MISCELANEA                 --}}
+                        {{--             OPCIONES PARA MISCELANEA
                         <li class="text-gray-50 py-3 pl-3 pr-4 hover:bg-accent focus:bg-accent rounded"
                             x-data="{ Open: false }">
                             <div class="inline-flex  items-center justify-between w-full  transition-colors duration-150 text-gray-500  cursor-pointer"
@@ -249,8 +247,9 @@ Change class "fixed" to "sticky" in "navbar" (l. 33) so the navbar doesn't hide 
 
                             </div>
                         </li>
+                        --}}
 
-                        {{--            OPCIONES PARA ALBARANES           --}}
+                        {{--            OPCIONES PARA ALBARANES
                         <li>
                             <a class="flex items-center rounded py-3 pl-3 pr-4 space-x-6 text-gray-50 hover:bg-accent"
                                 href="">
@@ -258,8 +257,9 @@ Change class "fixed" to "sticky" in "navbar" (l. 33) so the navbar doesn't hide 
                                 <span class="select-none">Albaranes</span>
                             </a>
                         </li>
+                        --}}
 
-                        {{--            OPCIONES PARA REIMPRESION           --}}
+                        {{--            OPCIONES PARA REIMPRESION
                         <li>
                             <a class="flex items-center rounded py-3 pl-3 pr-4 space-x-6 text-gray-50 hover:bg-accent"
                                 href="">
@@ -267,6 +267,7 @@ Change class "fixed" to "sticky" in "navbar" (l. 33) so the navbar doesn't hide 
                                 <span class="select-none">Reimpresion</span>
                             </a>
                         </li>
+                        --}}
 
                         {{--            OPCIONES PARA RRHH           --}}
                         <li class="text-gray-50 py-3 pl-3 pr-4 hover:bg-accent focus:bg-accent rounded"
@@ -290,9 +291,17 @@ Change class "fixed" to "sticky" in "navbar" (l. 33) so the navbar doesn't hide 
                                         class="mt-2 divide-y-2 divide-accent overflow-hidden text-sm font-medium bg-light text-white shadow-inner rounded"
                                         aria-label="submenu">
 
-                                            <x-responsive-nav-link class="text-sm" href="{{ route('contratos') }}"
-                                                :active="request()->routeIs('contratos')">
+                                            <x-responsive-nav-link class="text-sm" href="{{ route('rrhh.contratos') }}"
+                                                :active="request()->routeIs('rrhh.contratos')">
                                                 {{ __('Contratos') }}
+                                            </x-responsive-nav-link>
+                                            <x-responsive-nav-link class="text-sm" href="{{ route('rrhh.planillas') }}"
+                                                :active="request()->routeIs('rrhh.planillas')">
+                                                {{ __('Planillas') }}
+                                            </x-responsive-nav-link>
+                                            <x-responsive-nav-link class="text-sm" href="{{ route('rrhh.contratos') }}"
+                                                :active="request()->routeIs('rrhh.contratos')">
+                                                {{ __('Contabilidad Pagos') }}
                                             </x-responsive-nav-link>
                                     </ul>
                                 </div>

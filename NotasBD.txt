@@ -116,6 +116,56 @@ VALUES ('Contrato Firmado', 1, 0, NOW(), NOW());
 
 
 
+-- Tabla Principal de Planillas
+CREATE TABLE planillas (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    contrato_id BIGINT UNSIGNED NOT NULL,
+    periodo DATE NOT NULL,
+
+    sueldo_base DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
+
+    asignacion_familiar DECIMAL(10, 2) DEFAULT 0.00,
+    horas_extras DECIMAL(10, 2) DEFAULT 0.00,
+    movilidad DECIMAL(10, 2) DEFAULT 0.00,
+    otros_ingresos DECIMAL(10, 2) DEFAULT 0.00,
+    
+    otros_descuentos DECIMAL(10, 2) DEFAULT 0.00,
+    
+    total_pagado DECIMAL(10, 2) GENERATED ALWAYS AS (
+        sueldo_base + asignacion_familiar + horas_extras + movilidad + otros_ingresos - otros_descuentos
+    ) VIRTUAL,
+
+    planilla VARCHAR(255) NULL,
+    estado_pago TINYINT(1) DEFAULT 0 COMMENT '0 = Pendiente, 1 = Pagado',
+    fecha_pago DATE NULL,
+    numero_cuenta VARCHAR(50) NULL,
+    observacion TEXT NULL,
+
+    created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    
+    FOREIGN KEY (contrato_id) REFERENCES contratos(id) ON DELETE CASCADE
+);
+
+-- Tabla de Archivos/Documentos de Planilla
+CREATE TABLE planilla_archivos (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    planilla_id BIGINT UNSIGNED NOT NULL,
+    tipo ENUM('boleta', 'comprobante', 'otros') DEFAULT 'boleta',
+    nombre VARCHAR(255) NOT NULL,
+    ruta VARCHAR(255) NOT NULL,
+    extension VARCHAR(10) NOT NULL,
+    created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    
+    FOREIGN KEY (planilla_id) REFERENCES planillas(id) ON DELETE CASCADE
+);
+
+
+
+
+
+
 
 
 
