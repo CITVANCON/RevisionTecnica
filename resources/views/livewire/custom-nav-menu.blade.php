@@ -297,11 +297,11 @@ Change class "fixed" to "sticky" in "navbar" (l. 33) so the navbar doesn't hide 
                                             </x-responsive-nav-link>
                                             <x-responsive-nav-link class="text-sm" href="{{ route('rrhh.planillas') }}"
                                                 :active="request()->routeIs('rrhh.planillas')">
-                                                {{ __('Planillas') }}
+                                                {{ __('Lista Planillas') }}
                                             </x-responsive-nav-link>
-                                            <x-responsive-nav-link class="text-sm" href="{{ route('rrhh.contratos') }}"
-                                                :active="request()->routeIs('rrhh.contratos')">
-                                                {{ __('Contabilidad Pagos') }}
+                                            <x-responsive-nav-link class="text-sm" href="{{ route('rrhh.mis-planillas') }}"
+                                                :active="request()->routeIs('rrhh.mis-planillas')">
+                                                {{ __('Mis Planillas') }}
                                             </x-responsive-nav-link>
                                     </ul>
                                 </div>

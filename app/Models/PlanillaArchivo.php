@@ -12,7 +12,7 @@ class PlanillaArchivo extends Model
     protected $table = 'planilla_archivos';
 
     protected $fillable = [
-        'planilla_id',
+        'planilla_id', // relacion con planilla
         'tipo',
         'nombre',
         'ruta',

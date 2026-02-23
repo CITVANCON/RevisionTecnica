@@ -20,13 +20,8 @@ class Planilla extends Model
         'horas_extras',
         'movilidad',
         'otros_ingresos',
-
         'otros_descuentos',
-
-        /* 'total_pagado' se calcule automáticamente y sea visible a la hora de crear la planilla
-        como la suma de los ingresos menos los descuentos, porque si bien es cierto en la bd se va calcular en automatico
-        pero tambien necesito que en el modal a la hora de crear planilla total_pagado sea visible*/
-
+        // 'total_pagado', <-- ELIMINADO del fillable porque es VIRTUAL
         'planilla',
         'estado_pago',
         'fecha_pago',

@@ -13,6 +13,7 @@ use App\Livewire\RRHH\Contratos;
 use App\Livewire\RRHH\GestionarVacaciones;
 use App\Livewire\RRHH\GestionDocumentos;
 use App\Livewire\RRHH\ListaPlanilla;
+use App\Livewire\RRHH\MisPlanillas;
 use App\Livewire\SubirFotografias;
 use App\Livewire\Usuarios;
 use Illuminate\Support\Facades\Route;
@@ -69,6 +70,7 @@ Route::middleware([
     Route::get('/rrhh/vacaciones/contrato/{idContrato}', GestionarVacaciones::class)->name('rrhh.vacaciones.index');
     Route::get('/rrhh/documentos/{id?}', GestionDocumentos::class)->name('rrhh.documentos');
     Route::get('/rrhh/planillas', ListaPlanilla::class)->name('rrhh.planillas');
+    Route::get('/rrhh/mis-planillas', MisPlanillas::class)->name('rrhh.mis-planillas');
 
 
     // Rutas para usuarios y roles

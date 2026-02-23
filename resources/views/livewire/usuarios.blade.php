@@ -188,7 +188,7 @@
                     </div>
                     <div class="md:col-span-2">
                         <x-label value="Otros Beneficios o Notas" />
-                        <textarea wire:model="beneficios"
+                        <textarea wire:model="beneficios" placeholder="Ej: ASIGNACION/ONP/ESSALUD"
                             class="w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" rows="2"></textarea>
                     </div>
                 </div>

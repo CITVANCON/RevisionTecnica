@@ -3,7 +3,6 @@
 namespace App\Livewire\RRHH;
 
 use Livewire\Component;
-use App\Models\User;
 use App\Models\Planilla;
 use App\Models\Contrato;
 use Livewire\Attributes\On;
@@ -11,71 +10,110 @@ use Livewire\Attributes\On;
 class CrearPlanilla extends Component
 {
     public $abierto = false;
+    public $periodo; // Inicia nulo
 
-    // Campos del formulario
-    public $userId, $periodo, $sueldo_base = 0;
-    public $asignacion_familiar = 0, $horas_extras = 0, $movilidad = 0, $otros_ingresos = 0;
-    public $otros_descuentos = 0, $observacion;
-    public $tipo_planilla = 'Mensual';
+    public $lista_planilla = [];
 
-    public $total_visual = 0;
+    // Definimos el monto constante de asignación familiar
+    const MONTO_ASIGNACION = 113.00;
 
     #[On('abrir-modal-planilla')]
     public function abrirModal()
     {
-        $this->reset(['userId', 'sueldo_base', 'asignacion_familiar', 'horas_extras', 'movilidad', 'otros_ingresos', 'otros_descuentos', 'observacion', 'total_visual']);
-        $this->periodo = now()->format('Y-m-d');
+        // Limpiamos todo al abrir, no cargamos nada aún
+        $this->reset(['periodo', 'lista_planilla']);
         $this->abierto = true;
     }
 
-    public function updated($propertyName)
+    // Solo cuando el usuario selecciona una fecha en el input date
+    public function updatedPeriodo($value)
     {
-        if ($propertyName === 'userId' && $this->userId) {
-            $contrato = Contrato::where('user_id', $this->userId)->where('status', 'Activo')->first();
-            if ($contrato) {
-                $this->sueldo_base = $contrato->sueldo_neto;
-            } else {
-                $this->sueldo_base = 0;
-            }
-        }
-
-        if (in_array($propertyName, ['sueldo_base', 'asignacion_familiar', 'horas_extras', 'movilidad', 'otros_ingresos', 'otros_descuentos'])) {
-            $this->calcularTotal();
+        if ($value) {
+            $this->cargarTrabajadores();
+        } else {
+            $this->lista_planilla = [];
         }
     }
 
-    public function calcularTotal()
+    public function cargarTrabajadores()
     {
-        $ingresos = (floatval($this->sueldo_base) + floatval($this->asignacion_familiar) +
-                     floatval($this->horas_extras) + floatval($this->movilidad) +
-                     floatval($this->otros_ingresos));
+        // Solo buscamos en la BD si el periodo existe
+        if (!$this->periodo) return;
 
-        $this->total_visual = $ingresos - floatval($this->otros_descuentos);
+        $contratosActivos = Contrato::with('user')
+            ->where('status', 'Activo')
+            ->get();
+
+        $this->lista_planilla = [];
+
+        foreach ($contratosActivos as $contrato) {
+
+            // Verificamos si el usuario tiene asignación familiar (1 = Sí, 0 = No)
+            $tieneAsignacion = ($contrato->user->asignacion_familiar == 1);
+            $montoAsignacion = $tieneAsignacion ? self::MONTO_ASIGNACION : 0;
+
+            $this->lista_planilla[] = [
+                'contrato_id'         => $contrato->id,
+                'nombre'              => $contrato->user->name,
+                'sueldo_base'         => $contrato->sueldo_neto,
+                'asignacion_familiar' => $montoAsignacion,
+                'horas_extras'        => 0,
+                'movilidad'           => 0,
+                'otros_ingresos'      => 0,
+                'otros_descuentos'    => 0,
+                'planilla'            => $contrato->user->beneficios,
+                'numero_cuenta'       => $contrato->user->numero_cuenta,
+                'observacion'         => '',
+                'total'               => $contrato->sueldo_neto + $montoAsignacion
+            ];
+        }
     }
 
-    public function guardar()
+    public function updatedListaPlanilla($value, $key)
+    {
+        $parts = explode('.', $key);
+        $index = $parts[0];
+
+        if (!isset($this->lista_planilla[$index])) return;
+
+        $this->recalcularFila($index);
+    }
+    private function recalcularFila($index)
+    {
+        $fila = &$this->lista_planilla[$index];
+
+        $ingresos = floatval($fila['sueldo_base']) +
+            floatval($fila['asignacion_familiar']) +
+            floatval($fila['horas_extras']) +
+            floatval($fila['movilidad']) +
+            floatval($fila['otros_ingresos']);
+
+        $fila['total'] = $ingresos - floatval($fila['otros_descuentos']);
+    }
+
+    public function guardarMasivo()
     {
         $this->validate([
-            'userId' => 'required',
             'periodo' => 'required|date',
-            'sueldo_base' => 'required|numeric',
+            'lista_planilla' => 'required|array|min:1',
         ]);
 
-        $contrato = Contrato::where('user_id', $this->userId)->where('status', 'Activo')->first();
-
-        Planilla::create([
-            'contrato_id' => $contrato->id,
-            'periodo' => $this->periodo,
-            'sueldo_base' => $this->sueldo_base,
-            'asignacion_familiar' => $this->asignacion_familiar,
-            'horas_extras' => $this->horas_extras,
-            'movilidad' => $this->movilidad,
-            'otros_ingresos' => $this->otros_ingresos,
-            'otros_descuentos' => $this->otros_descuentos,
-            'observacion' => $this->observacion,
-            'planilla' => $this->tipo_planilla,
-            'estado_pago' => 0
-        ]);
+        foreach ($this->lista_planilla as $item) {
+            Planilla::create([
+                'contrato_id'         => $item['contrato_id'],
+                'periodo'             => $this->periodo,
+                'sueldo_base'         => $item['sueldo_base'],
+                'asignacion_familiar' => $item['asignacion_familiar'],
+                'horas_extras'        => $item['horas_extras'],
+                'movilidad'           => $item['movilidad'],
+                'otros_ingresos'      => $item['otros_ingresos'],
+                'otros_descuentos'    => $item['otros_descuentos'],
+                'planilla'            => $item['planilla'],
+                'numero_cuenta'       => $item['numero_cuenta'],
+                'observacion'        => $item['observacion'],
+                'estado_pago'         => 0
+            ]);
+        }
 
         $this->abierto = false;
         $this->dispatch('refresh-planilla');
@@ -84,8 +122,6 @@ class CrearPlanilla extends Component
 
     public function render()
     {
-        return view('livewire.r-r-h-h.crear-planilla', [
-            'usuarios' => User::has('contrato')->get()
-        ]);
+        return view('livewire.r-r-h-h.crear-planilla');
     }
 }
