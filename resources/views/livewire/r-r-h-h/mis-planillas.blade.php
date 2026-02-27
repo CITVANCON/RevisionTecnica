@@ -66,6 +66,19 @@
                                                                 class="p-2 text-gray-400 hover:text-indigo-600 transition" title="Descargar">
                                                             <i class="fas fa-download"></i>
                                                         </button>
+                                                        @php
+                                                            $yaFirmado = $p->archivos->where('tipo', 'boleta_firmada')->count() > 0;
+                                                        @endphp
+                                                        @if($file->tipo == 'boleta' && !$yaFirmado)
+                                                            <button wire:click="$dispatch('abrir-modal-firma', { id: {{ $file->id }} })" title="Firmar boleta"
+                                                                    class="w-6 h-6 flex items-center justify-center bg-white border border-green-500 hover:bg-green-50 rounded-full transition shadow-sm mr-1 group/btn">
+                                                                <i class="fas fa-plus text-green-600 text-[10px] group-hover/btn:scale-110 transition-transform"></i>
+                                                            </button>
+                                                        @elseif($file->tipo == 'boleta_firmada')
+                                                            <span class="text-[10px] bg-green-100 text-green-700 px-2 py-1 rounded-full font-bold">
+                                                                <i class="fas fa-check mr-1"></i> FIRMADO
+                                                            </span>
+                                                        @endif
                                                     </div>
                                                 </div>
                                             @empty
@@ -88,4 +101,6 @@
             </div>
         @endforelse
     </div>
+
+    @livewire('r-r-h-h.firmar-boleta')
 </div>

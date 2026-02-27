@@ -6,6 +6,8 @@ use Livewire\Component;
 use App\Models\Planilla;
 use App\Models\Contrato;
 use Livewire\Attributes\On;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class CrearPlanilla extends Component
 {
@@ -14,8 +16,8 @@ class CrearPlanilla extends Component
 
     public $lista_planilla = [];
 
-    // Definimos el monto constante de asignación familiar
-    const MONTO_ASIGNACION = 113.00;
+    // Constante mensual, se dividirá en la lógica
+    const MONTO_ASIGNACION_MENSUAL = 113.00;
 
     #[On('abrir-modal-planilla')]
     public function abrirModal()
@@ -48,15 +50,25 @@ class CrearPlanilla extends Component
 
         foreach ($contratosActivos as $contrato) {
 
-            // Verificamos si el usuario tiene asignación familiar (1 = Sí, 0 = No)
+            // 1. Verificamos si ya existe planilla para este contrato en este periodo
+            $existe = Planilla::where('contrato_id', $contrato->id)
+                             ->whereDate('periodo', $this->periodo)
+                             ->exists();
+
+            if ($existe) continue; // Si ya existe, nos saltamos a este trabajador
+
+            // 2. Cálculo dividido (Quincenal)
+            $sueldoQuincenal = $contrato->sueldo_neto / 2;
+
             $tieneAsignacion = ($contrato->user->asignacion_familiar == 1);
-            $montoAsignacion = $tieneAsignacion ? self::MONTO_ASIGNACION : 0;
+            $asignacionQuincenal = $tieneAsignacion ? (self::MONTO_ASIGNACION_MENSUAL / 2) : 0;
+
 
             $this->lista_planilla[] = [
                 'contrato_id'         => $contrato->id,
                 'nombre'              => $contrato->user->name,
-                'sueldo_base'         => $contrato->sueldo_neto,
-                'asignacion_familiar' => $montoAsignacion,
+                'sueldo_base'         => number_format($sueldoQuincenal, 2, '.', ''),
+                'asignacion_familiar' => number_format($asignacionQuincenal, 2, '.', ''),
                 'horas_extras'        => 0,
                 'movilidad'           => 0,
                 'otros_ingresos'      => 0,
@@ -64,8 +76,12 @@ class CrearPlanilla extends Component
                 'planilla'            => $contrato->user->beneficios,
                 'numero_cuenta'       => $contrato->user->numero_cuenta,
                 'observacion'         => '',
-                'total'               => $contrato->sueldo_neto + $montoAsignacion
+                'total'               => number_format($sueldoQuincenal + $asignacionQuincenal, 2, '.', '')
             ];
+        }
+
+        if (empty($this->lista_planilla)) {
+            $this->dispatch('minAlert', titulo: 'AVISO', mensaje: 'Todos los trabajadores ya tienen planilla en este periodo o no hay activos.', icono: 'info');
         }
     }
 
@@ -88,7 +104,7 @@ class CrearPlanilla extends Component
             floatval($fila['movilidad']) +
             floatval($fila['otros_ingresos']);
 
-        $fila['total'] = $ingresos - floatval($fila['otros_descuentos']);
+        $fila['total'] = number_format($ingresos - floatval($fila['otros_descuentos']), 2, '.', '');
     }
 
     public function guardarMasivo()
@@ -98,26 +114,33 @@ class CrearPlanilla extends Component
             'lista_planilla' => 'required|array|min:1',
         ]);
 
-        foreach ($this->lista_planilla as $item) {
-            Planilla::create([
-                'contrato_id'         => $item['contrato_id'],
-                'periodo'             => $this->periodo,
-                'sueldo_base'         => $item['sueldo_base'],
-                'asignacion_familiar' => $item['asignacion_familiar'],
-                'horas_extras'        => $item['horas_extras'],
-                'movilidad'           => $item['movilidad'],
-                'otros_ingresos'      => $item['otros_ingresos'],
-                'otros_descuentos'    => $item['otros_descuentos'],
-                'planilla'            => $item['planilla'],
-                'numero_cuenta'       => $item['numero_cuenta'],
-                'observacion'        => $item['observacion'],
-                'estado_pago'         => 0
-            ]);
-        }
+        try {
+            DB::transaction(function () {
+                foreach ($this->lista_planilla as $item) {
+                    Planilla::create([
+                        'contrato_id'         => $item['contrato_id'],
+                        'periodo'             => $this->periodo,
+                        'sueldo_base'         => $item['sueldo_base'],
+                        'asignacion_familiar' => $item['asignacion_familiar'],
+                        'horas_extras'        => $item['horas_extras'],
+                        'movilidad'           => $item['movilidad'],
+                        'otros_ingresos'      => $item['otros_ingresos'],
+                        'otros_descuentos'    => $item['otros_descuentos'],
+                        'planilla'            => $item['planilla'],
+                        'numero_cuenta'       => $item['numero_cuenta'],
+                        'observacion'         => $item['observacion'],
+                        'estado_pago'         => 0
+                    ]);
+                }
+            });
 
-        $this->abierto = false;
-        $this->dispatch('refresh-planilla');
-        $this->dispatch('minAlert', titulo: 'ÉXITO', mensaje: 'Planilla generada', icono: 'success');
+            $this->abierto = false;
+            $this->dispatch('refresh-planilla');
+            $this->dispatch('minAlert', titulo: 'ÉXITO', mensaje: 'Planilla generada correctamente', icono: 'success');
+
+        } catch (\Exception $e) {
+            $this->dispatch('minAlert', titulo: 'ERROR', mensaje: 'Hubo un problema al guardar: ' . $e->getMessage(), icono: 'error');
+        }
     }
 
     public function render()

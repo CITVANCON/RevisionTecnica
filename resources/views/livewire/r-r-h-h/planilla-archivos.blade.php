@@ -75,7 +75,7 @@
                 <div class="bg-gray-50 border border-gray-200 rounded-lg p-2 shadow-sm">
                     <h3 class="text-sm font-bold text-gray-700 mb-4">Archivos guardados ({{ $planilla->archivos->count() }})</h3>
                     <div class="space-y-4">
-                        @foreach (['comprobante', 'boleta'] as $t)
+                        @foreach (['comprobante', 'boleta', 'boleta_firmada'] as $t)
                             <div>
                                 <h4 class="text-[10px] font-black text-gray-700 uppercase tracking-widest mb-2 border-b pb-1"> {{ $t }}</h4>
                                 <div class="space-y-3">
@@ -106,6 +106,7 @@
                                                     wire:change="cambiarTipo({{ $file->id }}, $event.target.value)">
                                                     <option value="comprobante" {{ $file->tipo == 'comprobante' ? 'selected' : '' }}>Comprobante</option>
                                                     <option value="boleta" {{ $file->tipo == 'boleta' ? 'selected' : '' }}>Boleta</option>
+                                                    <option value="boleta_firmada" {{ $file->tipo == 'boleta_firmada' ? 'selected' : '' }}>Boleta Firmada</option>
                                                 </select>
                                                 <a href="{{ Storage::url($file->ruta) }}" target="_blank"
                                                     class="px-3 py-1.5 border border-gray-200 rounded text-[10px] font-bold text-gray-700 hover:bg-gray-100 uppercase transition">Ver</a>

@@ -6,6 +6,7 @@ use Livewire\Component;
 use App\Models\Planilla;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Livewire\Attributes\On;
 
 class MisPlanillas extends Component
 {
@@ -14,18 +15,12 @@ class MisPlanillas extends Component
         return Storage::disk('public')->download($ruta, $nombre);
     }
 
-    /*public function render()
+    // Al escuchar el evento, Livewire ejecutará esta función y por ende el render() automáticamente
+    #[On('refresh-planilla')]
+    public function refresh()
     {
-        // Obtenemos las planillas a través del contrato del usuario autenticado
-        $planillas = Planilla::whereHas('contrato', function ($query) {
-            $query->where('user_id', Auth::id());
-        })
-            ->with(['archivos'])
-            ->orderBy('fecha_pago', 'desc') // Suponiendo que tienes este campo
-            ->get();
-
-        return view('livewire.r-r-h-h.mis-planillas', compact('planillas'));
-    }*/
+        // No necesita contenido, solo existir para que Livewire refresque el componente
+    }
 
     public function render()
     {
