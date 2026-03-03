@@ -95,10 +95,12 @@
                                         @endforelse
                                     </td>
                                     <td class="px-4 py-4 border-b border-gray-200 bg-white text-sm text-right">
-                                        <button wire:click="edit({{ $item->id }})"
-                                            class="py-2 px-3 rounded-md bg-lime-500 font-bold text-white hover:bg-lime-600 transition">
-                                            <i class="fa-solid fa-pencil"></i>
-                                        </button>
+                                        <div class="flex items-center">
+                                            <button wire:click="edit({{ $item->id }})"
+                                                class="py-2 px-3 rounded-md bg-lime-500 font-bold text-white hover:bg-lime-600 transition">
+                                                <i class="fa-solid fa-pencil"></i>
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach

@@ -95,7 +95,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
         Route::get('/rrhh/contratos', Contratos::class)->name('rrhh.contratos'); //->middleware('can:rrhh.contratos')
         Route::get('/rrhh/vacaciones/contrato/{idContrato}', GestionarVacaciones::class)->name('rrhh.vacaciones.index');
         Route::get('/rrhh/documentos/{id?}', GestionDocumentos::class)->name('rrhh.documentos');
-        Route::get('/rrhh/planillas', ListaPlanilla::class)->name('rrhh.planillas');
+        Route::get('/rrhh/planillas', ListaPlanilla::class)->middleware('can:rrhh.planillas')->name('rrhh.planillas');
         Route::get('/rrhh/mis-planillas', MisPlanillas::class)->name('rrhh.mis-planillas');
 
 

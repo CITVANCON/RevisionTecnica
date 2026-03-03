@@ -2,17 +2,17 @@
 /********* General CSS *********/
 /*******************************/
 body {
-    color: #444444;  
+    color: #444444;
     font-weight: 400;
     background: #ffffff;
     font-family: 'Barlow', sans-serif;
 }
 
 h1,
-h2, 
-h3, 
+h2,
+h3,
 h4,
-h5, 
+h5,
 h6 {
     color: #e7770e;
 }
@@ -32,7 +32,7 @@ a:focus {
 
 .btn.btn-custom {
     padding: 10px 30px 12px 30px;
-    text-align: center; 
+    text-align: center;
     font-size: 16px;
     font-weight: 500;
     color: #ffffff;
@@ -61,7 +61,7 @@ a:focus {
 }
 
 [class^="flaticon-"]:before, [class*=" flaticon-"]:before,
-[class^="flaticon-"]:after, [class*=" flaticon-"]:after {   
+[class^="flaticon-"]:after, [class*=" flaticon-"]:after {
     font-size: inherit;
     margin-left: 0;
 }
@@ -297,11 +297,11 @@ a:focus {
     .navbar-dark .navbar-nav .nav-link.active {
         padding: 5px 0;
     }
-    
+
     .nav-bar .dropdown-menu {
         box-shadow: none;
     }
-    
+
     .nav-bar .btn {
         display: none;
     }
@@ -319,25 +319,41 @@ a:focus {
     margin-bottom: 45px;
 }
 
+/* Fuerza al carrusel a ocupar el 100% del viewport */
+.carousel .owl-carousel {
+    width: 100% !important;
+    display: block !important;
+}
+
+/* Asegura que cada item del carrusel sea del ancho total de la pantalla */
+.carousel .owl-carousel .owl-item {
+    width: 100%;
+}
+
 .carousel .container-fluid {
     padding: 0;
+    margin: 0;
+    width: 100%;
+    max-width: 100%;
 }
 
 .carousel .carousel-item {
     position: relative;
-    width: 100%;
-    min-height: 400px;
+    /*width: 100%;*/
+    width: 100vw; /* Usa Viewport Width para asegurar el ancho total */
+    min-height: 600px;
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-direction: column;
+    /*flex-direction: column;*/
 }
 
 .carousel .carousel-img {
-    position: relative;
+    /*position: relative;*/
+    position: absolute; /* La imagen debe ser el fondo absoluto */
     width: 100%;
     height: 100%;
-    min-height: 400px;
+    min-height: 600px;
     text-align: right;
     overflow: hidden;
 }
@@ -448,19 +464,21 @@ a:focus {
     animation-duration: 1s;
 }
 
+
+
 @media (max-width: 991.98px) {
     .carousel .carousel-text h3 {
         margin-bottom: 5px;
     }
-    
+
     .carousel .carousel-text h1 {
         font-size: 60px;
     }
-    
+
     .carousel .carousel-text p {
         font-size: 16px;
     }
-    
+
     .carousel .carousel-text .btn {
         padding: 12px 30px;
         font-size: 15px;
@@ -474,11 +492,11 @@ a:focus {
         letter-spacing: 2px;
         margin-bottom: 15px;
     }
-    
+
     .carousel .carousel-text h1 {
         font-size: 45px;
     }
-    
+
     .carousel .carousel-text .btn {
         padding: 10px 25px;
         font-size: 15px;
@@ -492,16 +510,16 @@ a:focus {
         letter-spacing: 1px;
         margin-bottom: 10px;
     }
-    
+
     .carousel .carousel-text h1 {
         font-size: 30px;
         margin-bottom: 15px;
     }
-    
+
     .carousel .carousel-text p {
         margin-bottom: 25px;
     }
-    
+
     .carousel .carousel-text .btn {
         padding: 8px 20px;
         font-size: 14px;
@@ -571,11 +589,11 @@ a:focus {
     .page-header {
         padding: 60px 0;
     }
-    
+
     .page-header h2 {
         font-size: 45px;
     }
-    
+
     .page-header a {
         font-size: 20px;
     }
@@ -585,11 +603,11 @@ a:focus {
     .page-header {
         padding: 45px 0;
     }
-    
+
     .page-header h2 {
         font-size: 35px;
     }
-    
+
     .page-header a {
         font-size: 18px;
     }
@@ -1350,7 +1368,7 @@ a:focus {
     padding: 35px 30px 10px 30px;
     border-radius: 5px;
     background: #202C45;
-    
+
 }
 
 .contact .contact-info h2 {
@@ -1860,11 +1878,11 @@ a:focus {
 }
 
 .sidebar .category-widget ul li {
-    margin: 0 0 12px 22px; 
+    margin: 0 0 12px 22px;
 }
 
 .sidebar .category-widget ul li:last-child {
-    margin-bottom: 0; 
+    margin-bottom: 0;
 }
 
 .sidebar .category-widget ul li a {
@@ -1884,7 +1902,7 @@ a:focus {
 }
 
 .sidebar .category-widget ul li span {
-    
+
     float: right;
 }
 

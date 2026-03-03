@@ -271,8 +271,8 @@ Change class "fixed" to "sticky" in "navbar" (l. 33) so the navbar doesn't hide 
 
                         {{--            OPCIONES PARA RRHH           --}}
                         <li class="text-gray-50 py-3 pl-3 pr-4 hover:bg-accent focus:bg-accent rounded"
-                                x-data="{ Open: false }">
-                                <div class="inline-flex  items-center justify-between w-full  transition-colors duration-150 text-gray-500  cursor-pointer"
+                            x-data="{ Open: false }">
+                            <div class="inline-flex  items-center justify-between w-full  transition-colors duration-150 text-gray-500  cursor-pointer"
                                     x-on:click="Open = !Open">
                                     <span class="inline-flex items-center space-x-6  text-sm  text-white ">
                                         <i class="fa-solid fa-flag -mt-1"></i>
@@ -280,8 +280,8 @@ Change class "fixed" to "sticky" in "navbar" (l. 33) so the navbar doesn't hide 
                                     </span>
                                     <i class="fa-solid fa-caret-down ml-1  text-white w-4 h-4" x-show="!Open"></i>
                                     <i class="fa-solid fa-caret-up ml-1  text-white w-4 h-4" x-show="Open"></i>
-                                </div>
-                                <div x-show.transition="Open" style="display:none;">
+                            </div>
+                            <div x-show.transition="Open" style="display:none;">
                                     <ul x-transition:enter="transition-all ease-in-out duration-300"
                                         x-transition:enter-start="opacity-25 max-h-0"
                                         x-transition:enter-end="opacity-100 max-h-xl"
@@ -295,17 +295,19 @@ Change class "fixed" to "sticky" in "navbar" (l. 33) so the navbar doesn't hide 
                                                 :active="request()->routeIs('rrhh.contratos')">
                                                 {{ __('Contratos') }}
                                             </x-responsive-nav-link>
-                                            <x-responsive-nav-link class="text-sm" href="{{ route('rrhh.planillas') }}"
-                                                :active="request()->routeIs('rrhh.planillas')">
-                                                {{ __('Lista Planillas') }}
-                                            </x-responsive-nav-link>
+                                            @can('rrhh.planillas')
+                                                <x-responsive-nav-link class="text-sm" href="{{ route('rrhh.planillas') }}"
+                                                    :active="request()->routeIs('rrhh.planillas')">
+                                                    {{ __('Lista Planillas') }}
+                                                </x-responsive-nav-link>
+                                            @endcan
                                             <x-responsive-nav-link class="text-sm" href="{{ route('rrhh.mis-planillas') }}"
                                                 :active="request()->routeIs('rrhh.mis-planillas')">
                                                 {{ __('Mis Planillas') }}
                                             </x-responsive-nav-link>
                                     </ul>
-                                </div>
-                            </li>
+                            </div>
+                        </li>
 
                         {{--             OPCIONES PARA USUARIOS Y ROLES                 --}}
                         @can('opciones.usuarios')
@@ -360,24 +362,22 @@ Change class "fixed" to "sticky" in "navbar" (l. 33) so the navbar doesn't hide 
                 <!-- navigation group end-->
 
                 <!-- opciones de cuenta de usuario -->
-                <div class="md:hidden block bg-gray-700 bottom-0 left-0 px-4 w-full z-10 mt-2">
-                    <h3 class="my-2 text-xs font-medium uppercase text-gray-500">
+                <div class="md:hidden block bg-secondary bottom-0 left-0 px-4 w-full z-10 mt-2">
+                    <h3 class="my-2 text-xs font-medium uppercase text-gray-300">
                         Opciones de la cuenta
                     </h3>
                     <ul class="mb-2 text-sm font-medium ">
                         <li>
-                            <a class="flex items-center rounded py-3 pl-3 pr-4  space-x-6 text-gray-50 hover:bg-gray-600 "
+                            <a class="flex items-center rounded py-3 pl-3 pr-4  space-x-6 text-gray-50 hover:bg-accent"
                                 href="{{ route('profile.show') }}">
                                 <i class="fa-solid fa-user-gear -mt-1"></i>
                                 <span class="select-none">Configurar Perfil</span>
                             </a>
                         </li>
                         <li>
-
-
                             <form method="POST" action="{{ route('logout') }}" x-data>
                                 @csrf
-                                <a class="flex items-center rounded py-3 pl-3 pr-4  space-x-6 text-gray-50 hover:bg-gray-600 "
+                                <a class="flex items-center rounded py-3 pl-3 pr-4  space-x-6 text-gray-50 hover:bg-accent"
                                     href="{{ route('logout') }}" @click.prevent="$root.submit();">
                                     <i class="fa-solid fa-arrow-right-from-bracket -mt-1"></i>
                                     <span class="select-none">Salir</span>

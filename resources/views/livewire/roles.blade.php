@@ -57,16 +57,18 @@
                                     {{ $item->name }}
                                 </td>
                                 <td class="px-4 py-4 border-b border-gray-200 bg-white text-sm text-right">
-                                    {{-- Botón Estilo Lime (Pencil) --}}
-                                    <button wire:click="edit({{ $item->id }})" class="py-2 px-3 rounded-md bg-lime-500 font-bold text-white hover:bg-lime-600 transition mr-2">
-                                        <i class="fa-solid fa-pencil"></i>
-                                    </button>
-                                    {{-- Botón Estilo Rojo (Trash) --}}
-                                    <button wire:click="delete({{ $item->id }})"
-                                            onclick="confirm('¿Desea eliminar este rol?') || event.stopImmediatePropagation()"
-                                            class="py-2 px-3 rounded-md bg-red-500 font-bold text-white hover:bg-red-600 transition">
-                                        <i class="fa-solid fa-trash"></i>
-                                    </button>
+                                    <div class="flex items-center">
+                                        {{-- Botón Estilo Lime (Pencil) --}}
+                                        <button wire:click="edit({{ $item->id }})" class="py-2 px-3 rounded-md bg-lime-500 font-bold text-white hover:bg-lime-600 transition mr-2">
+                                            <i class="fa-solid fa-pencil"></i>
+                                        </button>
+                                        {{-- Botón Estilo Rojo (Trash) --}}
+                                        <button wire:click="delete({{ $item->id }})"
+                                                onclick="confirm('¿Desea eliminar este rol?') || event.stopImmediatePropagation()"
+                                                class="py-2 px-3 rounded-md bg-red-500 font-bold text-white hover:bg-red-600 transition">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
                         @endforeach
