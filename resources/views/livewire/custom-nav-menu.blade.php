@@ -155,7 +155,7 @@ Change class "fixed" to "sticky" in "navbar" (l. 33) so the navbar doesn't hide 
                             </a>
                         </li>
 
-                        {{--             OPCIONES PARA ADM INSPECCIONES
+                        {{--             OPCIONES PARA ADM INSPECCIONES --}}
                         <li class="text-gray-50 py-3 pl-3 pr-4 hover:bg-accent focus:bg-accent rounded"
                             x-data="{ Open: false }">
                             <div class="inline-flex  items-center justify-between w-full  transition-colors duration-150 text-gray-500  cursor-pointer"
@@ -185,7 +185,7 @@ Change class "fixed" to "sticky" in "navbar" (l. 33) so the navbar doesn't hide 
 
                             </div>
                         </li>
-                        --}}
+
                         {{--             OPCIONES PARA ALTA VEHICULO
                         <li>
                             <a class="flex items-center rounded py-3 pl-3 pr-4 space-x-6 text-gray-50 hover:bg-accent"

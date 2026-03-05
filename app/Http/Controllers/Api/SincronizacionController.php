@@ -11,14 +11,13 @@ class SincronizacionController extends Controller
 {
     public function recibirDatos(Request $request)
     {
-        // Una llave simple que solo tú y el script de la planta conocerán
+        // llave simple que solo codigo y el script del servidor conocen
         $tokenSeguridad = "CITV_ANCON_SECRET_2026";
 
         if ($request->header('X-Plant-Token') !== $tokenSeguridad) {
             return response()->json(['error' => 'No autorizado'], 401);
         }
 
-        // 1. Validar que la data sea un arreglo
         $datos = $request->all();
 
         foreach ($datos as $item) {
@@ -32,6 +31,8 @@ class SincronizacionController extends Controller
                         'hora_inicio'             => $item['finicio'] ?? null,
                         'hora_fin'                => $item['ffin'] ?? null,
                         'resultado_estado'        => $item['resultado'] ?? null,
+                        'monto_total'             => $item['monto'] ?? 0,
+                        'tipo_atencion'           => $item['tipo_atencion'] ?? null,
                         'numero_certificado_mtc'  => $item['ncertificado'] ?? null,
                         'serie_certificado'       => $item['serie'] ?? null,
                         'correlativo_certificado' => $item['correlativo'] ?? null,
@@ -39,7 +40,6 @@ class SincronizacionController extends Controller
                     ]
                 );
             } catch (\Exception $e) {
-                // Si un registro falla, lo logueamos y seguimos con el siguiente
                 Log::error("Error procesando ID Local " . ($item['id_inspeccion_local'] ?? 'unk') . ": " . $e->getMessage());
                 continue;
             }

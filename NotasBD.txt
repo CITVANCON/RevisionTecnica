@@ -187,6 +187,8 @@ CREATE TABLE inspecciones_maestras (
 );
 
 
-
+ALTER TABLE inspecciones_maestras 
+ADD COLUMN monto_total DECIMAL(10,2) NULL AFTER resultado_estado,
+ADD COLUMN tipo_atencion VARCHAR(100) NULL AFTER monto_total;
 
 
