@@ -163,9 +163,28 @@ CREATE TABLE planilla_archivos (
 
 
 
-
-
-
+CREATE TABLE inspecciones_maestras (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    placa_vehiculo VARCHAR(20) NOT NULL,
+    categoria_vehiculo VARCHAR(50) NULL,
+    
+    id_inspeccion_local INT NOT NULL,
+    fecha_inspeccion DATE NOT NULL,
+    hora_inicio DATETIME NULL,
+    hora_fin DATETIME NULL,
+    resultado_estado VARCHAR(50) NULL,
+    
+    numero_certificado_mtc VARCHAR(100) NULL,
+    serie_certificado VARCHAR(20) NULL,
+    correlativo_certificado VARCHAR(20) NULL,
+    fecha_anulacion DATETIME NULL,
+    
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    
+    INDEX (placa_vehiculo),
+    INDEX (fecha_inspeccion)
+);
 
 
 

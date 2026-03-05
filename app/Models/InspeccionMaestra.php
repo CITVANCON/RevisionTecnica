@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class InspeccionMaestra extends Model
 {
-    // Nombre exacto de la tabla que creaste por SQL
     protected $table = 'inspecciones_maestras';
 
     protected $fillable = [
