@@ -31,7 +31,7 @@ class SincronizacionController extends Controller
                         'hora_inicio'             => $item['finicio'] ?? null,
                         'hora_fin'                => $item['ffin'] ?? null,
                         'resultado_estado'        => $item['resultado'] ?? null,
-                        'monto_total'             => $item['monto'] ?? 0,
+                        'monto_total'             => $item['monto_total'] ?? 0,
                         'tipo_atencion'           => $item['tipo_atencion'] ?? null,
                         'numero_certificado_mtc'  => $item['ncertificado'] ?? null,
                         'serie_certificado'       => $item['serie'] ?? null,
