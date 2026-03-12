@@ -56,22 +56,28 @@ class SincronizacionController extends Controller
             return response()->json(['error' => 'No autorizado'], 401);
         }
 
-        $json = $request->getContent();
-        $datos = json_decode($json, true);
+        // Método más robusto para obtener el array directamente de la petición JSON
+        $datos = $request->json()->all();
 
-        // --- AGREGAR ESTO PARA DEBUG ---
-        if (is_null($datos) || empty($datos)) {
-            Log::error("Sincronización fallida. El JSON recibido es NULL o vacío. Contenido bruto: " . $json);
-            return response()->json(['mensaje' => 'JSON vacío o mal formado', 'cantidad' => 0], 200);
+        // Si llega vacío, intentamos con el método tradicional por si acaso
+        if (empty($datos)) {
+            $datos = $request->all();
         }
-        // -------------------------------
+
+        if (empty($datos) || !is_array($datos)) {
+            Log::error("Sincronización fallida: No se recibieron datos o formato inválido.");
+            return response()->json(['mensaje' => 'Sin datos recibidos', 'cantidad' => 0], 200);
+        }
 
         $procesadosExitosamente = 0;
 
         foreach ($datos as $item) {
             try {
+                // Asegúrate de que id_inspeccion_local no venga nulo
+                if (!isset($item['id_inspeccion_local'])) continue;
+
                 InspeccionMaestra::updateOrCreate(
-                    ['id_inspeccion_local' => $item['id_inspeccion_local']],
+                    ['id_inspeccion_local' => (string)$item['id_inspeccion_local']], // Forzamos a String
                     [
                         'placa_vehiculo'          => $item['placa'] ?? 'SIN_PLACA',
                         'categoria_vehiculo'      => $item['categoria'] ?? null,
@@ -79,8 +85,8 @@ class SincronizacionController extends Controller
                         'hora_inicio'             => $item['finicio'] ?? null,
                         'hora_fin'                => $item['ffin'] ?? null,
                         'resultado_estado'        => $item['resultado'] ?? null,
-                        'monto_total'             => $item['monto_total'] ?? 0,
-                        'tipo_atencion'           => $item['tipo_atencion'] ?? null,
+                        'monto_total'             => (float)($item['monto_total'] ?? 0), // Forzamos a Float
+                        'tipo_atencion'           => $item['tipo_atencion'] ?? 'Sin Servicio',
                         'numero_certificado_mtc'  => $item['ncertificado'] ?? null,
                         'serie_certificado'       => $item['serie'] ?? null,
                         'correlativo_certificado' => $item['correlativo'] ?? null,
@@ -90,7 +96,6 @@ class SincronizacionController extends Controller
                 $procesadosExitosamente++;
             } catch (\Exception $e) {
                 Log::error("Error procesando ID Local " . ($item['id_inspeccion_local'] ?? 'unk') . ": " . $e->getMessage());
-                continue;
             }
         }
 
