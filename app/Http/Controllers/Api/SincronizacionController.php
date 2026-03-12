@@ -56,15 +56,15 @@ class SincronizacionController extends Controller
             return response()->json(['error' => 'No autorizado'], 401);
         }
 
-        // Obtenemos el contenido bruto y lo decodificamos manualmente
         $json = $request->getContent();
         $datos = json_decode($json, true);
 
-        // Si no es un array, algo llegó mal en el formato JSON
-        if (!is_array($datos)) {
-            Log::error("JSON Inválido recibido: " . substr($json, 0, 500));
-            return response()->json(['mensaje' => 'Formato JSON inválido', 'cantidad' => 0], 400);
+        // --- AGREGAR ESTO PARA DEBUG ---
+        if (is_null($datos) || empty($datos)) {
+            Log::error("Sincronización fallida. El JSON recibido es NULL o vacío. Contenido bruto: " . $json);
+            return response()->json(['mensaje' => 'JSON vacío o mal formado', 'cantidad' => 0], 200);
         }
+        // -------------------------------
 
         $procesadosExitosamente = 0;
 
