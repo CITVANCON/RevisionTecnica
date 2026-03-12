@@ -52,32 +52,33 @@ class SincronizacionController extends Controller
     {
         $tokenSeguridad = "CITV_ANCON_SECRET_2026";
 
+        // 1. Verificación de Seguridad
         if ($request->header('X-Plant-Token') !== $tokenSeguridad) {
+            Log::warning("Intento de acceso no autorizado desde IP: " . $request->ip());
             return response()->json(['error' => 'No autorizado'], 401);
         }
 
-        // Método más robusto para obtener el array directamente de la petición JSON
-        $datos = $request->json()->all();
-
-        // Si llega vacío, intentamos con el método tradicional por si acaso
-        if (empty($datos)) {
-            $datos = $request->all();
-        }
+        // 2. Extracción de Datos
+        $datos = $request->json()->all() ?: $request->all();
 
         if (empty($datos) || !is_array($datos)) {
-            Log::error("Sincronización fallida: No se recibieron datos o formato inválido.");
-            return response()->json(['mensaje' => 'Sin datos recibidos', 'cantidad' => 0], 200);
+            Log::error("Sincronización fallida: El cuerpo de la petición está vacío o mal formado.");
+            return response()->json(['mensaje' => 'Sin datos válidos recibidos', 'cantidad' => 0], 400);
         }
 
         $procesadosExitosamente = 0;
+        $errores = [];
 
+        // 3. Procesamiento en Lote
         foreach ($datos as $item) {
             try {
-                // Asegúrate de que id_inspeccion_local no venga nulo
-                if (!isset($item['id_inspeccion_local'])) continue;
+                if (!isset($item['id_inspeccion_local'])) {
+                    Log::warning("Registro omitido: No se encontró id_inspeccion_local.");
+                    continue;
+                }
 
                 InspeccionMaestra::updateOrCreate(
-                    ['id_inspeccion_local' => (string)$item['id_inspeccion_local']], // Forzamos a String
+                    ['id_inspeccion_local' => (string)$item['id_inspeccion_local']],
                     [
                         'placa_vehiculo'          => $item['placa'] ?? 'SIN_PLACA',
                         'categoria_vehiculo'      => $item['categoria'] ?? null,
@@ -85,7 +86,7 @@ class SincronizacionController extends Controller
                         'hora_inicio'             => $item['finicio'] ?? null,
                         'hora_fin'                => $item['ffin'] ?? null,
                         'resultado_estado'        => $item['resultado'] ?? null,
-                        'monto_total'             => (float)($item['monto_total'] ?? 0), // Forzamos a Float
+                        'monto_total'             => (float)($item['monto_total'] ?? 0),
                         'tipo_atencion'           => $item['tipo_atencion'] ?? 'Sin Servicio',
                         'numero_certificado_mtc'  => $item['ncertificado'] ?? null,
                         'serie_certificado'       => $item['serie'] ?? null,
@@ -94,14 +95,20 @@ class SincronizacionController extends Controller
                     ]
                 );
                 $procesadosExitosamente++;
+
             } catch (\Exception $e) {
-                Log::error("Error procesando ID Local " . ($item['id_inspeccion_local'] ?? 'unk') . ": " . $e->getMessage());
+                $msgError = "ID Local " . ($item['id_inspeccion_local'] ?? 'unk') . ": " . $e->getMessage();
+                Log::error("Error en sincronización: " . $msgError);
+                $errores[] = $msgError;
             }
         }
 
+        // 4. Respuesta Profesional
         return response()->json([
-            'mensaje' => 'Sincronización exitosa',
-            'cantidad' => $procesadosExitosamente
+            'mensaje'  => 'Sincronización finalizada',
+            'cantidad' => $procesadosExitosamente,
+            'fallidos' => count($errores),
+            'status'   => 'success'
         ], 200);
     }
 }
