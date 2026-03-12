@@ -73,16 +73,27 @@
                                 Vehículo / Categoría
                             </th>
                             <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase">
+                                Atención
+                            </th>
+                            {{--
+                            <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase">
                                 Fecha de Inspección
                             </th>
                             <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase">
                                 Horario
+                            </th>
+                            --}}
+                            <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase">
+                                Fecha / Horario
                             </th>
                             <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs font-semibold text-gray-600 uppercase">
                                 Estado
                             </th>
                             <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase">
                                 Certificado MTC
+                            </th>
+                            <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs font-semibold text-gray-600 uppercase">
+                                Monto
                             </th>
                             <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-right text-xs font-semibold text-gray-600 uppercase">
                             </th>
@@ -106,6 +117,13 @@
                                     </div>
                                 </td>
                                 <td class="px-5 py-4">
+                                    <p class="text-gray-700 text-xs font-medium uppercase">
+                                        {{ $item->tipo_atencion }}
+                                    </p>
+                                    <span class="text-xs text-gray-400 italic">Servicio</span>
+                                </td>
+                                {{--
+                                <td class="px-5 py-4">
                                     <p class="text-gray-900">
                                         {{ \Carbon\Carbon::parse($item->fecha_inspeccion)->format('d/m/Y') }}</p>
                                     <p class="text-gray-400 text-xs italic">ID Local: {{ $item->id_inspeccion_local }}
@@ -117,6 +135,15 @@
                                             {{ $item->hora_inicio }}</span>
                                         <span class="block mt-1"><b class="text-gray-400 uppercase">Fin:</b>
                                             {{ $item->hora_fin }}</span>
+                                    </div>
+                                </td>
+                                --}}
+                                <td class="px-5 py-4">
+                                    <p class="text-gray-900 font-medium">
+                                        {{ \Carbon\Carbon::parse($item->fecha_inspeccion)->format('d/m/Y') }}
+                                    </p>
+                                    <div class="text-[11px] text-gray-500 mt-1">
+                                        {{ $item->hora_inicio }} - {{ $item->hora_fin }}
                                     </div>
                                 </td>
                                 <td class="px-5 py-4 text-center">
@@ -136,6 +163,12 @@
                                         <p class="text-gray-400">
                                             {{ $item->serie_certificado }}-{{ $item->correlativo_certificado }}</p>
                                     </div>
+                                </td>
+                                <td class="px-5 py-4 text-center">
+                                    <p class="px-3 py-1 rounded-full bg-green-100 text-green-700 font-bold">
+                                        S/{{ number_format($item->monto_total, 2) }}
+                                    </p>
+                                    {{--<span class="text-xs text-green-600 font-semibold uppercase">Pagado</span>--}}
                                 </td>
                                 <td class="px-5 py-4 text-right" x-data="{ open: false }">
                                     <div class="relative inline-block text-left">

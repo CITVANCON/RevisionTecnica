@@ -16,24 +16,19 @@ class AdministracionInspecciones extends Component
     public $fecha_inicio;
     public $fecha_fin;
 
+    public $cant = '10';
+
     protected $queryString = [
         'placa_vehiculo' => ['except' => ''],
         'resultado_estado' => ['except' => ''],
+        'cant' => ['except' => '10'],
     ];
 
-    public function updating()
+    public function updated($propertyName)
     {
-        $this->resetPage();
-    }
-
-    public function updatedPlacaVehiculo()
-    {
-        $this->resetPage();
-    }
-
-    public function updatedResultadoEstado()
-    {
-        $this->resetPage();
+        if (in_array($propertyName, ['placa_vehiculo', 'resultado_estado', 'fecha_inicio', 'fecha_fin', 'cant'])) {
+            $this->resetPage();
+        }
     }
 
     public function render()
@@ -53,7 +48,7 @@ class AdministracionInspecciones extends Component
         }
 
         return view('livewire.administracion-inspecciones', [
-            'inspecciones' => $query->orderBy('fecha_inspeccion', 'desc')->paginate(10),
+            'inspecciones' => $query->orderBy('fecha_inspeccion', 'desc')->paginate($this->cant),
         ]);
     }
 

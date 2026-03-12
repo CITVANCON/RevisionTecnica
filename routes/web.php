@@ -8,6 +8,9 @@ use App\Livewire\Expedientes;
 use App\Livewire\Linea;
 use App\Livewire\Permisos;
 use App\Livewire\Prueba;
+use App\Livewire\ReportesInspecciones;
+use App\Livewire\ReportesInspeccionesEjecutivo;
+use App\Livewire\ReportesInspeccionesMensual;
 use App\Livewire\Roles;
 use App\Livewire\RRHH\Contratos;
 use App\Livewire\RRHH\GestionarVacaciones;
@@ -90,6 +93,11 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
         Route::get('/Admin-inspecciones', AdministracionInspecciones::class)->name('AdminInspecciones');
 
         Route::get('/Expedientes', Expedientes::class)->name('expedientes');
+
+        //Ruta para reportes de inspecciones
+        Route::get('/reportes-inspecciones', ReportesInspecciones::class)->name('reportes.inspecciones');
+        Route::get('/reportes-inspecciones-ejecutivo', ReportesInspeccionesEjecutivo::class)->name('reportes.inspecciones.ejecutivo');
+        Route::get('/reportes-inspecciones-mensual', ReportesInspeccionesMensual::class)->name('reportes.inspecciones.mensual');
 
 
         Route::get('/rrhh/contratos', Contratos::class)->name('rrhh.contratos'); //->middleware('can:rrhh.contratos')
