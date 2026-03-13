@@ -16,6 +16,8 @@ class InspeccionMaestra extends Model
         'hora_inicio',
         'hora_fin',
         'resultado_estado',
+        'es_reinspeccion',
+        'numero_reinspeccion',
         'monto_total',
         'tipo_atencion',
         'numero_certificado_mtc',

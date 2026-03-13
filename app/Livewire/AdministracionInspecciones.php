@@ -48,7 +48,9 @@ class AdministracionInspecciones extends Component
         }
 
         return view('livewire.administracion-inspecciones', [
-            'inspecciones' => $query->orderBy('fecha_inspeccion', 'desc')->paginate($this->cant),
+            'inspecciones' => $query->orderBy('fecha_inspeccion', 'desc')
+                                    ->orderBy('id_inspeccion_local', 'desc')
+                                    ->paginate($this->cant),
         ]);
     }
 

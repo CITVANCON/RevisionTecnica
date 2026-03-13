@@ -62,18 +62,18 @@
 
         <!-- Tabla de Inspecciones -->
         @if ($inspecciones->count())
-            <div class="overflow-x-auto">
-                <table class="min-w-full leading-normal rounded-md overflow-hidden">
+            <div class="overflow-x-auto bg-white rounded-lg shadow-md border border-gray-100">
+                <table class="min-w-full leading-normal">
                     <thead>
                         <tr>
-                            <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase">
+                            <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                 #
                             </th>
-                            <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase">
+                            <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                 Vehículo / Categoría
                             </th>
-                            <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase">
-                                Atención
+                            <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                Servicio
                             </th>
                             {{--
                             <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase">
@@ -83,19 +83,19 @@
                                 Horario
                             </th>
                             --}}
-                            <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase">
+                            <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                 Fecha / Horario
                             </th>
-                            <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs font-semibold text-gray-600 uppercase">
-                                Estado
+                            <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                Estado / R
                             </th>
-                            <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase">
+                            <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                 Certificado MTC
                             </th>
-                            <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs font-semibold text-gray-600 uppercase">
+                            <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                 Monto
                             </th>
-                            <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-right text-xs font-semibold text-gray-600 uppercase">
+                            <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">
                             </th>
                         </tr>
                     </thead>
@@ -146,6 +146,7 @@
                                         {{ $item->hora_inicio }} - {{ $item->hora_fin }}
                                     </div>
                                 </td>
+                                {{--
                                 <td class="px-5 py-4 text-center">
                                     <span class="px-3 py-1 rounded-full font-bold text-xs
                                         {{ $item->resultado_estado == 'APROBADO'
@@ -155,6 +156,23 @@
                                                 : 'bg-red-100 text-red-700') }}">
                                         {{ $item->resultado_estado }}
                                     </span>
+                                </td>
+                                --}}
+                                <td class="px-5 py-4 text-center">
+                                    <div class="flex flex-row items-center justify-center gap-2">
+                                        <span class="px-3 py-1 rounded-full font-bold text-[10px] uppercase shadow-sm
+                                            {{ $item->resultado_estado == 'A' ? 'bg-green-100 text-green-700 border border-green-200' :
+                                            ($item->resultado_estado == 'D' ? 'bg-red-100 text-red-700 border border-red-200' :
+                                            'bg-yellow-100 text-yellow-700 border border-yellow-200') }}">
+                                            {{ $item->resultado_estado }}
+                                        </span>
+
+                                        @if($item->es_reinspeccion === 'S')
+                                            <span class="px-3 py-1 rounded-full font-bold text-[10px] uppercase shadow-sm bg-orange-200 text-orange-700 border border-orange-300" title="Reinspección">
+                                                R
+                                            </span>
+                                        @endif
+                                    </div>
                                 </td>
                                 <td class="px-5 py-4">
                                     <div class="text-xs">

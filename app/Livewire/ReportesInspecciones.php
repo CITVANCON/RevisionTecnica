@@ -31,7 +31,7 @@ class ReportesInspecciones extends Component
         $stats = [
             'total_ingresos' => $query->sum('monto_total'),
             'total_inspecciones' => $query->count(),
-            'aprobados' => $query->clone()->where('resultado_estado', 'APROBADO')->count(),
+            'aprobados' => $query->clone()->where('resultado_estado', 'A')->count(),
             'anulados' => $query->clone()->whereNotNull('fecha_anulacion')->count(),
         ];
 

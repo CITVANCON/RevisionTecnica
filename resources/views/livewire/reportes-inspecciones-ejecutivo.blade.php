@@ -47,30 +47,33 @@
                         <table class="min-w-full leading-normal table-auto">
                             <thead>
                                 <tr class="border-b-2 border-gray-200">
-                                    <th
-                                        class="px-4 py-3 bg-gray-100 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">
-                                        Item</th>
-                                    <th
-                                        class="px-4 py-3 bg-gray-100 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">
-                                        Fecha</th>
-                                    <th
-                                        class="px-4 py-3 bg-gray-100 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">
-                                        Placa</th>
-                                    <th
-                                        class="px-4 py-3 bg-gray-100 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">
-                                        Tipo de Atención</th>
-                                    <th
-                                        class="px-4 py-3 bg-gray-100 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">
-                                        Categoría</th>
-                                    <th
-                                        class="px-4 py-3 bg-gray-100 text-right text-xs font-bold text-gray-600 uppercase tracking-wider">
-                                        Monto (S/)</th>
-                                    <th
-                                        class="px-4 py-3 bg-gray-100 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">
-                                        N° Comprobante</th>
-                                    <th
-                                        class="px-4 py-3 bg-gray-100 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">
-                                        N° Certificado MTC</th>
+                                    <th class="px-4 py-3 bg-gray-100 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">
+                                        Item
+                                    </th>
+                                    <th class="px-4 py-3 bg-gray-100 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">
+                                        Fecha
+                                    </th>
+                                    <th class="px-4 py-3 bg-gray-100 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">
+                                        Placa
+                                    </th>
+                                    <th class="px-4 py-3 bg-gray-100 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">
+                                        Tipo de Atención
+                                    </th>
+                                    <th class="px-4 py-3 bg-gray-100 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">
+                                        Categoría
+                                    </th>
+                                    <th class="px-4 py-3 bg-gray-100 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">
+                                        Reinsp.
+                                    </th>
+                                    <th class="px-4 py-3 bg-gray-100 text-right text-xs font-bold text-gray-600 uppercase tracking-wider">
+                                        Monto (S/)
+                                    </th>
+                                    <th class="px-4 py-3 bg-gray-100 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">
+                                        N° Formato
+                                    </th>
+                                    <th class="px-4 py-3 bg-gray-100 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">
+                                        N° Certificado MTC
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody class="text-sm">
@@ -89,8 +92,17 @@
                                         <td class="px-4 py-3 uppercase text-xs text-gray-700 font-medium">
                                             {{ $item->tipo_atencion }}
                                         </td>
-                                        <td class="px-4 py-3 uppercase text-indigo-700 font-semibold">
+                                        <td class="px-4 py-3 text-center uppercase text-indigo-700 font-semibold">
                                             {{ $item->categoria_vehiculo }}
+                                        </td>
+                                        <td class="px-4 py-3 text-center">
+                                            @if($item->es_reinspeccion === 'S')
+                                                <span class="bg-orange-100 text-orange-700 border border-orange-200 px-2 py-0.5 rounded text-[10px] font-black" title="Es Reinspección">
+                                                    SI
+                                                </span>
+                                            @else
+                                                <span class="text-gray-300 text-[10px]">NO</span>
+                                            @endif
                                         </td>
                                         <td class="px-4 py-3 text-right font-bold text-gray-950 decimal-align">
                                             {{ number_format($item->monto_total, 2) }}
@@ -104,7 +116,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="8" class="px-6 py-10 text-center bg-gray-50 text-gray-500">
+                                        <td colspan="9" class="px-6 py-10 text-center bg-gray-50 text-gray-500">
                                             <i class="fas fa-search fa-2x mb-3 text-gray-300"></i><br>
                                             No se encontraron registros para el rango de fechas seleccionado.
                                         </td>
@@ -113,7 +125,7 @@
 
                                 @if ($inspecciones->count() > 0)
                                     <tr class="bg-accent text-white font-bold border-t-2 border-secondary">
-                                        <td colspan="4"
+                                        <td colspan="5"
                                             class="px-4 py-4 text-right uppercase tracking-wider text-xs text-white">
                                             Totales Generales ({{ $total_inspecciones }} registros)
                                         </td>

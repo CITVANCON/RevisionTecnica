@@ -86,6 +86,8 @@ class SincronizacionController extends Controller
                         'hora_inicio'             => $item['finicio'] ?? null,
                         'hora_fin'                => $item['ffin'] ?? null,
                         'resultado_estado'        => $item['resultado'] ?? null,
+                        'es_reinspeccion'         => $item['reinsp'] ?? 'N',
+                        'numero_reinspeccion'     => isset($item['nreinsp']) ? (int)$item['nreinsp'] : 0,
                         'monto_total'             => (float)($item['monto_total'] ?? 0),
                         'tipo_atencion'           => $item['tipo_atencion'] ?? 'Sin Servicio',
                         'numero_certificado_mtc'  => $item['ncertificado'] ?? null,
