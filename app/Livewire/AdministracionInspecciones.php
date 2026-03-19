@@ -12,11 +12,11 @@ class AdministracionInspecciones extends Component
 
     // Filtros
     public $placa_vehiculo;
-    public $resultado_estado;
-    public $fecha_inicio;
-    public $fecha_fin;
-
+    public $resultado_estado, $fecha_inicio, $fecha_fin;
     public $cant = '10';
+
+    public $modalDetallesCaja = false; // Controla el modal de Jetstream
+    public $selected_id, $metodo_pago, $nro_comprobante, $nro_orden, $comision_monto, $observaciones;
 
     protected $queryString = [
         'placa_vehiculo' => ['except' => ''],
@@ -49,9 +49,42 @@ class AdministracionInspecciones extends Component
 
         return view('livewire.administracion-inspecciones', [
             'inspecciones' => $query->orderBy('fecha_inspeccion', 'desc')
-                                    ->orderBy('id_inspeccion_local', 'desc')
-                                    ->paginate($this->cant),
+                ->orderBy('id_inspeccion_local', 'desc')
+                ->paginate($this->cant),
         ]);
     }
 
+    public function editInspeccion($id)
+    {
+        $inspeccion = InspeccionMaestra::findOrFail($id);
+        $this->selected_id = $id;
+        $this->metodo_pago = $inspeccion->metodo_pago;
+        $this->nro_comprobante = $inspeccion->nro_comprobante;
+        $this->nro_orden = $inspeccion->nro_orden ?? 1;
+        $this->comision_monto = $inspeccion->comision_monto ?? 0;
+        $this->observaciones = $inspeccion->observaciones;
+
+        $this->modalDetallesCaja = true;
+    }
+
+    public function updateInspeccion()
+    {
+        $this->validate([
+            'metodo_pago' => 'required',
+            'nro_comprobante' => 'nullable',
+            'nro_orden' => 'nullable|integer',
+        ]);
+
+        $inspeccion = InspeccionMaestra::find($this->selected_id);
+        $inspeccion->update([
+            'metodo_pago' => $this->metodo_pago,
+            'nro_comprobante' => $this->nro_comprobante,
+            'nro_orden' => $this->nro_orden,
+            'comision_monto' => $this->comision_monto,
+            'observaciones' => $this->observaciones,
+        ]);
+
+        $this->modalDetallesCaja = false;
+        $this->dispatch('minAlert', titulo: 'ÉXITO', mensaje: 'Actualizado correctamente', icono: 'success');
+    }
 }

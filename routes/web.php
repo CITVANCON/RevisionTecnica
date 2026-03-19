@@ -5,6 +5,7 @@ use App\Http\Controllers\PdfController;
 use App\Livewire\AdministracionInspecciones;
 use App\Livewire\EditarLineaInspeccion;
 use App\Livewire\Expedientes;
+use App\Livewire\GastoModulo;
 use App\Livewire\Linea;
 use App\Livewire\Permisos;
 use App\Livewire\Prueba;
@@ -93,6 +94,8 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
         Route::get('/Admin-inspecciones', AdministracionInspecciones::class)->name('AdminInspecciones');
 
         Route::get('/Expedientes', Expedientes::class)->name('expedientes');
+
+        Route::get('gasto-egreso', GastoModulo::class)->name('gastos');
 
         //Ruta para reportes de inspecciones
         Route::get('/reportes-inspecciones', ReportesInspecciones::class)->name('reportes.inspecciones');

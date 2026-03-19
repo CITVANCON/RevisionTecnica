@@ -29,9 +29,8 @@
                         <select wire:model.live="resultado_estado"
                             class="bg-gray-50 mx-2 border-indigo-500 rounded-md outline-none ml-1 block text-sm">
                             <option value="">Seleccionar</option>
-                            <option value="APROBADO">Aprobado</option>
-                            <option value="OBSERVADO">Observado</option>
-                            <option value="RECHAZADO">Rechazado</option>
+                            <option value="A">Aprobado</option>
+                            <option value="D">Desaprobado</option>
                         </select>
                     </div>
                     <div class="flex bg-gray-50 items-center p-2 rounded-md shadow-sm border border-gray-100">
@@ -66,42 +65,43 @@
                 <table class="min-w-full leading-normal">
                     <thead>
                         <tr>
-                            <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                            <th
+                                class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                 #
                             </th>
-                            <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                            <th
+                                class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                 Vehículo / Categoría
                             </th>
-                            <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                            <th
+                                class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                 Servicio
                             </th>
-                            {{--
-                            <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase">
-                                Fecha de Inspección
-                            </th>
-                            <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase">
-                                Horario
-                            </th>
-                            --}}
-                            <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                            <th
+                                class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                 Fecha / Horario
                             </th>
-                            <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                            <th
+                                class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                 Estado / R
                             </th>
-                            <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                            <th
+                                class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                 Certificado MTC
                             </th>
-                            <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                            <th
+                                class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                 Monto
                             </th>
-                            <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                            <th
+                                class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">
                             </th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($inspecciones as $item)
-                            <tr class="border-b border-gray-200 bg-white text-sm" wire:key="inspeccion-{{ $item->id }}">
+                            <tr class="border-b border-gray-200 bg-white text-sm"
+                                wire:key="inspeccion-{{ $item->id }}">
                                 <td class="px-5 py-4">
                                     <span class="px-2 py-2 rounded-full bg-indigo-100 text-indigo-700">
                                         {{ $loop->iteration }}
@@ -122,22 +122,6 @@
                                     </p>
                                     <span class="text-xs text-gray-400 italic">Servicio</span>
                                 </td>
-                                {{--
-                                <td class="px-5 py-4">
-                                    <p class="text-gray-900">
-                                        {{ \Carbon\Carbon::parse($item->fecha_inspeccion)->format('d/m/Y') }}</p>
-                                    <p class="text-gray-400 text-xs italic">ID Local: {{ $item->id_inspeccion_local }}
-                                    </p>
-                                </td>
-                                <td class="px-5 py-4 text-gray-600">
-                                    <div class="text-xs">
-                                        <span class="block"><b class="text-gray-400 uppercase">Inicio:</b>
-                                            {{ $item->hora_inicio }}</span>
-                                        <span class="block mt-1"><b class="text-gray-400 uppercase">Fin:</b>
-                                            {{ $item->hora_fin }}</span>
-                                    </div>
-                                </td>
-                                --}}
                                 <td class="px-5 py-4">
                                     <p class="text-gray-900 font-medium">
                                         {{ \Carbon\Carbon::parse($item->fecha_inspeccion)->format('d/m/Y') }}
@@ -146,29 +130,22 @@
                                         {{ $item->hora_inicio }} - {{ $item->hora_fin }}
                                     </div>
                                 </td>
-                                {{--
-                                <td class="px-5 py-4 text-center">
-                                    <span class="px-3 py-1 rounded-full font-bold text-xs
-                                        {{ $item->resultado_estado == 'APROBADO'
-                                            ? 'bg-green-100 text-green-700'
-                                            : ($item->resultado_estado == 'OBSERVADO'
-                                                ? 'bg-orange-100 text-orange-700'
-                                                : 'bg-red-100 text-red-700') }}">
-                                        {{ $item->resultado_estado }}
-                                    </span>
-                                </td>
-                                --}}
                                 <td class="px-5 py-4 text-center">
                                     <div class="flex flex-row items-center justify-center gap-2">
-                                        <span class="px-3 py-1 rounded-full font-bold text-[10px] uppercase shadow-sm
-                                            {{ $item->resultado_estado == 'A' ? 'bg-green-100 text-green-700 border border-green-200' :
-                                            ($item->resultado_estado == 'D' ? 'bg-red-100 text-red-700 border border-red-200' :
-                                            'bg-yellow-100 text-yellow-700 border border-yellow-200') }}">
+                                        <span
+                                            class="px-3 py-1 rounded-full font-bold text-[10px] uppercase shadow-sm
+                                            {{ $item->resultado_estado == 'A'
+                                                ? 'bg-green-100 text-green-700 border border-green-200'
+                                                : ($item->resultado_estado == 'D'
+                                                    ? 'bg-red-100 text-red-700 border border-red-200'
+                                                    : 'bg-yellow-100 text-yellow-700 border border-yellow-200') }}">
                                             {{ $item->resultado_estado }}
                                         </span>
 
-                                        @if($item->es_reinspeccion === 'S')
-                                            <span class="px-3 py-1 rounded-full font-bold text-[10px] uppercase shadow-sm bg-orange-200 text-orange-700 border border-orange-300" title="Reinspección">
+                                        @if ($item->es_reinspeccion === 'S')
+                                            <span
+                                                class="px-3 py-1 rounded-full font-bold text-[10px] uppercase shadow-sm bg-orange-200 text-orange-700 border border-orange-300"
+                                                title="Reinspección">
                                                 R
                                             </span>
                                         @endif
@@ -186,7 +163,14 @@
                                     <p class="px-3 py-1 rounded-full bg-green-100 text-green-700 font-bold">
                                         S/{{ number_format($item->monto_total, 2) }}
                                     </p>
-                                    {{--<span class="text-xs text-green-600 font-semibold uppercase">Pagado</span>--}}
+                                    {{-- --}}
+                                    @if (!$item->metodo_pago)
+                                        <span class="text-[10px] text-red-500 font-bold">PENDIENTE</span>
+                                    @else
+                                        <span
+                                            class="text-[10px] text-gray-500 uppercase">{{ $item->metodo_pago }}</span>
+                                    @endif
+
                                 </td>
                                 <td class="px-5 py-4 text-right" x-data="{ open: false }">
                                     <div class="relative inline-block text-left">
@@ -200,11 +184,14 @@
                                             x-transition:enter-end="transform opacity-100 scale-100"
                                             class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50 py-1">
 
+                                            <button wire:click="editInspeccion({{ $item->id }})"
+                                                class="w-full text-left flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white transition">
+                                                <i class="fas fa-cash-register w-5 mr-2 text-green-600"></i> Editar
+                                            </button>
                                             <button
                                                 class="w-full text-left flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white transition">
                                                 <i class="fas fa-eye w-5 mr-2 text-blue-500"></i> Ver Detalles
                                             </button>
-
                                             <button
                                                 class="w-full text-left flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white transition">
                                                 <i class="fas fa-print w-5 mr-2 text-gray-500"></i> Imprimir Constancia
@@ -226,4 +213,61 @@
             </div>
         @endif
     </div>
+
+    <x-dialog-modal wire:model.live="modalDetallesCaja">
+        <x-slot name="title">
+            {{ __('Completar Información') }} - Placa: <span
+                class="text-indigo-600 font-bold uppercase">{{ $inspecciones->find($selected_id)->placa_vehiculo ?? '' }}</span>
+        </x-slot>
+        <x-slot name="content">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="col-span-1">
+                    <x-label for="metodo_pago" value="{{ __('Método de Pago') }}" />
+                    <select wire:model="metodo_pago"
+                        class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm w-full">
+                        <option value="">Seleccionar</option>
+                        <option value="EFECTIVO">EFECTIVO</option>
+                        <option value="YAPE">YAPE</option>
+                        <option value="VISA">VISA (POS)</option>
+                        <option value="TRANSFERENCIA">TRANSFERENCIA</option>
+                    </select>
+                    <x-input-error for="metodo_pago" class="mt-2" />
+                </div>
+                <div class="col-span-1">
+                    <x-label for="nro_comprobante" value="{{ __('N° Comprobante') }}" />
+                    <x-input id="nro_comprobante" type="text" class="w-full"
+                        wire:model="nro_comprobante" placeholder="Ej: EB01-7976" />
+                    <x-input-error for="nro_comprobante" class="mt-2" />
+                </div>
+                <div class="col-span-1">
+                    <x-label for="nro_orden" value="{{ __('N° Orden') }}" />
+                    <x-input id="nro_orden" type="number" class="w-full" wire:model="nro_orden" />
+                    <x-input-error for="nro_orden" class="mt-2" />
+                </div>
+                <div class="col-span-1">
+                    <x-label for="comision_monto" value="{{ __('Comisión (S/)') }}" />
+                    <x-input id="comision_monto" type="number" step="0.01" class="w-full"
+                        wire:model="comision_monto" />
+                    <x-input-error for="comision_monto" class="mt-2" />
+                </div>
+                <div class="col-span-2">
+                    <x-label for="observaciones" value="{{ __('Observaciones / Convenio') }}" />
+                    <textarea id="observaciones" wire:model="observaciones"
+                        class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm w-full text-sm"
+                        rows="2" placeholder="Ej: CONVENIO B SOTO / PAGO ADELANTADO"></textarea>
+                    <x-input-error for="observaciones" class="mt-2" />
+                </div>
+            </div>
+        </x-slot>
+
+        <x-slot name="footer">
+            <x-secondary-button wire:click="$set('modalDetallesCaja', false)" wire:loading.attr="disabled">
+                {{ __('Cancelar') }}
+            </x-secondary-button>
+
+            <x-button class="ml-3" wire:click="updateInspeccion" wire:loading.attr="disabled">
+                <i class="fas fa-save mr-2"></i> {{ __('Guardar Cambios') }}
+            </x-button>
+        </x-slot>
+    </x-dialog-modal>
 </div>

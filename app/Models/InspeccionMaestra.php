@@ -9,6 +9,7 @@ class InspeccionMaestra extends Model
     protected $table = 'inspecciones_maestras';
 
     protected $fillable = [
+        // informacion que se alimenta desde el servidor de planta
         'placa_vehiculo',
         'categoria_vehiculo',
         'id_inspeccion_local',
@@ -23,6 +24,12 @@ class InspeccionMaestra extends Model
         'numero_certificado_mtc',
         'serie_certificado',
         'correlativo_certificado',
-        'fecha_anulacion'
+        'fecha_anulacion',
+        // informacion que se alimenta desde el sistema web
+        'metodo_pago',
+        'nro_comprobante',
+        'nro_orden',
+        'comision_monto',
+        'observaciones',
     ];
 }

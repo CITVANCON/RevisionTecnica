@@ -1,14 +1,14 @@
 <div class="container mx-auto py-12">
     <div class="bg-gray-200 p-8 rounded-xl w-full">
         <div class="pb-6">
+            <!-- Título y Filtros -->
             <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-6">
                 <div class="px-2">
                     <h2 class="text-gray-600 font-semibold text-2xl">
-                        <i class="fas fa-file-invoice-dollar mr-2"></i>Reporte Detallado de Pagos
+                        <i class="fas fa-file-invoice-dollar mr-2"></i>Reporte Detallado de Inspecciones
                     </h2>
-                    <span class="text-xs">Control de Boletas y Certificados por Rango de Fechas</span>
+                    <span class="text-xs">Reporte de pagos, Control de Boletas y Certificados por Rango de Fechas</span>
                 </div>
-
                 <div class="flex gap-3 mt-4 md:mt-0 px-2">
                     <div class="flex bg-gray-50 items-center p-2 rounded-md shadow-sm border border-gray-100">
                         <span class="text-sm mr-2 font-medium text-gray-500">Desde:</span>
@@ -22,15 +22,15 @@
                     </div>
                 </div>
             </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 px-2 mb-6">
+            <!-- Resumen General -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 px-2 mb-2">
                 <div
                     class="bg-white p-4 rounded-lg shadow-sm border-l-4 border-green-500 flex items-center justify-between">
                     <span class="text-sm text-gray-500 font-medium">Total Recaudado</span>
                     <span class="text-xl font-bold text-gray-800">S/ {{ number_format($total_monto, 2) }}</span>
                 </div>
                 <div
-                    class="bg-white p-4 rounded-lg shadow-sm border-l-4 border-indigo-500 flex items-center justify-between">
+                    class="bg-white p-4 rounded-lg shadow-sm border-l-4 border-yellow-500 flex items-center justify-between">
                     <span class="text-sm text-gray-500 font-medium">Total Inspecciones</span>
                     <span class="text-xl font-bold text-gray-800">{{ $total_inspecciones }}</span>
                 </div>
@@ -40,7 +40,23 @@
                     <i class="fas fa-print text-gray-500 fa-lg"></i>
                 </div>
             </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 px-2 mb-6">
+                @foreach($resumenPagos as $metodo => $datos)
+                    @php
+                        $color = match($metodo) {
+                            'EFECTIVO' => 'green', 'YAPE' => 'indigo', 'VISA' => 'blue', 'TRANSFERENCIA' => 'orange', default => 'gray'
+                        };
+                    @endphp
+                    <div class="bg-white p-4 rounded-lg shadow-sm border-l-4 border-{{ $color }}-500 flex items-center justify-between">
+                        <span class="text-sm text-gray-500 font-medium">{{ $metodo ?: 'No Definido' }}</span>
+                        <span class="text-xl font-bold text-gray-800">S/ {{ number_format($datos['total'], 2) }}</span>
+                        <span class="text-xs text-gray-400">{{ $datos['cantidad'] }} servicios</span>
+                    </div>
 
+                @endforeach
+            </div>
+
+            <!-- Tabla de Inspecciones -->
             <div class="px-2">
                 <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-100">
                     <div class="overflow-x-auto">
@@ -59,11 +75,8 @@
                                     <th class="px-4 py-3 bg-gray-100 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">
                                         Tipo de Atención
                                     </th>
-                                    <th class="px-4 py-3 bg-gray-100 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">
-                                        Categoría
-                                    </th>
-                                    <th class="px-4 py-3 bg-gray-100 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">
-                                        Reinsp.
+                                    <th class="px-3 py-3 bg-gray-100 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">
+                                        Categ / R
                                     </th>
                                     <th class="px-4 py-3 bg-gray-100 text-right text-xs font-bold text-gray-600 uppercase tracking-wider">
                                         Monto (S/)
@@ -72,7 +85,10 @@
                                         N° Formato
                                     </th>
                                     <th class="px-4 py-3 bg-gray-100 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">
-                                        N° Certificado MTC
+                                        Pago / Comprob
+                                    </th>
+                                    <th class="px-4 py-3 bg-gray-100 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">
+                                        Comisión
                                     </th>
                                 </tr>
                             </thead>
@@ -89,29 +105,31 @@
                                         <td class="px-4 py-3 font-bold uppercase text-gray-900">
                                             {{ $item->placa_vehiculo }}
                                         </td>
-                                        <td class="px-4 py-3 uppercase text-xs text-gray-700 font-medium">
+                                        <td class="px-4 py-3 w-62 uppercase text-[10px] text-gray-700 font-medium">
                                             {{ $item->tipo_atencion }}
                                         </td>
-                                        <td class="px-4 py-3 text-center uppercase text-indigo-700 font-semibold">
+                                        <td class="px-4 py-3 text-center uppercase text-indigo-700 font-bold text-sm">
                                             {{ $item->categoria_vehiculo }}
-                                        </td>
-                                        <td class="px-4 py-3 text-center">
                                             @if($item->es_reinspeccion === 'S')
-                                                <span class="bg-orange-100 text-orange-700 border border-orange-200 px-2 py-0.5 rounded text-[10px] font-black" title="Es Reinspección">
-                                                    SI
-                                                </span>
-                                            @else
-                                                <span class="text-gray-300 text-[10px]">NO</span>
+                                                <span class="block text-[9px] text-orange-600 font-black mt-0.5">REINSP.</span>
                                             @endif
                                         </td>
                                         <td class="px-4 py-3 text-right font-bold text-gray-950 decimal-align">
                                             {{ number_format($item->monto_total, 2) }}
                                         </td>
-                                        <td class="px-4 py-3 font-mono text-gray-600">
+                                        <td class="px-4 py-3 font-mono text-[12px] text-gray-600">
                                             {{ $item->serie_certificado }}-{{ $item->correlativo_certificado }}
                                         </td>
-                                        <td class="px-4 py-3 font-mono text-xs text-gray-700">
-                                            {{ $item->numero_certificado_mtc ?? 'N/A' }}
+                                        <td class="px-4 py-3 text-center">
+                                            <div class="text-xs font-bold text-gray-800">
+                                                {{ $item->metodo_pago ?? 'SN' }}
+                                            </div>
+                                            <div class="text-[11px] text-indigo-600">
+                                                {{ $item->nro_comprobante ?? 'NN' }}
+                                            </div>
+                                        </td>
+                                        <td class="px-4 py-3 text-center text-gray-500 font-medium">
+                                            {{ $item->comision_monto > 0 ? 'S/ '.number_format($item->comision_monto, 2) : '-' }}
                                         </td>
                                     </tr>
                                 @empty
@@ -148,6 +166,7 @@
                     * Las filas en rojo itálico corresponden a inspecciones anuladas.
                 </div>
             </div>
+
         </div>
     </div>
 </div>

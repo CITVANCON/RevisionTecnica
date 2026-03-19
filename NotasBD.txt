@@ -200,3 +200,36 @@ ADD COLUMN es_reinspeccion CHAR(1) DEFAULT 'N' AFTER resultado_estado,
 ADD COLUMN numero_reinspeccion INT NULL AFTER es_reinspeccion;
 
 
+
+CREATE TABLE egresos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    fecha DATE NOT NULL,
+    descripcion VARCHAR(255) NOT NULL,
+    monto DECIMAL(12, 2) NOT NULL,
+    tipo_egreso ENUM('DIARIO', 'MENSUAL') NOT NULL DEFAULT 'DIARIO',    
+    categoria_gasto VARCHAR(100) NULL,    
+    metodo_pago VARCHAR(50) DEFAULT 'EFECTIVO',    
+    id_usuario INT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    
+    INDEX idx_fecha_tipo (fecha, tipo_egreso)
+);
+
+
+ALTER TABLE inspecciones_maestras 
+ADD COLUMN metodo_pago VARCHAR(50) NULL AFTER fecha_anulacion,
+ADD COLUMN nro_comprobante VARCHAR(50) NULL AFTER metodo_pago,
+ADD COLUMN nro_orden INT DEFAULT 1 AFTER nro_comprobante,
+ADD COLUMN comision_monto DECIMAL(10, 2) DEFAULT 0.00 AFTER nro_orden,
+ADD COLUMN observaciones VARCHAR(255) NULL AFTER comision_monto;
+
+
+
+
+
+
+
+
+
+
