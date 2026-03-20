@@ -32,4 +32,10 @@ class InspeccionMaestra extends Model
         'comision_monto',
         'observaciones',
     ];
+
+    protected $casts = [
+        'fecha_inspeccion' => 'date',
+        'monto_total' => 'decimal:2',
+        'comision_monto' => 'decimal:2',
+    ];
 }
