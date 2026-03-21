@@ -30,7 +30,6 @@
                     @endif
                 </button>
             </div>
-
             @if($abrirFormulario)
                 <div x-data x-show="$wire.abrirFormulario" x-transition.duration.300ms
                     class="bg-white p-6 rounded-lg shadow-md border-gray-100 mb-8">
@@ -57,7 +56,8 @@
                             <select wire:model="metodo_pago" class="w-full mt-1 bg-gray-50 border-indigo-400 rounded-md text-sm focus:ring-0">
                                 <option value="EFECTIVO">EFECTIVO</option>
                                 <option value="TRANSFERENCIA">TRANSF.</option>
-                                <option value="YAPE/PLIN">YAPE/PLIN</option>
+                                <option value="YAPE">YAPE</option>
+                                <option value="VISA">VISA</option>
                             </select>
                         </div>
                         <div class="md:col-span-1 flex items-end">
