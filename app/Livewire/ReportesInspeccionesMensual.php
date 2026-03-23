@@ -51,6 +51,14 @@ class ReportesInspeccionesMensual extends Component
                 return $item->fecha->format('Y-m-d');
             });
 
+        // egresis MENSUALES
+        $egresosMensuales = Gasto::query()
+            ->whereMonth('fecha', $fecha->month)
+            ->whereYear('fecha', $anio)
+            ->where('tipo_egreso', 'MENSUAL')
+            ->orderBy('fecha', 'asc')
+            ->get();
+
         // Mapear los gastos a la colección de reportes
         $reporteMensual->transform(function ($fila) use ($gastosDiarios) {
             $fechaKey = Carbon::parse($fila->fecha_inspeccion)->format('Y-m-d');
@@ -69,23 +77,32 @@ class ReportesInspeccionesMensual extends Component
             return $fila;
         });
 
-        // Egresos del mes (Totales)
-        $totalGastosMes = Gasto::mensuales($fecha->month, $anio)->sum('monto');
+        // Totales finales para el balance
+        //$totalGastosDiarios = $reporteMensual->sum('monto_gastos');
+        //$totalEgresosMensuales = $egresosMensuales->sum('monto');
         $ingresoBruto = $reporteMensual->sum('monto_dia');
+
+        $ingresosOperativos = $reporteMensual->sum('saldo_dia'); // Suma de saldos por día
+        $egresosMensualesTotal = $egresosMensuales->sum('monto');
 
         // Totales finales para el balance
         $balance = [
             'total_certificados' => $reporteMensual->sum('total_certificados'),
             'ingreso_bruto'      => $ingresoBruto,
-            'total_gastos'       => $totalGastosMes,
-            'ingreso_neto'       => $ingresoBruto - $totalGastosMes,
+            //'total_gastos'       => $totalGastosDiarios + $totalEgresosMensuales,
+            //'ingreso_neto'       => $ingresoBruto - ($totalGastosDiarios + $totalEgresosMensuales),
+            'ingresos_operativos' => $ingresosOperativos,
+            'egresos_mensuales'   => $egresosMensualesTotal,
+            'utilidad_real'       => $ingresosOperativos - $egresosMensualesTotal,
+
         ];
 
         return view('livewire.reportes-inspecciones-mensual', [
             'reporte' => $reporteMensual,
+            'egresosMensuales' => $egresosMensuales,
             'balance' => $balance,
             'nombreMes' => $nombreMes,
-            'anio' => $anio
+            'anio' => $anio,
         ]);
     }
 }
