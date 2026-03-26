@@ -16,10 +16,10 @@ class Contrato extends Model
         'fecha_inicio_contrato',
         'fecha_vencimiento',
         'cargo',
-        'tipo_contrato',
+        'tipo_contrato', // Plazo Fijo, Indeterminado, Temporal, Por Locación
         'sueldo_bruto',
         'sueldo_neto',
-        'status',
+        'status', // enum('Activo', 'Vencido', 'Finalizado')
         'contrato_path'
     ];
 

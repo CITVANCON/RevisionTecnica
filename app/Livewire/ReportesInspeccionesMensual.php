@@ -35,6 +35,7 @@ class ReportesInspeccionesMensual extends Component
             )
             ->whereMonth('fecha_inspeccion', $fecha->month)
             ->whereYear('fecha_inspeccion', $anio)
+            ->whereNull('fecha_anulacion')
             ->groupBy('fecha_inspeccion')
             ->orderBy('fecha_inspeccion', 'asc')
             ->get();

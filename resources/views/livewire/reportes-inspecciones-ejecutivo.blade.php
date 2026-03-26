@@ -22,16 +22,24 @@
                 <div class="bg-white p-4 rounded-lg shadow-sm border-l-4 border-green-500 flex items-center justify-between">
                     <span class="text-sm text-gray-500 font-medium">Total Recaudado</span>
                     <span class="text-xl font-bold text-gray-800">S/ {{ number_format($total_monto, 2) }}</span>
+                    <i class="fas fa-coins text-green-400 fa-lg"></i>
                 </div>
-                <div class="bg-white p-4 rounded-lg shadow-sm border-l-4 border-orange-400 flex items-center justify-between hover:bg-orange-50 cursor-pointer transition">
+                <div class="bg-white p-4 rounded-lg shadow-sm border-l-4 border-orange-400 flex items-center justify-between">
                         <span class="text-sm text-gray-500 font-medium">En Caja</span>
                         <span class="text-xl font-black text-gray-800">S/ {{ number_format($efectivo_neto, 2) }}</span>
-                    <i class="fas fa-cash-register text-orange-400 fa-lg"></i>
+                        <i class="fas fa-cash-register text-orange-400 fa-lg"></i>
                 </div>
+                <div class="bg-white p-4 rounded-lg shadow-sm border-l-4 border-blue-400 flex items-center justify-between">
+                        <span class="text-sm text-gray-500 font-medium">Comisiones</span>
+                        <span class="text-xl font-black text-gray-800">S/ {{ number_format($total_comisiones, 2) }}</span>
+                        <i class="fas fa-hand-holding-usd text-blue-400 fa-lg"></i>
+                </div>
+                {{--
                 <div class="bg-white p-4 rounded-lg shadow-sm border-l-4 border-yellow-500 flex items-center justify-between">
-                    <span class="text-sm text-gray-500 font-medium">Total Inspecciones</span>
+                    <span class="text-sm text-gray-500 font-medium">Inspecciones</span>
                     <span class="text-xl font-bold text-gray-800">{{ $total_inspecciones }}</span>
                 </div>
+                --}}
                 <div Onclick="window.print()" class="bg-white p-4 rounded-lg shadow-sm border-l-4 border-gray-400 flex items-center justify-between hover:bg-gray-50 cursor-pointer transition">
                     <span class="text-sm text-gray-600 font-medium">Imprimir Reporte</span>
                     <i class="fas fa-print text-gray-500 fa-lg"></i>
@@ -153,7 +161,8 @@
                                     <tr class="bg-accent text-white font-bold">
                                         <td colspan="5"
                                             class="px-4 py-4 text-right uppercase tracking-wider text-xs">
-                                            TOTALES GENERALES ({{ $total_inspecciones }} registros)
+                                            {{--TOTALES GENERALES ({{ $total_inspecciones }} registros)--}}
+                                            TOTALES GENERALES ({{ $inspecciones->whereNull('fecha_anulacion')->count() }} válidas de {{ $inspecciones->count() }} registros)
                                         </td>
                                         <td class="px-4 py-4 text-right text-orange-500 text-base">
                                             S/ {{ number_format($total_monto, 2) }}

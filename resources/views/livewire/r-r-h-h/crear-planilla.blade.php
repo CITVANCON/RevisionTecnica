@@ -32,7 +32,11 @@
                                 {{-- Observación: Espacio ampliado --}}
                                 <th class="w-72 px-2 py-3 text-left">OBSERVACIONES</th>
 
-                                <th class="w-24 px-1 py-3 text-center bg-gray-100 text-green-600">TOTAL</th>
+                                <th class="w-20 px-1 py-3 text-center bg-green-800">TOTAL</th>
+
+                                <th class="w-20 px-1 py-3 text-center bg-yellow-600">BANCO 1Q</th>
+                                <th class="w-20 px-1 py-3 text-center bg-green-700">EFECTIVO</th>
+
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-100 text-sm">
@@ -81,8 +85,14 @@
                                             wire:model.live.blur="lista_planilla.{{ $index }}.observacion"  />
                                     </td>
                                     <!-- Total Calculado -->
-                                    <td class="px-4 py-1 text-right font-black text-green-600 bg-gray-50 italic">
+                                    <td class="px-4 py-1 text-center font-black text-white bg-green-800 italic">
                                         {{ number_format($item['total'], 2) }}
+                                    </td>
+                                    <td class="px-4 py-1 text-center font-black text-white bg-yellow-600 italic">
+                                        {{ number_format($item['banco'], 2) }}
+                                    </td>
+                                    <td class="px-4 py-1 text-center font-black text-white bg-green-700 italic">
+                                        {{ number_format($item['efectivo'], 2) }}
                                     </td>
                                 </tr>
                             @endforeach

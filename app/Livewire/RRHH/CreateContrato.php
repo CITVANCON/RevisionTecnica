@@ -71,6 +71,15 @@ class CreateContrato extends Component
         $this->abierto = true;
     }
 
+    /*public function updatedStatus($value)
+    {
+        // Si el contrato se marca como Finalizado en status y no tiene fecha de vencimiento,
+        // sugerimos la fecha actual como fecha de cierre.
+        if ($value === 'Finalizado' && !$this->fecha_vencimiento) {
+            $this->fecha_vencimiento = now()->format('Y-m-d');
+        }
+    }*/
+
     // Calcula los días de vacaciones según el periodo (ingreso a vencimiento).
     private function calcularDiasPorPeriodo($fechaIngreso, $fechaVencimiento)
     {

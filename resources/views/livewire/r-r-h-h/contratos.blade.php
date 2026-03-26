@@ -1,6 +1,6 @@
 <div class="container mx-auto py-12">
     <div class="bg-gray-200 p-8 rounded-xl w-full">
-        {{-- Cabecera --}}
+        {{-- Titulo y Cabecera --}}
         <div class="items-center pb-6 md:block sm:block">
             <div class="px-2 w-64 mb-4 md:w-full">
                 <h2 class="text-gray-600 font-semibold text-2xl">

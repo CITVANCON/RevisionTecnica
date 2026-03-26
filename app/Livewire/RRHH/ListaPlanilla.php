@@ -73,7 +73,13 @@ class ListaPlanilla extends Component
 
         // 2. Consulta de planillas filtradas
         $query = Planilla::query();
-        $totalGeneral = 0; // Inicializamos el acumulado
+        //$totalGeneral = 0; // Inicializamos el acumulado
+        // Inicializamos variables de totales
+        $totales = [
+            'general'  => 0,
+            'banco'    => 0,
+            'efectivo' => 0
+        ];
 
         if ($this->periodoSeleccionado) {
             $query->whereDate('periodo', $this->periodoSeleccionado)
@@ -82,14 +88,18 @@ class ListaPlanilla extends Component
                       ->orWhere('dni', 'like', '%' . $this->search . '%');
                 });
 
-                // Calculamos el total de TODO el periodo seleccionado (independiente de la paginación)
-            $totalGeneral = (clone $query)->sum('total_pagado');
+            // Calculamos el total de TODO el periodo seleccionado (independiente de la paginación)
+            //$totalGeneral = (clone $query)->sum('total_pagado');
+            // Calculamos los 3 totales del periodo seleccionado de una sola vez
+            $totales['general']  = (clone $query)->sum('total_pagado');
+            $totales['banco']    = (clone $query)->sum('pago_banco');
+            $totales['efectivo'] = (clone $query)->sum('pago_efectivo');
 
             $planillas = $query->with(['contrato.user'])
                 ->orderBy('created_at', 'desc')
                 ->paginate($this->cant);
 
-            $planillas = $query->paginate($this->cant);
+            //$planillas = $query->paginate($this->cant);
         } else {
             $planillas = Planilla::where('id', 0)->paginate($this->cant);
         }
@@ -97,7 +107,7 @@ class ListaPlanilla extends Component
         return view('livewire.r-r-h-h.lista-planilla', [
             'planillas' => $planillas,
             'listaPeriodos' => $listaPeriodos,
-            'totalGeneral' => $totalGeneral
+            'totales' => $totales // array de totales
         ]);
     }
 }

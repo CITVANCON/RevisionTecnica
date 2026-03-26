@@ -28,7 +28,7 @@
                 </div>
                 <div class="bg-white p-4 rounded-lg border-l-4 border-green-500 shadow-sm text-center md:text-left">
                     <div class="flex items-center justify-between">
-                        <span class="text-[10px] font-bold text-gray-400 uppercase block">Ingresos Operativos (S/)</span>
+                        <span class="text-[10px] font-bold text-gray-400 uppercase block">Ingreso Neto (S/)</span>
                         <i class="fas fa-question-circle text-gray-300 text-[10px]" title="Suma de saldos diarios (Ingresos - Gastos Diarios)"></i>
                     </div>
                     <span class="text-2xl font-black text-green-600">
@@ -36,7 +36,7 @@
                     </span>
                 </div>
                 <div class="bg-white p-4 rounded-lg border-l-4 border-red-500 shadow-sm text-center md:text-left">
-                    <span class="text-[10px] font-bold text-gray-400 uppercase block">Egresos Mensuales (S/)</span>
+                    <span class="text-[10px] font-bold text-gray-400 uppercase block">Gastos Mensuales (S/)</span>
                     <span class="text-2xl font-black text-red-600">
                         {{ number_format($balance['egresos_mensuales'], 2) }}
                     </span>

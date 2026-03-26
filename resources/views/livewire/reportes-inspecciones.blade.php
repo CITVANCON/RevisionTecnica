@@ -29,9 +29,9 @@
                             <i class="fas fa-dollar-sign fa-2x"></i>
                         </div>
                         <div>
-                            <p class="text-[10px] text-gray-400 font-bold uppercase">Ingresos Bruto</p>
+                            <p class="text-[10px] text-gray-400 font-bold uppercase">Ingresos Reales (Netos)</p>
                             <p class="text-xl font-black text-green-700">S/ {{ number_format($stats['total_ingresos'], 2) }}</p>
-                            <p class="text-[9px] text-gray-400"></p>
+                            <p class="text-[9px] text-gray-400">Excluye S/ {{ number_format($stats['monto_anulado'], 2) }} en anulaciones</p>
                         </div>
                     </div>
                 </div>
@@ -43,7 +43,7 @@
                         <div>
                             <p class="text-[10px] text-gray-400 font-bold uppercase">Egresos Totales</p>
                             <p class="text-xl font-bold text-gray-700">S/ {{ number_format($stats['total_gastos'], 2) }}</p>
-                            <p class="text-[10px] text-gray-500 italic">operativos + mensuales</p>
+                            <p class="text-[10px] text-gray-500 italic">operativos + administrativos</p>
                         </div>
                     </div>
                 </div>

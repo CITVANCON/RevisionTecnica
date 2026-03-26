@@ -226,7 +226,15 @@ ADD COLUMN observaciones VARCHAR(255) NULL AFTER comision_monto;
 
 
 
+ALTER TABLE planillas 
+ADD COLUMN pago_banco DECIMAL(10, 2) GENERATED ALWAYS AS (
+    (sueldo_base + asignacion_familiar + horas_extras + otros_ingresos) - otros_descuentos
+) VIRTUAL AFTER otros_descuentos;
 
+ALTER TABLE planillas 
+ADD COLUMN pago_efectivo DECIMAL(10, 2) GENERATED ALWAYS AS (
+    movilidad
+) VIRTUAL AFTER pago_banco;
 
 
 

@@ -44,7 +44,6 @@
                     <x-input type="text" class="w-full" wire:model="cargo" placeholder="Ej. Administrador" />
                     <x-input-error for="cargo" />
                 </div>
-
                 <div>
                     <x-label value="Tipo de Contrato" />
                     <select wire:model="tipo_contrato" class="w-full border-gray-300 rounded-md shadow-sm">
@@ -53,6 +52,18 @@
                         <option value="Temporal">Temporal</option>
                         <option value="Por Locación">Por Locación</option>
                     </select>
+                </div>
+
+                {{-- Estado del Contrato --}}
+                <div>
+                    <x-label value="Estado del Contrato" />
+                    <select wire:model="status"
+                            class="w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 {{ $status == 'Activo' ? 'text-green-600' : 'text-red-600' }}">
+                        <option value="Activo">Activo</option>
+                        <option value="Vencido">Vencido</option>
+                        <option value="Finalizado">Finalizado (Cese/Renuncia)</option>
+                    </select>
+                    <x-input-error for="status" />
                 </div>
 
                 {{-- Sueldos --}}

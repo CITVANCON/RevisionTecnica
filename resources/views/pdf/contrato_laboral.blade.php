@@ -261,7 +261,7 @@
             <tr>
                 <td>
                     <div class="signature-container">
-                        <img src="{{ public_path('images/firma.png') }}" class="firma-img">
+                        <img src="{{ public_path('images/firmaDoctora2.png') }}" class="firma-img">
 
                         <div class="line"></div>
                         <span class="bold">KATHERINE LOPEZ HENRIQUEZ</span><br>

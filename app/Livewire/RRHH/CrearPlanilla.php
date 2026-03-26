@@ -76,7 +76,9 @@ class CrearPlanilla extends Component
                 'planilla'            => $contrato->user->beneficios,
                 'numero_cuenta'       => $contrato->user->numero_cuenta,
                 'observacion'         => '',
-                'total'               => number_format($sueldoQuincenal + $asignacionQuincenal, 2, '.', '')
+                'total'               => number_format($sueldoQuincenal + $asignacionQuincenal, 2, '.', ''),
+                'banco'               => number_format($sueldoQuincenal + $asignacionQuincenal, 2, '.', ''),
+                'efectivo'            => 0
             ];
         }
 
@@ -94,7 +96,7 @@ class CrearPlanilla extends Component
 
         $this->recalcularFila($index);
     }
-    private function recalcularFila($index)
+    /*private function recalcularFila($index)
     {
         $fila = &$this->lista_planilla[$index];
 
@@ -105,6 +107,30 @@ class CrearPlanilla extends Component
             floatval($fila['otros_ingresos']);
 
         $fila['total'] = number_format($ingresos - floatval($fila['otros_descuentos']), 2, '.', '');
+    }*/
+    private function recalcularFila($index)
+    {
+        $fila = &$this->lista_planilla[$index];
+
+        $s_base = floatval($fila['sueldo_base'] ?? 0);
+        $asign = floatval($fila['asignacion_familiar'] ?? 0);
+        $h_ext = floatval($fila['horas_extras'] ?? 0);
+        $movil = floatval($fila['movilidad'] ?? 0);
+        $otros = floatval($fila['otros_ingresos'] ?? 0);
+        $dctos = floatval($fila['otros_descuentos'] ?? 0);
+
+        // TOTAL: Todo sumado menos descuentos
+        $totalVal = ($s_base + $asign + $h_ext + $movil + $otros) - $dctos;
+
+        // BANCO: Todo excepto movilidad, menos descuentos
+        $bancoVal = ($s_base + $asign + $h_ext + $otros) - $dctos;
+
+        // EFECTIVO: Solo movilidad
+        $efectivoVal = $movil;
+
+        $fila['total'] = number_format($totalVal, 2, '.', '');
+        $fila['banco'] = number_format($bancoVal, 2, '.', '');
+        $fila['efectivo'] = number_format($efectivoVal, 2, '.', '');
     }
 
     public function guardarMasivo()

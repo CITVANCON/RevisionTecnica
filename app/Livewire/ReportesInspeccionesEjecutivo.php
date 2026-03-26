@@ -15,6 +15,7 @@ class ReportesInspeccionesEjecutivo extends Component
     // Totales de Inspecciones (Ingresos)
     public $total_monto = 0;
     public $total_inspecciones = 0;
+    public $total_comisiones = 0;
     // Totales de Gastos (Egresos)
     public $total_gastos = 0;
 
@@ -32,11 +33,19 @@ class ReportesInspeccionesEjecutivo extends Component
         }
         $inspecciones = $queryInspecciones->orderBy('id_inspeccion_local', 'asc')->get();
 
-        $this->total_monto = $inspecciones->sum('monto_total');
-        $this->total_inspecciones = $inspecciones->count();
+        //Crear una colección filtrada que NO tenga las anuladas para los totales
+        // fecha_anulacion == null significa que NO está anulada
+        $inspeccionesActivas = $inspecciones->whereNull('fecha_anulacion');
+
+        //$this->total_monto = $inspecciones->sum('monto_total');
+        //$this->total_inspecciones = $inspecciones->count();
+        //$this->total_comisiones = $inspecciones->sum('comision_monto');
+        $this->total_monto = $inspeccionesActivas->sum('monto_total');
+        $this->total_inspecciones = $inspeccionesActivas->count();
+        $this->total_comisiones = $inspeccionesActivas->sum('comision_monto');
 
         // Resumen de Pagos para los indicadores
-        $resumenPagos = $inspecciones->groupBy('metodo_pago')
+        $resumenPagos = $inspeccionesActivas->groupBy('metodo_pago')
             ->map(fn($row) => [
                 'cantidad' => $row->count(),
                 'total' => $row->sum('monto_total')
@@ -56,7 +65,8 @@ class ReportesInspeccionesEjecutivo extends Component
             'resumenPagos' => $resumenPagos,
             'gastos' => $gastos,
             'saldo_neto' => $this->total_monto - $this->total_gastos,
-            'efectivo_neto' => $efectivo_neto
+            'efectivo_neto' => $efectivo_neto,
+            'total_comisiones' => $this->total_comisiones
         ]);
     }
 }
