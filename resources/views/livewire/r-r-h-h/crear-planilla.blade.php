@@ -15,6 +15,37 @@
 
         <x-slot name="content">
             @if($periodo && count($lista_planilla) > 0)
+                <div class="px-4 py-3 bg-blue-50 border-l-4 border-blue-400 mt-2 rounded-r-lg">
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0 mt-1">
+                            <i class="fas fa-calculator text-blue-500"></i>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-[12px] text-blue-800 font-bold uppercase mb-1">
+                                Lógica de Cálculo de Planilla (Periodos Quincenales/Mensuales)
+                            </p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2 text-[11px] text-blue-700 leading-tight">
+                                <div>
+                                    <p class="font-bold border-b border-blue-200 mb-1">Cálculo Banco (1ra Q / Finde):</p>
+                                    <ul class="list-disc ml-4 space-y-1">
+                                        <li><strong>Sueldo Base:</strong> (Sueldo real con descuentos AFP/ONP) / 2.</li>
+                                        <li><strong>BANCO 1Q:</strong> Base + Asignación + Horas Extras + Otros - Descuentos.</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <p class="font-bold border-b border-blue-200 mb-1">Cálculo Efectivo y Consolidado:</p>
+                                    <ul class="list-disc ml-4 space-y-1">
+                                        <li><strong>EFECTIVO:</strong> Corresponde únicamente al monto de Movilidad.</li>
+                                        <li><strong>TOTAL:</strong> Banco + Efectivo (Suma de todos los conceptos y beneficios).</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <p class="text-[10px] text-blue-700 italic">
+                                * Nota: La asignación familiar se calcula internamente según ley vigente aplicada al periodo.
+                            </p>
+                        </div>
+                    </div>
+                </div>
                 <div class="mt-4 shadow-sm rounded-xl border border-gray-200 overflow-hidden">
                     <table class="min-w-full table-fixed divide-y divide-gray-200">
                         <thead class="bg-accent text-xs font-bold text-white uppercase tracking-wider">
