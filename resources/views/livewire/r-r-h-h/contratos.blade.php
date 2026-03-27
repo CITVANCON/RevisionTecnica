@@ -4,9 +4,9 @@
         <div class="items-center pb-6 md:block sm:block">
             <div class="px-2 w-64 mb-4 md:w-full">
                 <h2 class="text-gray-600 font-semibold text-2xl">
-                    <i class="fas fa-file-signature mr-2"></i>Gestión de Contratos
+                    <i class="fas fa-file-signature mr-2"></i>Gestión de Empleados
                 </h2>
-                <span class="text-xs">Control de periodos laborales y remuneraciones</span>
+                <span class="text-xs">Control de periodos laborales, remuneraciones, vaciones y documentos</span>
             </div>
             <div class="w-full items-center md:flex md:justify-between">
                 <div class="flex bg-gray-50 items-center p-2 rounded-md mb-4">
