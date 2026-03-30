@@ -94,6 +94,26 @@ class SincronizacionController extends Controller
                         'serie_certificado'       => $item['serie'] ?? null,
                         'correlativo_certificado' => $item['correlativo'] ?? null,
                         'fecha_anulacion'         => $item['fanulacion'] ?? null,
+
+                        // nuevos campos
+                        'kilometraje'        => $item['kilometraje'] ?? null,
+                        'peso_bruto_v'       => $item['peso_bruto'] ?? 0,
+                        'peso_neto_v'        => $item['peso_neto'] ?? 0,
+                        'carga_util_v'       => $item['carga_util'] ?? 0,
+                        'nro_asientos_v'     => $item['asientos'] ?? 0,
+                        'nro_pasajeros_v'    => $item['pasajeros'] ?? 0,
+                        'nro_ejes_v'         => $item['ejes'] ?? 0,
+                        'nro_ruedas_v'       => $item['ruedas'] ?? 0,
+                        'nro_motor_v'        => $item['motor'] ?? null,
+                        'nro_vin_v'          => $item['vin'] ?? null,
+                        'fecha_vencimiento'  => $item['fvencimiento'] ?? null,
+                        'estado_inspeccion'  => $item['estado_nombre'] ?? null,
+                        'tipo_inspeccion'    => $item['tipo_inspeccion'] ?? null,
+                        'propietario_nombre' => $item['propietario'] ?? null,
+                        'propietario_documento' => $item['documento'] ?? null,
+                        'propietario_celular'   => $item['celular'] ?? null,
+                        'nivel_defecto'      => $item['nivel_defecto'] ?? null,
+                        'codigos_defectos'   => $item['codigos_defectos'] ?? null,
                     ]
                 );
                 $procesadosExitosamente++;

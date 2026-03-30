@@ -241,3 +241,49 @@ ADD COLUMN pago_efectivo DECIMAL(10, 2) GENERATED ALWAYS AS (
 
 
 
+ALTER TABLE inspecciones_maestras 
+ADD COLUMN tipo_inspeccion VARCHAR(50) NULL AFTER tipo_atencion,
+ADD COLUMN fecha_vencimiento DATE NULL AFTER fecha_inspeccion,
+ADD COLUMN estado_inspeccion VARCHAR(20) NULL AFTER resultado_estado, -- Espera, Evaluación, Finalizada, Anulada
+ADD COLUMN nivel_defecto VARCHAR(10) NULL AFTER fecha_anulacion, -- L, G, MG
+ADD COLUMN codigos_defectos TEXT NULL AFTER nivel_defecto; -- Para guardar "I.4.4 / J.1.4.6 / ..."
+
+
+-- Campos adicionales del Vehículo
+ALTER TABLE inspecciones_maestras
+ADD COLUMN kilometraje INT NULL AFTER categoria_vehiculo,
+ADD COLUMN peso_bruto_v DECIMAL(10,2) NULL AFTER kilometraje,
+ADD COLUMN peso_neto_v DECIMAL(10,2) NULL AFTER peso_bruto_v,
+ADD COLUMN carga_util_v DECIMAL(10,2) NULL AFTER peso_neto_v,
+ADD COLUMN nro_asientos_v INT NULL AFTER carga_util_v,
+ADD COLUMN nro_pasajeros_v INT NULL AFTER nro_asientos_v,
+ADD COLUMN nro_ejes_v INT NULL AFTER nro_pasajeros_v,
+ADD COLUMN nro_ruedas_v INT NULL AFTER nro_ejes_v,
+ADD COLUMN nro_motor_v VARCHAR(50) NULL AFTER nro_ruedas_v,
+ADD COLUMN nro_vin_v VARCHAR(50) NULL AFTER nro_motor_v;
+
+
+-- Campos del Cliente/Propietario
+ALTER TABLE inspecciones_maestras
+ADD COLUMN propietario_nombre VARCHAR(255) NULL AFTER correlativo_certificado,
+ADD COLUMN propietario_documento VARCHAR(20) NULL AFTER propietario_nombre,
+ADD COLUMN propietario_celular VARCHAR(20) NULL AFTER propietario_documento;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
