@@ -13,36 +13,36 @@ class InspeccionMaestra extends Model
         'placa_vehiculo',
         'categoria_vehiculo',
         'kilometraje', // campo nuevo
-        'peso_bruto_v', // campo nuevo
-        'peso_neto_v', // campo nuevo
-        'carga_util_v', // campo nuevo
-        'nro_asientos_v', // campo nuevo
-        'nro_pasajeros_v', // campo nuevo
-        'nro_ejes_v', // campo nuevo
-        'nro_ruedas_v', // campo nuevo
-        'nro_motor_v', // campo nuevo
-        'nro_vin_v', // campo nuevo
+        'peso_bruto_v',
+        'peso_neto_v',
+        'carga_util_v',
+        'nro_asientos_v',
+        'nro_pasajeros_v',
+        'nro_ejes_v',
+        'nro_ruedas_v',
+        'nro_motor_v',
+        'nro_vin_v',
         'id_inspeccion_local',
         'fecha_inspeccion',
-        'fecha_vencimiento', // campo nuevo
+        'fecha_vencimiento',
         'hora_inicio',
         'hora_fin',
-        'resultado_estado',
-        'estado_inspeccion', // campo nuevo, Espera, Evaluación, Finalizada, Anulada
+        'resultado_estado', // A = Aprobado, D = Desaprobado
+        'estado_inspeccion', // Espera, Evaluación, Finalizada, Anulada
         'es_reinspeccion',
         'numero_reinspeccion',
         'monto_total',
         'tipo_atencion',
-        'tipo_inspeccion', // campo nuevo
+        'tipo_inspeccion',
         'numero_certificado_mtc',
         'serie_certificado',
         'correlativo_certificado',
-        'propietario_nombre', // campo nuevo
-        'propietario_documento', // campo nuevo
-        'propietario_celular', // campo nuevo
-        'fecha_anulacion',
-        'nivel_defecto', // campo nuevo
-        'codigos_defectos', // campo nuevo
+        'propietario_nombre',
+        'propietario_documento',
+        'propietario_celular',
+        'fecha_anulacion', // null quiero decir que no ha sido anulada, si tiene fecha, entonces se anulo
+        'nivel_defecto',
+        'codigos_defectos',
 
         // informacion que se trabaja desde el sistema web
         'metodo_pago',

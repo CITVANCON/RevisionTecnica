@@ -258,6 +258,11 @@ Change class "fixed" to "sticky" in "navbar" (l. 33) so the navbar doesn't hide 
                                             {{ __('Mensual') }}
                                         </x-responsive-nav-link>
 
+                                        <x-responsive-nav-link class="text-sm" href="{{ route('reportes.mtc') }}"
+                                            :active="request()->routeIs('reportes.mtc')">
+                                            {{ __('MTC') }}
+                                        </x-responsive-nav-link>
+
                                     </ul>
 
                                 </div>

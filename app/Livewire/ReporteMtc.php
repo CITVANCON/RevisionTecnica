@@ -1,0 +1,62 @@
+<?php
+
+namespace App\Livewire;
+
+use App\Models\InspeccionMaestra;
+use Carbon\Carbon;
+use Livewire\Component;
+
+class ReporteMtc extends Component
+{
+
+    public $mes;
+    public $anio;
+
+    public function mount()
+    {
+        $this->mes = Carbon::now()->month;
+        $this->anio = Carbon::now()->year;
+    }
+
+    public function render()
+    {
+        // 1. Consulta base para el mes seleccionado
+        $queryBase = InspeccionMaestra::whereYear('fecha_inspeccion', $this->anio)
+            ->whereMonth('fecha_inspeccion', $this->mes)
+            ->orderBy('fecha_inspeccion', 'asc')
+            ->orderBy('id_inspeccion_local', 'asc');
+
+        // 2. Aprobados (Válidos y sin anulación)
+        $inspeccionados = (clone $queryBase)
+            ->where('resultado_estado', 'A')
+            ->whereNull('fecha_anulacion')
+            ->get();
+
+        // 3. Desaprobados (Válidos y sin anulación)
+        $desaprobados = (clone $queryBase)
+            ->where('resultado_estado', 'D')
+            ->whereNull('fecha_anulacion')
+            ->get();
+
+        // 4. Anulados (Basado en fecha de anulación para el reporte MTC)
+        $anulados = InspeccionMaestra::whereYear('fecha_anulacion', $this->anio)
+            ->whereMonth('fecha_anulacion', $this->mes)
+            ->whereNotNull('fecha_anulacion')
+            ->orderBy('fecha_anulacion', 'asc')
+            ->get();
+
+        // 5. AUDITORÍA: ¿Qué registros del mes no están en ninguna de las tablas anteriores?
+        // Esto nos dirá qué pasó con esos 9 registros faltantes.
+        $huerfanos = (clone $queryBase)
+            ->whereNull('fecha_anulacion')
+            ->whereNotIn('resultado_estado', ['A', 'D'])
+            ->get();
+
+        return view('livewire.reporte-mtc', [
+            'inspeccionados' => $inspeccionados,
+            'desaprobados'   => $desaprobados,
+            'anulados'       => $anulados,
+            'huerfanos'      => $huerfanos, // Para depuración
+        ]);
+    }
+}

@@ -9,6 +9,7 @@ use App\Livewire\GastoModulo;
 use App\Livewire\Linea;
 use App\Livewire\Permisos;
 use App\Livewire\Prueba;
+use App\Livewire\ReporteMtc;
 use App\Livewire\ReportesInspecciones;
 use App\Livewire\ReportesInspeccionesEjecutivo;
 use App\Livewire\ReportesInspeccionesMensual;
@@ -101,6 +102,8 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
         Route::get('/reportes-inspecciones', ReportesInspecciones::class)->name('reportes.inspecciones');
         Route::get('/reportes-inspecciones-ejecutivo', ReportesInspeccionesEjecutivo::class)->name('reportes.inspecciones.ejecutivo');
         Route::get('/reportes-inspecciones-mensual', ReportesInspeccionesMensual::class)->name('reportes.inspecciones.mensual');
+
+        Route::get('/reportes-mtc', ReporteMtc::class)->name('reportes.mtc');
 
 
         Route::get('/rrhh/contratos', Contratos::class)->name('rrhh.contratos'); //->middleware('can:rrhh.contratos')
