@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Models\InspeccionMaestra;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Livewire\Attributes\On;
 
 class AdministracionInspecciones extends Component
 {
@@ -66,7 +67,6 @@ class AdministracionInspecciones extends Component
 
         $this->modalDetallesCaja = true;
     }
-
     public function updateInspeccion()
     {
         $this->validate([
@@ -86,5 +86,27 @@ class AdministracionInspecciones extends Component
 
         $this->modalDetallesCaja = false;
         $this->dispatch('minAlert', titulo: 'ÉXITO', mensaje: 'Actualizado correctamente', icono: 'success');
+    }
+
+
+    #[On('deleteConfirmed')]
+    public function deleteConfirmed($id)
+    {
+        $this->deleteInspeccion($id);
+    }
+    public function deleteInspeccion($id)
+    {
+        try {
+            $inspeccion = InspeccionMaestra::findOrFail($id);
+
+            $inspeccion->delete();
+
+            $this->dispatch('minAlert', titulo: 'ELIMINADO', mensaje: 'Registro eliminado correctamente', icono: 'success');
+
+            // Opcional: resetear paginación si se queda sin registros
+            $this->resetPage();
+        } catch (\Exception $e) {
+            $this->dispatch('minAlert', titulo: 'ERROR', mensaje: 'No se pudo eliminar el registro', icono: 'error');
+        }
     }
 }

@@ -33,8 +33,8 @@
                 </div>
             </div>
 
-            <!-- Resumen de indicadores -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 px-2 mb-8">
+            <!-- Resumen de indicadores -->            
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 px-2 mb-8">
                 <div class="bg-white p-4 rounded-lg shadow-sm border-l-4 border-green-500 flex items-center justify-between">
                     <div>
                         <span class="text-xs text-gray-400 block uppercase font-bold">Aprobados</span>
@@ -65,121 +65,135 @@
                 </div>
             </div>
 
+            <!--Corregir el forelse por el foreach-->
             <div class="px-2 mb-10">
-                <h3 class="text-sm font-bold text-gray-600 mb-3 flex items-center uppercase tracking-wider">
-                    <i class="fas fa-table mr-2 text-green-500"></i> Tabla Vehículos Inspeccionados
-                </h3>
-                <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-100">
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full leading-normal table-auto">
-                            <thead>
-                                <tr class="bg-gray-100 border-b-2 border-gray-200 text-[10px] text-gray-600 font-bold uppercase">
-                                    <th class="px-3 py-3 text-left">Fecha ingreso</th>
-                                    <th class="px-3 py-3 text-left">N° de placa</th>
-                                    <th class="px-3 py-3 text-left">Serie Hoja</th>
-                                    <th class="px-3 py-3 text-center">Resultado</th>
-                                    <th class="px-3 py-3 text-left">Tipo Servicio Brindado</th>
-                                    <th class="px-3 py-3 text-left">Tipo Servicio Destinado</th>
-                                    <th class="px-3 py-3 text-center">Categoría</th>
-                                    <th class="px-3 py-3 text-left">Fecha Próx. Certif.</th>
-                                    <th class="px-3 py-3 text-left">Número Formato</th>
-                                    <th class="px-3 py-3 text-center">Re insp.</th>
-                                </tr>
-                            </thead>
-                            <tbody class="text-[11px]">
-                                @forelse ($inspeccionados as $item)
-                                    <tr class="border-b border-gray-100 hover:bg-gray-50 transition">
-                                        <td class="px-3 py-3">{{ $item->fecha_inspeccion?->format('d/m/Y') }}</td>
-                                        <td class="px-3 py-3 font-bold text-gray-900">{{ $item->placa_vehiculo }}</td>
-                                        <td class="px-3 py-3 font-mono">{{ $item->serie_certificado }}-{{ $item->correlativo_certificado }}</td>
-                                        <td class="px-3 py-3 text-center font-bold text-green-600">{{ $item->resultado_estado }}</td>
-                                        <td class="px-3 py-3 uppercase text-[9px]">{{ $item->tipo_inspeccion }}</td>
-                                        <td class="px-3 py-3 uppercase text-[9px] font-medium">{{ $item->tipo_atencion }}</td>
-                                        <td class="px-3 py-3 text-center font-bold text-indigo-700">{{ $item->categoria_vehiculo }}</td>
-                                        <td class="px-3 py-3">{{ $item->fecha_vencimiento }}</td>
-                                        <td class="px-3 py-3 font-mono">{{ $item->numero_certificado_mtc }}</td>
-                                        <td class="px-3 py-3 text-center font-bold">{{ $item->es_reinspeccion }}</td>
+                @if ($inspeccionados->count() > 0)
+                    <h3 class="text-sm font-bold text-gray-600 mb-3 flex items-center uppercase tracking-wider">
+                        <i class="fas fa-table mr-2 text-green-500"></i> Tabla Vehículos Inspeccionados
+                    </h3>
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-100">
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full leading-normal table-auto">
+                                <thead>
+                                    <tr class="bg-gray-100 border-b-2 border-gray-200 text-[10px] text-gray-600 font-bold uppercase">
+                                        <th class="px-3 py-3 text-left">Fecha ingreso</th>
+                                        <th class="px-3 py-3 text-left">N° de placa</th>
+                                        <th class="px-3 py-3 text-left">Serie Hoja</th>
+                                        <th class="px-3 py-3 text-center">Resultado</th>
+                                        <th class="px-3 py-3 text-left">Tipo Servicio Brindado</th>
+                                        <th class="px-3 py-3 text-left">Tipo Servicio Destinado</th>
+                                        <th class="px-3 py-3 text-center">Categoría</th>
+                                        <th class="px-3 py-3 text-left">Fecha Próx. Certif.</th>
+                                        <th class="px-3 py-3 text-left">Número Formato</th>
+                                        <th class="px-3 py-3 text-center">Re insp.</th>
                                     </tr>
-                                @empty
-                                    <tr><td colspan="10" class="p-4 text-center text-gray-400 italic bg-gray-50">Sin registros de aprobados.</td></tr>
-                                @endforelse
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody class="text-[11px]">
+                                    @foreach ($inspeccionados as $item)
+                                        <tr class="border-b border-gray-100 hover:bg-gray-50 transition">
+                                            <td class="px-3 py-3">{{ $item->fecha_inspeccion?->format('d/m/Y') }}</td>
+                                            <td class="px-3 py-3 font-bold text-gray-900">{{ $item->placa_vehiculo }}</td>
+                                            <td class="px-3 py-3 font-mono">{{ $item->serie_certificado }}-{{ $item->correlativo_certificado }}</td>
+                                            <td class="px-3 py-3 text-center font-bold text-green-600">{{ $item->resultado_estado }}</td>
+                                            <td class="px-3 py-3 uppercase text-[9px]">{{ $item->tipo_inspeccion }}</td>
+                                            <td class="px-3 py-3 uppercase text-[9px] font-medium">{{ $item->tipo_atencion }}</td>
+                                            <td class="px-3 py-3 text-center font-bold text-indigo-700">{{ $item->categoria_vehiculo }}</td>
+                                            <td class="px-3 py-3">{{ $item->fecha_vencimiento }}</td>
+                                            <td class="px-3 py-3 font-mono">{{ $item->numero_certificado_mtc }}</td>
+                                            <td class="px-3 py-3 text-center font-bold">{{ $item->es_reinspeccion }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                </div>
+                @else
+                    <div class="p-4 text-center bg-gray-100 rounded-lg text-gray-500 italic">
+                        Sin registros de aprobados.
+                    </div>
+                @endif
             </div>
 
             <div class="px-2 mt-4 mb-10">
-                <h3 class="text-sm font-bold text-gray-600 mb-3 flex items-center uppercase tracking-wider">
-                    <i class="fas fa-exclamation-triangle mr-2 text-red-500"></i> Tabla Vehículos Desaprobados
-                </h3>
-                <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-100">
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full leading-normal table-auto text-[11px]">
-                            <thead>
-                                <tr class="bg-red-50 border-b-2 border-red-100 text-[10px] text-red-700 font-bold uppercase">
-                                    <th class="px-4 py-3 text-left">F. Inspec</th>
-                                    <th class="px-4 py-3 text-left">Placa</th>
-                                    <th class="px-4 py-3 text-right">P. Bruto</th>
-                                    <th class="px-4 py-3 text-center">Categoria</th>
-                                    <th class="px-4 py-3 text-left">N Inf.</th>
-                                    <th class="px-4 py-3 text-left">Grave (Códigos)</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse ($desaprobados as $item)
-                                    <tr class="border-b border-gray-100 hover:bg-red-50/30 transition">
-                                        <td class="px-4 py-3">{{ $item->fecha_inspeccion?->format('d/m/Y') }}</td>
-                                        <td class="px-4 py-3 font-bold text-gray-900">{{ $item->placa_vehiculo }}</td>
-                                        <td class="px-4 py-3 text-right">{{ number_format($item->peso_bruto_v, 2) }}</td>
-                                        <td class="px-4 py-3 text-center font-bold text-indigo-700">{{ $item->categoria_vehiculo }}</td>
-                                        <td class="px-4 py-3 font-mono">{{ $item->numero_certificado_mtc }}</td>
-                                        <td class="px-4 py-3 text-red-600 font-medium">{{ $item->codigos_defectos }}</td>
+                @if ($desaprobados->count() > 0)
+                    <h3 class="text-sm font-bold text-gray-600 mb-3 flex items-center uppercase tracking-wider">
+                        <i class="fas fa-exclamation-triangle mr-2 text-red-500"></i> Tabla Vehículos Desaprobados
+                    </h3>
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-100">
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full leading-normal table-auto text-[11px]">
+                                <thead>
+                                    <tr class="bg-red-50 border-b-2 border-red-100 text-[10px] text-red-700 font-bold uppercase">
+                                        <th class="px-4 py-3 text-left">F. Inspec</th>
+                                        <th class="px-4 py-3 text-left">Placa</th>
+                                        <th class="px-4 py-3 text-right">P. Bruto</th>
+                                        <th class="px-4 py-3 text-center">Categoria</th>
+                                        <th class="px-4 py-3 text-left">N Inf.</th>
+                                        <th class="px-4 py-3 text-left">Grave (Códigos)</th>
                                     </tr>
-                                @empty
-                                    <tr><td colspan="6" class="p-4 text-center text-gray-400 italic bg-gray-50">Sin registros de desaprobados.</td></tr>
-                                @endforelse
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    @foreach ($desaprobados as $item)
+                                        <tr class="border-b border-gray-100 hover:bg-red-50/30 transition">
+                                            <td class="px-4 py-3">{{ $item->fecha_inspeccion?->format('d/m/Y') }}</td>
+                                            <td class="px-4 py-3 font-bold text-gray-900">{{ $item->placa_vehiculo }}</td>
+                                            <td class="px-4 py-3 text-right">{{ number_format($item->peso_bruto_v, 2) }}</td>
+                                            <td class="px-4 py-3 text-center font-bold text-indigo-700">{{ $item->categoria_vehiculo }}</td>
+                                            <td class="px-4 py-3 font-mono">{{ $item->numero_certificado_mtc }}</td>
+                                            <td class="px-4 py-3 text-red-600 font-medium">{{ $item->codigos_defectos }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                </div>
+                @else
+                    <div class="p-4 text-center bg-gray-100 rounded-lg text-gray-500 italic">
+                        Sin registros de desaprobados.
+                    </div>
+                @endif
             </div>
 
             <div class="px-2 mt-4 mb-10">
-                <h3 class="text-sm font-bold text-gray-600 mb-3 flex items-center uppercase tracking-wider">
-                    <i class="fas fa-trash-alt mr-2 text-gray-500"></i> Tabla Vehículos Anulados
-                </h3>
-                <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-100">
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full leading-normal table-auto text-[11px]">
-                            <thead>
-                                <tr class="bg-gray-800 text-white border-b-2 border-gray-900 text-[10px] font-bold uppercase">
-                                    <th class="px-4 py-3 text-left">ITEM</th>
-                                    <th class="px-4 py-3 text-left">N° DE FORMATO</th>
-                                    <th class="px-4 py-3 text-left">N° DE CALCOMANIA</th>
-                                    <th class="px-4 py-3 text-left">TIPO DE ERROR</th>
-                                    <th class="px-4 py-3 text-left">ACCION TOMADA</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse ($anulados as $item)
-                                    <tr class="border-b border-gray-100 bg-gray-50 hover:bg-gray-100 italic transition">
-                                        <td class="px-4 py-3 text-gray-500 font-mono">{{ $loop->iteration }}</td>
-                                        <td class="px-4 py-3 font-bold">{{ $item->serie_certificado }}-{{ $item->correlativo_certificado }}</td>
-                                        <td class="px-4 py-3 font-bold">{{ $item->serie_certificado }}-{{ $item->correlativo_certificado }}</td>
-                                        <td class="px-4 py-3 text-orange-700">ERROR DE IMPRESION</td>
-                                        <td class="px-4 py-3 font-medium">SD‐388‐0018102</td>
+                @if ($anulados->count() > 0)
+                    <h3 class="text-sm font-bold text-gray-600 mb-3 flex items-center uppercase tracking-wider">
+                        <i class="fas fa-trash-alt mr-2 text-gray-500"></i> Tabla Vehículos Anulados
+                    </h3>
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-100">
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full leading-normal table-auto text-[11px]">
+                                <thead>
+                                    <tr class="bg-gray-800 text-white border-b-2 border-gray-900 text-[10px] font-bold uppercase">
+                                        <th class="px-4 py-3 text-left">ITEM</th>
+                                        <th class="px-4 py-3 text-left">N° DE FORMATO</th>
+                                        <th class="px-4 py-3 text-left">N° DE CALCOMANIA</th>
+                                        <th class="px-4 py-3 text-left">TIPO DE ERROR</th>
+                                        <th class="px-4 py-3 text-left">ACCION TOMADA</th>
                                     </tr>
-                                @empty
-                                    <tr><td colspan="5" class="p-4 text-center text-gray-400 italic bg-gray-50">No hay certificados anulados en este periodo.</td></tr>
-                                @endforelse
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    @foreach ($anulados as $item)
+                                        <tr class="border-b border-gray-100 bg-gray-50 hover:bg-gray-100 italic transition">
+                                            <td class="px-4 py-3 text-gray-500 font-mono">{{ $loop->iteration }}</td>
+                                            <td class="px-4 py-3 font-bold">{{ $item->serie_certificado }}-{{ $item->correlativo_certificado }}</td>
+                                            <td class="px-4 py-3 font-bold">{{ $item->serie_certificado }}-{{ $item->correlativo_certificado }}</td>
+                                            <td class="px-4 py-3 text-orange-700">ERROR DE IMPRESION</td>
+                                            <td class="px-4 py-3 font-medium">SD‐388‐0018102</td>
+                                        </tr>                                    
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                </div>
+                @else
+                    <div class="p-4 text-center bg-gray-100 rounded-lg text-gray-500 italic">
+                        No hay certificados anulados en este periodo.
+                    </div>
+                @endif
             </div>
 
-                <div class="mt-8 px-2">
+            {{-- 
+            <div class="mt-8 px-2">
                     <h3 class="text-sm font-bold text-orange-600 mb-3 flex items-center uppercase tracking-wider">
                         <i class="fas fa-microscope mr-2"></i> Registros Observados (No incluidos en el reporte)
                     </h3>
@@ -207,7 +221,9 @@
                             </tbody>
                         </table>
                     </div>
-                </div>
+            </div>
+            --}}
+            
 
             <div class="text-[10px] text-gray-400 mt-6 italic px-1">
                 * Este reporte se genera automáticamente basado en los registros de inspección del sistema. Los campos marcados como "Serie Hoja" y "Calcomanía" utilizan la concatenación de serie y correlativo según requerimiento.

@@ -163,14 +163,12 @@
                                     <p class="px-3 py-1 rounded-full bg-green-100 text-green-700 font-bold">
                                         S/{{ number_format($item->monto_total, 2) }}
                                     </p>
-                                    {{-- --}}
                                     @if (!$item->metodo_pago)
                                         <span class="text-[10px] text-red-500 font-bold">PENDIENTE</span>
                                     @else
                                         <span
                                             class="text-[10px] text-gray-500 uppercase">{{ $item->metodo_pago }}</span>
                                     @endif
-
                                 </td>
                                 <td class="px-5 py-4 text-right" x-data="{ open: false }">
                                     <div class="relative inline-block text-left">
@@ -188,6 +186,11 @@
                                                 class="w-full text-left flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white transition">
                                                 <i class="fas fa-cash-register w-5 mr-2 text-green-600"></i> Editar
                                             </button>
+                                            <button wire:click="$dispatch('confirmDelete', { id: {{ $item->id }} })"
+                                                    class="w-full text-left flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-red-600 hover:text-white transition">
+                                                    <i class="fas fa-trash w-5 mr-2 text-red-600"></i> Eliminar
+                                            </button>
+                                            {{-- 
                                             <button
                                                 class="w-full text-left flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white transition">
                                                 <i class="fas fa-eye w-5 mr-2 text-blue-500"></i> Ver Detalles
@@ -196,6 +199,7 @@
                                                 class="w-full text-left flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white transition">
                                                 <i class="fas fa-print w-5 mr-2 text-gray-500"></i> Imprimir Constancia
                                             </button>
+                                            --}}
                                         </div>
                                     </div>
                                 </td>
@@ -270,4 +274,39 @@
             </x-button>
         </x-slot>
     </x-dialog-modal>
+
+    <script>
+        document.addEventListener('livewire:init', () => {
+
+            Livewire.on('confirmDelete', data => {
+                Swal.fire({
+                    title: '¿Estás seguro?',
+                    text: 'Este registro se eliminará definitivamente',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#e3342f',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Sí, eliminar',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Livewire.dispatch('deleteConfirmed', [data.id]);
+                    }
+                });
+            });
+
+            Livewire.on('minAlert', data => {
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: data.icono,
+                    title: data.titulo,
+                    text: data.mensaje,
+                    showConfirmButton: false,
+                    timer: 2500
+                });
+            });
+
+        });
+    </script>
 </div>

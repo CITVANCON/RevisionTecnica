@@ -8,7 +8,6 @@ use Livewire\Component;
 
 class ReporteMtc extends Component
 {
-
     public $mes;
     public $anio;
 
@@ -45,18 +44,22 @@ class ReporteMtc extends Component
             ->orderBy('fecha_anulacion', 'asc')
             ->get();
 
-        // 5. AUDITORÍA: ¿Qué registros del mes no están en ninguna de las tablas anteriores?
-        // Esto nos dirá qué pasó con esos 9 registros faltantes.
+        // 5. CORRECCIÓN: Los 9 huérfanos (Basado en tu consulta SQL)
+        // Registros que NO tienen A ni D, son NULL y NO están anulados.
         $huerfanos = (clone $queryBase)
             ->whereNull('fecha_anulacion')
-            ->whereNotIn('resultado_estado', ['A', 'D'])
+            ->where(function($query) {
+                $query->whereNotIn('resultado_estado', ['A', 'D'])
+                      ->orWhereNull('resultado_estado');
+            })
             ->get();
 
         return view('livewire.reporte-mtc', [
             'inspeccionados' => $inspeccionados,
             'desaprobados'   => $desaprobados,
             'anulados'       => $anulados,
-            'huerfanos'      => $huerfanos, // Para depuración
+            'huerfanos'      => $huerfanos,
+            'total_mes'      => $inspeccionados->count() + $desaprobados->count() + $anulados->count() + $huerfanos->count()
         ]);
     }
 }
