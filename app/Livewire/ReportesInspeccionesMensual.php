@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\CierreDiario;
 use App\Models\Gasto;
 use Livewire\Component;
 use App\Models\InspeccionMaestra;
@@ -35,7 +36,10 @@ class ReportesInspeccionesMensual extends Component
             )
             ->whereMonth('fecha_inspeccion', $fecha->month)
             ->whereYear('fecha_inspeccion', $anio)
+
             ->whereNull('fecha_anulacion')
+            ->where('estado_inspeccion', '!=', 'Anulada')
+            
             ->groupBy('fecha_inspeccion')
             ->orderBy('fecha_inspeccion', 'asc')
             ->get();
@@ -60,8 +64,17 @@ class ReportesInspeccionesMensual extends Component
             ->orderBy('fecha', 'asc')
             ->get();
 
+        // Obtener todos los cierres diarios del mes seleccionado
+        $cierresDelMes = CierreDiario::whereMonth('fecha', $fecha->month)
+            ->whereYear('fecha', $anio)
+            ->get()
+            ->keyBy(function($item) {
+                // Forzamos a que la llave sea un string YYYY-MM-DD aunque el cast sea date
+                return is_string($item->fecha) ? $item->fecha : $item->fecha->format('Y-m-d');
+            });
+
         // Mapear los gastos a la colección de reportes
-        $reporteMensual->transform(function ($fila) use ($gastosDiarios) {
+        /*$reporteMensual->transform(function ($fila) use ($gastosDiarios) {
             $fechaKey = Carbon::parse($fila->fecha_inspeccion)->format('Y-m-d');
 
             // gastos operativos diarios
@@ -76,12 +89,48 @@ class ReportesInspeccionesMensual extends Component
             $fila->saldo_dia = $fila->saldo_efectivo + $fila->monto_pos;
 
             return $fila;
+        });*/
+
+        $reporteMensual->transform(function ($fila) use ($gastosDiarios, $cierresDelMes) {
+            $fechaKey = Carbon::parse($fila->fecha_inspeccion)->format('Y-m-d');
+            $cierre = $cierresDelMes->get($fechaKey);
+
+            // Gastos operativos diarios
+            $fila->monto_gastos = $gastosDiarios->has($fechaKey) ? $gastosDiarios[$fechaKey]->total_gasto_dia : 0;
+            
+            // Lógica de POS y Comisiones
+            if ($cierre) {
+                // CASO CON CIERRE:
+                // El banco ya viene neto
+                $fila->comision_pos = $cierre->comision_pos;
+                $fila->monto_pos_neto = $cierre->monto_neto_pos;
+                
+                // IMPORTANTE: El efectivo real YA NO resta gastos porque ya fue restado al cerrar caja
+                $fila->monto_efectivo_final = $cierre->efectivo_real; 
+                $fila->saldo_efectivo = $cierre->efectivo_real; 
+            } else {
+                // CASO SIN CIERRE (Estimado del sistema):
+                $fila->comision_pos = 0; 
+                $fila->monto_pos_neto = $fila->monto_pos;
+                
+                // Aquí SÍ restamos los gastos porque el sistema solo conoce el Ingreso Bruto
+                $fila->saldo_efectivo = $fila->monto_efectivo - $fila->monto_gastos;
+            }
+
+            //$fila->saldo_efectivo = $fila->monto_efectivo_real - $fila->monto_gastos;
+            
+            // Saldo del día = Efectivo neto + POS ya descontado la comisión
+            $fila->saldo_dia = $fila->saldo_efectivo + $fila->monto_pos_neto;
+
+            $fila->cierre = $cierre; 
+            
+            return $fila;
         });
 
         // Totales finales para el balance
-        //$totalGastosDiarios = $reporteMensual->sum('monto_gastos');
-        //$totalEgresosMensuales = $egresosMensuales->sum('monto');
         $ingresoBruto = $reporteMensual->sum('monto_dia');
+
+        $totalComisiones = $reporteMensual->sum('comision_pos');
 
         $ingresosOperativos = $reporteMensual->sum('saldo_dia'); // Suma de saldos por día
         $egresosMensualesTotal = $egresosMensuales->sum('monto');
@@ -90,8 +139,9 @@ class ReportesInspeccionesMensual extends Component
         $balance = [
             'total_certificados' => $reporteMensual->sum('total_certificados'),
             'ingreso_bruto'      => $ingresoBruto,
-            //'total_gastos'       => $totalGastosDiarios + $totalEgresosMensuales,
-            //'ingreso_neto'       => $ingresoBruto - ($totalGastosDiarios + $totalEgresosMensuales),
+
+            'total_comisiones'   => $totalComisiones,
+
             'ingresos_operativos' => $ingresosOperativos,
             'egresos_mensuales'   => $egresosMensualesTotal,
             'utilidad_real'       => $ingresosOperativos - $egresosMensualesTotal,

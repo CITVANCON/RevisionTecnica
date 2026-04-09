@@ -65,7 +65,7 @@
                 </div>
             </div>
 
-            <!--Corregir el forelse por el foreach-->
+            <!-- Tabla inspeccionados -->
             <div class="px-2 mb-10">
                 @if ($inspeccionados->count() > 0)
                     <h3 class="text-sm font-bold text-gray-600 mb-3 flex items-center uppercase tracking-wider">
@@ -92,7 +92,7 @@
                                     @foreach ($inspeccionados as $item)
                                         <tr class="border-b border-gray-100 hover:bg-gray-50 transition">
                                             <td class="px-3 py-3">{{ $item->fecha_inspeccion?->format('d/m/Y') }}</td>
-                                            <td class="px-3 py-3 font-bold text-gray-900">{{ $item->placa_vehiculo }}</td>
+                                            <td class="px-3 py-3 font-bold text-gray-900 uppercase tracking-wider">{{ $item->placa_vehiculo }}</td>
                                             <td class="px-3 py-3 font-mono">{{ $item->serie_certificado }}-{{ $item->correlativo_certificado }}</td>
                                             <td class="px-3 py-3 text-center font-bold text-green-600">{{ $item->resultado_estado }}</td>
                                             <td class="px-3 py-3 uppercase text-[9px]">{{ $item->tipo_inspeccion }}</td>
@@ -114,6 +114,7 @@
                 @endif
             </div>
 
+            <!-- Tabla desaprobados -->
             <div class="px-2 mt-4 mb-10">
                 @if ($desaprobados->count() > 0)
                     <h3 class="text-sm font-bold text-gray-600 mb-3 flex items-center uppercase tracking-wider">
@@ -154,6 +155,7 @@
                 @endif
             </div>
 
+            <!-- Tabla anulados -->
             <div class="px-2 mt-4 mb-10">
                 @if ($anulados->count() > 0)
                     <h3 class="text-sm font-bold text-gray-600 mb-3 flex items-center uppercase tracking-wider">
@@ -226,7 +228,8 @@
             
 
             <div class="text-[10px] text-gray-400 mt-6 italic px-1">
-                * Este reporte se genera automáticamente basado en los registros de inspección del sistema. Los campos marcados como "Serie Hoja" y "Calcomanía" utilizan la concatenación de serie y correlativo según requerimiento.
+                * Este reporte se genera automáticamente basado en los registros de inspección del sistema. Los campos marcados como "Serie Hoja" y
+                 "Calcomanía" utilizan la concatenación de serie y correlativo según requerimiento.
             </div>
         </div>
     </div>

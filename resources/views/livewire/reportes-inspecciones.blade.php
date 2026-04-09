@@ -41,9 +41,9 @@
                             <i class="fas fa-receipt fa-2x"></i>
                         </div>
                         <div>
-                            <p class="text-[10px] text-gray-400 font-bold uppercase">Egresos Totales</p>
-                            <p class="text-xl font-bold text-gray-700">S/ {{ number_format($stats['total_gastos'], 2) }}</p>
-                            <p class="text-[10px] text-gray-500 italic">operativos + administrativos</p>
+                            <p class="text-[10px] text-gray-400 font-bold uppercase">Costos Operativos</p>
+                            <p class="text-lg font-bold text-gray-700">S/ {{ number_format($stats['total_gastos'] + $stats['total_comisiones'], 2) }}</p>
+                            <p class="text-[9px] text-gray-500">Gastos: {{ number_format($stats['total_gastos'], 2) }} | Com: {{ number_format($stats['total_comisiones'], 2) }}</p>
                         </div>
                     </div>
                 </div>
@@ -53,9 +53,9 @@
                             <i class="fas fa-hand-holding-usd fa-2x"></i>
                         </div>
                         <div>
-                            <p class="text-[10px] text-gray-400 font-bold uppercase">Utilidad Estimada</p>
-                            <p class="text-xl font-black text-orange-700">S/ {{ number_format($stats['utilidad_estimada'], 2) }}</p>
-                            <p class="text-[9px] text-gray-400">Bruto - Gastos del periodo</p>
+                            <p class="text-[10px] text-gray-400 font-bold uppercase">Utilidad Real Neta</p>
+                            <p class="text-xl font-black text-orange-700">S/ {{ number_format($stats['utilidad_real'], 2) }}</p>
+                            <p class="text-[9px] text-gray-400">Bruto - Gastos - Comisiones</p>
                         </div>
                     </div>
                 </div>
@@ -87,48 +87,55 @@
 
             <!-- Tabla por tipo de atencion -->
             <div class="px-2">
-                <div class="bg-white rounded-lg shadow-sm overflow-hidden">
-                    <div class="bg-gray-100 px-6 py-3 border-b border-gray-200">
-                        <h3 class="text-gray-700 font-bold text-sm uppercase">Distribución por Tipo de Atención</h3>
-                    </div>
-                    <table class="min-w-full leading-normal">
-                        <thead>
-                            <tr>
-                                <th class="px-5 py-3 bg-gray-50 text-left text-xs font-semibold text-gray-600 uppercase">Tipo de Atención</th>
-                                <th class="px-5 py-3 bg-gray-50 text-center text-xs font-semibold text-gray-600 uppercase">Cantidad</th>
-                                <th class="px-5 py-3 bg-gray-50 text-right text-xs font-semibold text-gray-600 uppercase">Total Ingresos</th>
-                                <th class="px-5 py-3 bg-gray-50 text-center text-xs font-semibold text-gray-600 uppercase">Participación</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($porTipo as $tipo)
-                                <tr class="border-b border-gray-100 hover:bg-gray-50 transition">
-                                    <td class="px-5 py-4">
-                                        <p class="text-gray-900 font-semibold">{{ $tipo->tipo_atencion ?? 'No Definido' }}</p>
-                                    </td>
-                                    <td class="px-5 py-4 text-center">
-                                        <span class="px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-xs font-bold">
-                                            {{ $tipo->total }}
-                                        </span>
-                                    </td>
-                                    <td class="px-5 py-4 text-right">
-                                        <p class="text-gray-900 font-bold">S/ {{ number_format($tipo->ingresos, 2) }}</p>
-                                    </td>
-                                    <td class="px-5 py-4">
-                                        @php
-                                            $porcentaje = ($tipo->ingresos / max($stats['total_ingresos'], 1)) * 100;
-                                        @endphp
-                                        <div class="w-full bg-gray-200 rounded-full h-2">
-                                            <div class="bg-indigo-600 h-2 rounded-full" style="width: {{ $porcentaje }}%"></div>
-                                        </div>
-                                        <p class="text-[10px] text-right mt-1 text-gray-500">{{ number_format($porcentaje, 1) }}%</p>
-                                    </td>
+                @if ($porTipo->count() > 0)
+                    <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+                        <div class="bg-gray-100 px-6 py-3 border-b border-gray-200">
+                            <h3 class="text-gray-700 font-bold text-sm uppercase">Distribución por Tipo de Atención</h3>
+                        </div>
+                        <table class="min-w-full leading-normal">
+                            <thead>
+                                <tr>
+                                    <th class="px-5 py-3 bg-gray-50 text-left text-xs font-semibold text-gray-600 uppercase">Tipo de Atención</th>
+                                    <th class="px-5 py-3 bg-gray-50 text-center text-xs font-semibold text-gray-600 uppercase">Cantidad</th>
+                                    <th class="px-5 py-3 bg-gray-50 text-right text-xs font-semibold text-gray-600 uppercase">Total Ingresos</th>
+                                    <th class="px-5 py-3 bg-gray-50 text-center text-xs font-semibold text-gray-600 uppercase">Participación</th>
                                 </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
+                            </thead>
+                            <tbody>
+                                @foreach ($porTipo as $tipo)
+                                    <tr class="border-b border-gray-100 hover:bg-gray-50 transition">
+                                        <td class="px-5 py-4">
+                                            <p class="text-gray-900 font-semibold">{{ $tipo->tipo_atencion ?? 'No Definido' }}</p>
+                                        </td>
+                                        <td class="px-5 py-4 text-center">
+                                            <span class="px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-xs font-bold">
+                                                {{ $tipo->total }}
+                                            </span>
+                                        </td>
+                                        <td class="px-5 py-4 text-right">
+                                            <p class="text-gray-900 font-bold">S/ {{ number_format($tipo->ingresos, 2) }}</p>
+                                        </td>
+                                        <td class="px-5 py-4">
+                                            @php
+                                                $porcentaje = ($tipo->ingresos / max($stats['total_ingresos'], 1)) * 100;
+                                            @endphp
+                                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                                <div class="bg-indigo-600 h-2 rounded-full" style="width: {{ $porcentaje }}%"></div>
+                                            </div>
+                                            <p class="text-[10px] text-right mt-1 text-gray-500">{{ number_format($porcentaje, 1) }}%</p>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                @else
+                    <div class="p-4 text-center bg-gray-100 rounded-lg text-gray-500 italic">
+                        No se encontraron registros para el rango seleccionado.
+                    </div>
+                @endif
             </div>
+            
         </div>
     </div>
 </div>

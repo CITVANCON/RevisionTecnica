@@ -273,11 +273,27 @@ ADD COLUMN propietario_celular VARCHAR(20) NULL AFTER propietario_documento;
 
 
 
+CREATE TABLE cierres_diarios (
+    fecha DATE NOT NULL,
+    efectivo_esperado DECIMAL(10,2) DEFAULT 0.00,
+    efectivo_real DECIMAL(10,2) DEFAULT 0.00,
+    pos_esperado DECIMAL(10,2) DEFAULT 0.00,
+    pos_real DECIMAL(10,2) DEFAULT 0.00,
+    diferencia DECIMAL(10,2) GENERATED ALWAYS AS (efectivo_real + pos_real - (efectivo_esperado + pos_esperado)) STORED,
+    observacion TEXT NULL,
+    auditado_por BIGINT NULL,
+    estado ENUM('pendiente', 'cuadrado', 'observado') DEFAULT 'pendiente',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (fecha),
+    INDEX idx_estado_fecha (estado, fecha)
+);
 
 
 
-
-
+ALTER TABLE cierres_diarios 
+ADD COLUMN comision_pos DECIMAL(10, 2) NOT NULL DEFAULT 0.00 AFTER pos_real,
+ADD COLUMN monto_neto_pos DECIMAL(10, 2) NOT NULL DEFAULT 0.00 AFTER comision_pos;
 
 
 

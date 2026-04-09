@@ -61,6 +61,11 @@ class SincronizacionController extends Controller
         // 2. Extracción de Datos
         $datos = $request->json()->all() ?: $request->all();
 
+        // Si recibimos un solo objeto (no una lista), lo envolvemos en un array
+        if (is_array($datos) && isset($datos['id_inspeccion_local'])) {
+            $datos = [$datos];
+        }
+
         if (empty($datos) || !is_array($datos)) {
             Log::error("Sincronización fallida: El cuerpo de la petición está vacío o mal formado.");
             return response()->json(['mensaje' => 'Sin datos válidos recibidos', 'cantidad' => 0], 400);

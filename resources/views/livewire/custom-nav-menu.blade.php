@@ -374,10 +374,12 @@ Change class "fixed" to "sticky" in "navbar" (l. 33) so the navbar doesn't hide 
                                         class="mt-2 divide-y-2 divide-accent overflow-hidden text-sm font-medium bg-light text-white shadow-inner rounded"
                                         aria-label="submenu">
 
-                                            <x-responsive-nav-link class="text-sm" href="{{ route('rrhh.contratos') }}"
-                                                :active="request()->routeIs('rrhh.contratos')">
-                                                {{ __('Empleados') }}
-                                            </x-responsive-nav-link>
+                                            @can('rrhh.contratos')
+                                                <x-responsive-nav-link class="text-sm" href="{{ route('rrhh.contratos') }}"
+                                                    :active="request()->routeIs('rrhh.contratos')">
+                                                    {{ __('Empleados') }}
+                                                </x-responsive-nav-link>
+                                            @endcan
                                             @can('rrhh.planillas')
                                                 <x-responsive-nav-link class="text-sm" href="{{ route('rrhh.planillas') }}"
                                                     :active="request()->routeIs('rrhh.planillas')">

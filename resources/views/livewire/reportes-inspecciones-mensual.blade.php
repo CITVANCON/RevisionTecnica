@@ -47,12 +47,6 @@
                         {{ number_format($balance['utilidad_real'], 2) }}
                     </span>
                 </div>
-                {{--
-                <div class="bg-white p-4 rounded-lg border-l-4 border-indigo-500 shadow-sm text-center md:text-left">
-                    <span class="text-[10px] font-bold text-gray-400 uppercase block">Certificados Emitidos</span>
-                    <span class="text-2xl font-black text-gray-800">{{ $balance['total_certificados'] }}</span>
-                </div>
-                --}}
                 <div class="bg-white p-4 rounded-lg border-l-4 border-indigo-500 shadow-sm text-center md:text-left">
                     <span class="text-[10px] font-bold text-gray-400 uppercase block">50% Utilidad</span>
                     <span class="text-2xl font-black text-gray-800">{{ number_format($balance['utilidad_real'] / 2, 2) }}</span>
@@ -89,16 +83,14 @@
                                             Saldo efectivo
                                         </th>
                                         <th class="px-4 py-3 bg-gray-100 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">
-                                            POS
+                                            POS (Bruto / Neto)
                                         </th>
                                         <th class="px-4 py-3 bg-gray-100 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">
                                             Saldo por Día
                                         </th>
-                                        {{--
-                                        <th class="px-4 py-3 bg-gray-100 text-right text-xs font-bold text-gray-600 uppercase tracking-wider">
-                                            Total por Día
+                                        <th class="px-4 py-3 bg-gray-100 text-center text-xs font-bold text-gray-600 uppercase tracking-wider">
+                                            Auditoría
                                         </th>
-                                        --}}
                                     </tr>
                                 </thead>
                                 <tbody class="text-gray-700">
@@ -123,21 +115,42 @@
                                             <td class="px-4 py-3 text-center font-medium text-red-600">
                                                 {{ number_format($fila->monto_gastos, 2) }}
                                             </td>
-                                            <td
-                                                class="px-4 py-3 text-center font-bold {{ $fila->saldo_efectivo < 0 ? 'text-red-700' : 'text-gray-900' }}">
+                                            <td class="px-4 py-3 text-center font-bold {{ $fila->saldo_efectivo < 0 ? 'text-red-700' : 'text-gray-900' }}">
                                                 {{ number_format($fila->saldo_efectivo, 2) }}
                                             </td>
                                             <td class="px-4 py-3 text-center font-medium">
-                                                {{ number_format($fila->monto_pos, 2) }}
+                                                {{-- number_format($fila->monto_pos, 2) --}}
+                                                <div class="text-xs text-gray-400 line-through">
+                                                    {{ number_format($fila->monto_pos, 2) }}
+                                                </div>
+                                                <div class="font-bold text-blue-700">
+                                                    {{ number_format($fila->monto_pos_neto, 2) }}
+                                                </div>
+                                                @if($fila->comision_pos > 0)
+                                                    <span class="text-[9px] text-red-500 font-bold">- S/ {{ number_format($fila->comision_pos, 2) }}</span>
+                                                @endif
                                             </td>
                                             <td class="px-4 py-3 text-center font-black text-green-700">
                                                 {{ number_format($fila->saldo_dia, 2) }}
                                             </td>
-                                            {{--
-                                            <td class="px-4 py-3 text-right font-bold text-gray-900">
-                                                {{ number_format($fila->monto_dia, 2) }}
+                                            <td class="px-4 py-3 text-center">
+                                                @if($fila->cierre)
+                                                    @php
+                                                        $color = [
+                                                            'cuadrado' => 'bg-green-100 text-green-700 border-green-200',
+                                                            'pendiente' => 'bg-yellow-100 text-yellow-700 border-yellow-200',
+                                                            'observado' => 'bg-red-100 text-red-700 border-red-200',
+                                                        ][$fila->cierre->estado] ?? 'bg-gray-100 text-gray-700';
+                                                    @endphp
+                                                    <span class="px-2 py-1 rounded border text-[10px] font-bold uppercase {{ $color }}">
+                                                        {{ $fila->cierre->estado }}
+                                                    </span>
+                                                @else
+                                                    <span class="px-2 py-1 rounded border border-gray-200 bg-gray-50 text-gray-400 text-[10px] font-bold uppercase">
+                                                        Sin Registro
+                                                    </span>
+                                                @endif
                                             </td>
-                                            --}}
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -159,16 +172,13 @@
                                             {{ number_format($reporte->sum('saldo_efectivo'), 2) }}
                                         </td>
                                         <td class="px-4 py-4 text-center font-bold text-sm text-blue-300">
-                                            {{ number_format($reporte->sum('monto_pos'), 2) }}
+                                            {{-- number_format($reporte->sum('monto_pos'), 2) --}}
+                                            {{ number_format($reporte->sum('monto_pos_neto'), 2) }}
                                         </td>
                                         <td class="px-4 py-4 text-center font-bold text-sm">
                                             {{ number_format($reporte->sum('saldo_dia'), 2) }}
                                         </td>
-                                        {{--
-                                        <td class="px-4 py-4 text-right font-bold text-sm">
-                                            {{ number_format($reporte->sum('monto_dia'), 2) }}
-                                        </td>
-                                        --}}
+                                        <td></td>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -179,6 +189,7 @@
                         No se encontraron operaciones registradas para el periodo {{ $nombreMes }}.
                     </div>
                 @endif
+
                 <div class="px-4 py-3 bg-blue-50 border-l-4 border-blue-400 mt-2 rounded-r-lg">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
