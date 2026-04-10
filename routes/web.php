@@ -5,7 +5,9 @@ use App\Http\Controllers\PdfController;
 use App\Livewire\AdministracionInspecciones;
 use App\Livewire\EditarLineaInspeccion;
 use App\Livewire\Expedientes;
+use App\Livewire\FormCliente;
 use App\Livewire\GastoModulo;
+use App\Livewire\InspeccionExtraComponent;
 use App\Livewire\Linea;
 use App\Livewire\Permisos;
 use App\Livewire\Prueba;
@@ -83,26 +85,30 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
 
         //Ruta para alta de vehiculo
         Route::get('/altavehiculo', Prueba::class)->name('altavehiculo');
-
         // Rutas para linea de inspeccion
         Route::get('/lineainspeccion', Linea::class)->name('lineainspeccion');
         Route::get('/lineainspeccion/{idPropuesta}', EditarLineaInspeccion::class)->name('editar-lineainspeccion');
-
         // Ruta para subir fotografias a una propuesta
         Route::get('/subir-fotografias', SubirFotografias::class)->name('subirFotografias');
+
+
 
         //Ruta para admin inspecciones
         Route::get('/Admin-inspecciones', AdministracionInspecciones::class)->name('AdminInspecciones');
 
+        //Ruta para inspecciones extra
+        Route::get('/inspecciones-extras', InspeccionExtraComponent::class)->name('inspeccion.extra');
+        Route::get('/cliente', FormCliente::class)->name('cliente');
+
         Route::get('/Expedientes', Expedientes::class)->name('expedientes');
 
+        // Ruta para gastos y egresos
         Route::get('gasto-egreso', GastoModulo::class)->name('gastos');
 
         //Ruta para reportes de inspecciones
         Route::get('/reportes-inspecciones', ReportesInspecciones::class)->name('reportes.inspecciones');
         Route::get('/reportes-inspecciones-ejecutivo', ReportesInspeccionesEjecutivo::class)->name('reportes.inspecciones.ejecutivo');
         Route::get('/reportes-inspecciones-mensual', ReportesInspeccionesMensual::class)->name('reportes.inspecciones.mensual');
-
         Route::get('/reportes-mtc', ReporteMtc::class)->name('reportes.mtc');
 
 

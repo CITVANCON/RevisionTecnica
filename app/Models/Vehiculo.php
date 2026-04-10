@@ -18,11 +18,17 @@ class Vehiculo extends Model
         'alto', 'color', 'peso_neto', 'peso_bruto', 'peso_util'
     ];
 
+    //Nueva para servicios extras
     public function inspecciones()
+    {
+        return $this->hasMany(InspeccionExtra::class);
+    }
+
+    // Logica anterior
+    public function inspeccionesanterior()
     {
         return $this->hasMany(Inspeccion::class);
     }
-
     public function historialInspecciones()
     {
         return $this->hasMany(HistorialInspeccion::class);

@@ -182,6 +182,11 @@ Change class "fixed" to "sticky" in "navbar" (l. 33) so the navbar doesn't hide 
                                             {{ __('Admin. Inspecciones') }}
                                         </x-responsive-nav-link>
 
+                                        <x-responsive-nav-link class="text-sm" href="{{ route('inspeccion.extra') }}"
+                                            :active="request()->routeIs('inspeccion.extra')">
+                                            {{ __('Nueva Inspeccion') }}
+                                        </x-responsive-nav-link>
+
                                     </ul>
 
                                 </div>

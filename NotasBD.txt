@@ -298,7 +298,109 @@ ADD COLUMN monto_neto_pos DECIMAL(10, 2) NOT NULL DEFAULT 0.00 AFTER comision_po
 
 
 
+-- Tablas para nuevos servicios de hermeticidad y opacidad
 
+CREATE TABLE tipos_servicios_extras (
+    id INT(11) AUTO_INCREMENT PRIMARY KEY,
+    nombre_servicio VARCHAR(100) NOT NULL,
+    descripcion VARCHAR(255),
+    estado BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE clientes (
+    id INT(11) AUTO_INCREMENT PRIMARY KEY,
+    tipo_cliente ENUM('NATURAL', 'JURIDICA') NOT NULL,
+    nombre_razon_social VARCHAR(255) NOT NULL,
+    tipo_documento ENUM('DNI', 'RUC', 'CE') NOT NULL,
+    numero_documento VARCHAR(11) UNIQUE NOT NULL,
+    direccion VARCHAR(255),
+    telefono VARCHAR(20),
+    email VARCHAR(100),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE inspecciones_extras (
+    id INT(11) AUTO_INCREMENT PRIMARY KEY,
+    cliente_id INT(11) NOT NULL,
+    vehiculo_id INT(11) NOT NULL,
+    tipo_servicio_id INT(11) NOT NULL,
+
+    numero_certificado VARCHAR(20) UNIQUE NOT NULL,
+    fecha_inspeccion DATE NOT NULL,
+    hora_inspeccion TIME NOT NULL,
+    vigencia_meses INT DEFAULT 6,
+    proxima_inspeccion DATE NOT NULL,
+
+    metodo_pago VARCHAR(50),
+    nro_comprobante VARCHAR(50),
+    comision_monto DECIMAL(10,2) DEFAULT 0.00,
+
+    observaciones TEXT,
+    resultado_final ENUM('APTO', 'OBSERVADO', 'NO APTO', 'APROBADO', 'DESAPROBADO') NOT NULL,
+    usuario_id INT(11),
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (cliente_id) REFERENCES clientes(id),
+    FOREIGN KEY (tipo_servicio_id) REFERENCES tipos_servicios_extras(id),
+    FOREIGN KEY (vehiculo_id) REFERENCES vehiculos(id)
+);
+
+-- Detalles para el Certificado de Hermeticidad
+CREATE TABLE detalle_hermeticidad (
+    id INT(11) AUTO_INCREMENT PRIMARY KEY,
+    inspeccion_extra_id INT(11) UNIQUE NOT NULL,
+    
+    -- Matriz de Inspección
+    tapa CHAR(1),
+    compuerta CHAR(1),
+    tolva CHAR(1),
+    sellos CHAR(1),
+    bisagras CHAR(1),
+    pistones CHAR(1),
+    mangueras CHAR(1),
+    remaches CHAR(1),
+    
+    -- Datos de la Prueba
+    tiempo_prueba VARCHAR(10) DEFAULT '5:00',
+    cant_bisagras INT DEFAULT 0,
+    cant_pistones INT DEFAULT 0,
+    cant_mangueras INT DEFAULT 0,
+    cant_remaches INT DEFAULT 0,
+    faltas_bisagras INT DEFAULT 0,
+    faltas_pistones INT DEFAULT 0,
+    faltas_mangueras INT DEFAULT 0,
+    faltas_remaches INT DEFAULT 0,
+    
+    FOREIGN KEY (inspeccion_extra_id) REFERENCES inspecciones_extras(id) ON DELETE CASCADE
+);
+
+-- Detalles para el Certificado de Opacidad
+CREATE TABLE detalle_opacidad (
+    id INT(11) AUTO_INCREMENT PRIMARY KEY,
+    inspeccion_extra_id INT(11) UNIQUE NOT NULL,
+    
+    -- Equipo
+    maquina VARCHAR(50),
+    marca_equipo VARCHAR(50),
+    modelo_equipo VARCHAR(50),
+    serie_equipo VARCHAR(50),
+    
+    -- Lecturas (K = Opacidad, T = Temperatura)
+    ciclo1_k DECIMAL(5,2), ciclo1_t DECIMAL(5,2),
+    ciclo2_k DECIMAL(5,2), ciclo2_t DECIMAL(5,2),
+    ciclo3_k DECIMAL(5,2), ciclo3_t DECIMAL(5,2),
+    ciclo4_k DECIMAL(5,2), ciclo4_t DECIMAL(5,2),
+    
+    promedio_k DECIMAL(5,2),
+    limite_permitido DECIMAL(5,2),
+    
+    FOREIGN KEY (inspeccion_extra_id) REFERENCES inspecciones_extras(id) ON DELETE CASCADE
+);
 
 
 
