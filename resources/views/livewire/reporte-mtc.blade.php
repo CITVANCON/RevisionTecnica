@@ -11,6 +11,7 @@
                 </div>
                 
                 <div class="flex gap-3 mt-4 md:mt-0 px-2">
+                    <!-- MES -->
                     <div class="flex bg-gray-50 items-center p-2 rounded-md shadow-sm border border-gray-100">
                         <span class="text-sm mr-2 font-medium text-gray-500">Mes:</span>
                         <select wire:model.live="mes" class="bg-gray-50 border-none outline-none focus:ring-0 text-sm text-indigo-700 font-bold uppercase">
@@ -19,6 +20,7 @@
                             @endforeach
                         </select>
                     </div>
+                    <!-- AÑO -->
                     <div class="flex bg-gray-50 items-center p-2 rounded-md shadow-sm border border-gray-100">
                         <span class="text-sm mr-2 font-medium text-gray-500">Año:</span>
                         <select wire:model.live="anio" class="bg-gray-50 border-none outline-none focus:ring-0 text-sm text-indigo-700 font-bold">
@@ -27,14 +29,33 @@
                             @endforeach
                         </select>
                     </div>
+                    <!-- IMPRIMIR -->
                     <div onclick="window.print()" class="flex bg-white items-center px-4 py-2 rounded-md shadow-sm border border-gray-300 hover:bg-gray-100 cursor-pointer transition">
                         <i class="fas fa-print text-gray-600"></i>
+                    </div>
+                    <!-- PDF -->
+                    <div wire:click="descargarPdf" wire:loading.attr="disabled"
+                        class="flex bg-red-500 text-white items-center px-4 py-2 rounded-md shadow-sm border border-red-500 hover:bg-red-600 cursor-pointer transition">
+                        <i wire:loading wire:target="descargarPdf" class="fas fa-spinner fa-spin mr-2"></i>
+                        <i wire:loading.remove wire:target="descargarPdf" class="fas fa-file-pdf"></i>
+                        
+                        <span wire:loading.remove wire:target="descargarPdf"></span>
+                        <span wire:loading wire:target="descargarPdf">Generando...</span>
+                    </div>
+                    <!-- EXCELL -->
+                    <div {{--wire:click="descargarExcell" wire:loading.attr="disabled"--}}
+                        class="flex bg-green-500 text-white items-center px-4 py-2 rounded-md shadow-sm border border-green-500 hover:bg-green-600 cursor-pointer transition">
+                        <i wire:loading wire:target="descargarExcell" class="fas fa-spinner fa-spin mr-2"></i>
+                        <i wire:loading.remove wire:target="descargarExcell" class="fas fa-file-excel"></i>
+                        
+                        <span wire:loading.remove wire:target="descargarExcell"></span>
+                        <span wire:loading wire:target="descargarExcell">Generando...</span>
                     </div>
                 </div>
             </div>
 
             <!-- Resumen de indicadores -->            
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 px-2 mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 px-2 mb-4">
                 <div class="bg-white p-4 rounded-lg shadow-sm border-l-4 border-green-500 flex items-center justify-between">
                     <div>
                         <span class="text-xs text-gray-400 block uppercase font-bold">Aprobados</span>
@@ -64,6 +85,8 @@
                     <i class="fas fa-pause-circle text-orange-400 fa-2x"></i>
                 </div>
             </div>
+
+            
 
             <!-- Tabla inspeccionados -->
             <div class="px-2 mb-10">

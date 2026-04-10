@@ -54,6 +54,7 @@ class InspeccionMaestra extends Model
 
     protected $casts = [
         'fecha_inspeccion' => 'date',
+        'fecha_vencimiento' => 'date',
         'monto_total' => 'decimal:2',
         'comision_monto' => 'decimal:2',
     ];

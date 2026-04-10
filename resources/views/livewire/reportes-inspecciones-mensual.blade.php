@@ -189,7 +189,8 @@
                         No se encontraron operaciones registradas para el periodo {{ $nombreMes }}.
                     </div>
                 @endif
-
+                
+                {{-- 
                 <div class="px-4 py-3 bg-blue-50 border-l-4 border-blue-400 mt-2 rounded-r-lg">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
@@ -206,6 +207,7 @@
                         </div>
                     </div>
                 </div>
+                --}}
             </div>
 
             <!-- Tabla egresos mensuales -->
