@@ -9,9 +9,9 @@ class InspeccionExtra extends Model
     protected $table = 'inspecciones_extras';
 
     protected $fillable = [
-        'cliente_id', 'vehiculo_id', 'tipo_servicio_id', 'numero_certificate',
+        'cliente_id', 'vehiculo_id', 'tipo_servicio_id', 'numero_certificado',
         'fecha_inspeccion', 'hora_inspeccion', 'vigencia_meses', 'proxima_inspeccion',
-        'metodo_pago', 'nro_comprobante', 'comision_monto', 'observaciones', 'resultado_final'
+        'metodo_pago', 'nro_comprobante', 'comision_monto', 'observaciones', 'resultado_final', 'usuario_id'
     ];
 
     // Relaciones
@@ -24,8 +24,11 @@ class InspeccionExtra extends Model
     }
 
     public function vehiculo() {
-        // Asumiendo que tu modelo se llama Vehiculo
         return $this->belongsTo(Vehiculo::class, 'vehiculo_id');
+    }
+
+    public function usuario() {
+        return $this->belongsTo(User::class, 'usuario_id');
     }
 
     // Relaciones con los detalles

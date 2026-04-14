@@ -1,6 +1,7 @@
 <div class="block justify-center pt-4 max-h-max pb-4">
     <h1 class="text-center text-xl my-4 font-bold text-secondary uppercase">Realizar Inspección Extra</h1>
 
+    {{-- Selección de Servicio --}}
     <div class="max-w-5xl m-auto bg-accent rounded-lg shadow-md">
         <div class="mt-2 mb-6 px-8 py-2">
             <div class="mt-4 mb-4 flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
@@ -17,110 +18,100 @@
 
     @if ($servicio_seleccionado)
         <div class="max-w-5xl m-auto bg-white rounded-lg shadow-md my-4 p-6">
-            <h3 class="font-bold text-secondary border-b mb-4">DATOS DEL CERTIFICADO Y PAGO</h3>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <h3 class="font-bold text-secondary border-b mb-4 uppercase">1. Información del Cliente</h3>
+            @livewire('form-cliente', ['nombreDelInvocador' => 'inspeccion-extra-component'])
+
+            <h3 class="font-bold text-secondary border-b my-4 uppercase">2. Información del Vehículo</h3>
+            @livewire('form-vehiculo', ['nombreDelInvocador' => 'inspeccion-extra-component'])
+
+            <h3 class="font-bold text-secondary border-b my-4 uppercase">3. Datos del Certificado y Pago</h3>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
                 <div>
                     <x-label value="N° Certificado:" />
-                    <x-input type="text" wire:model="numero_certificate" class="w-full" placeholder="00060-2026" />
+                    <x-input type="text" wire:model="numero_certificado" class="w-full" placeholder="00060" />
                 </div>
                 <div>
                     <x-label value="Método de Pago:" />
                     <x-select wire:model="metodo_pago" class="w-full">
                         <option value="">Seleccione</option>
-                        <option value="EFECTIVO">Efectivo</option>
-                        <option value="TRANSFERENCIA">Transferencia</option>
-                        <option value="YAPE/PLIN">Yape/Plin</option>
+                        <option value="EFECTIVO">EFECTIVO</option>
+                        <option value="YAPE">YAPE</option>
+                        <option value="VISA">VISA (POS)</option>
+                        <option value="TRANSFERENCIA">TRANSFERENCIA</option>
                     </x-select>
                 </div>
                 <div>
                     <x-label value="Comisión S/:" />
                     <x-input type="number" wire:model="comision_monto" class="w-full" />
                 </div>
+                <div>
+                    <x-label value="Vigencia (Meses):" />
+                    <x-select wire:model="vigencia_meses" class="w-full">
+                        <option value="6">6 Meses</option>
+                        <option value="12">12 Meses</option>
+                    </x-select>
+                </div>
             </div>
-
-            @livewire('form-vehiculo')
         </div>
 
+        {{-- Switch de Detalles de Servicio --}}
         @switch($servicio_seleccionado->id)
             @case(1)
-                {{-- HERMETICIDAD --}}
-                <div class="max-w-5xl m-auto bg-white rounded-lg shadow-md my-4 p-6">
-                    <h3 class="font-bold text-blue-600 border-b mb-4 text-center">DETALLES DE PRUEBA DE HERMETICIDAD</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <table class="w-full text-sm">
-                            <thead>
-                                <tr class="bg-gray-100 text-left">
-                                    <th class="p-2 border">Elemento</th>
-                                    <th class="p-2 border">Estado (A/O/NA)</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (['tapa', 'compuerta', 'tolva', 'sellos', 'bisagras', 'pistones', 'mangueras', 'remaches'] as $item)
-                                    <tr>
-                                        <td class="p-2 border uppercase">{{ $item }}</td>
-                                        <td class="p-2 border text-center">
-                                            <select wire:model="hermeticidad.{{ $item }}"
-                                                class="w-full text-xs rounded border-gray-300">
-                                                <option value="A">Apto (A)</option>
-                                                <option value="O">Observado (O)</option>
-                                                <option value="N">No Aplica (N.A)</option>
-                                            </select>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-
-                        <div class="space-y-4">
-                            <div class="bg-gray-50 p-4 rounded">
-                                <x-label value="Tiempo de Prueba:" />
-                                <x-input type="text" wire:model="hermeticidad.tiempo_prueba" class="w-full" />
-                            </div>
-                            <div class="grid grid-cols-2 gap-2">
-                                <div>
-                                    <x-label value="Cant. Bisagras:" />
-                                    <x-input type="number" wire:model="hermeticidad.cant_bisagras" class="w-full" />
-                                </div>
-                                <div>
-                                    <x-label value="Cant. Pistones:" />
-                                    <x-input type="number" wire:model="hermeticidad.cant_pistones" class="w-full" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                @if ($paso == 1)
+                    @livewire('form-hermeticidad-component', [], key('form-hermeticidad'))
+                @endif
             @break
 
             @case(2)
-                {{-- OPACIDAD --}}
-                <div class="max-w-5xl m-auto bg-white rounded-lg shadow-md my-4 p-6">
-                    <h3 class="font-bold text-green-600 border-b mb-4 text-center">LECTURAS DEL OPACÍMETRO</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                        @for ($i = 1; $i <= 4; $i++)
-                            <div class="border p-2 rounded bg-gray-50">
-                                <p class="text-xs font-bold mb-1">MEDICIÓN 0{{ $i }}</p>
-                                <x-label value="Valor K:" />
-                                <x-input type="number" step="0.01" wire:model.live="opacidad.ciclo{{ $i }}_k"
-                                    class="w-full mb-2" />
-                                <x-label value="Temp. Aceite (°C):" />
-                                <x-input type="number" wire:model="opacidad.ciclo{{ $i }}_t" class="w-full" />
-                            </div>
-                        @endfor
-                    </div>
-                </div>
+                @if ($paso == 1)
+                    @livewire('form-opacidad-component', [], key('form-opacidad'))
+                @endif
             @break
         @endswitch
 
-        <div class="max-w-5xl m-auto bg-white rounded-lg shadow-md my-4 py-6 px-6">
-            <div class="flex justify-center">
-                <button wire:click="guardarInspeccion" wire:loading.attr="disabled"
-                    class="hover:cursor-pointer border border-orange-500 bg-orange-500 hover:bg-orange-600 px-10 py-3 rounded text-white font-bold transition">
-                    <span wire:loading wire:target="guardarInspeccion">
-                        <i class="fas fa-spinner animate-spin"></i>&nbsp;
-                    </span>
-                    &nbsp;GUARDAR E IMPRIMIR PDF
+        @if ($paso == 1)
+            <div class="max-w-5xl m-auto bg-white rounded-lg shadow-md flex flex-col md:flex-row justify-evenly items-center my-4 py-6 px-6">
+                <button wire:click="guardarInspeccion" wire:loading.attr="disabled" wire:target="guardarInspeccion"
+                    class="hover:cursor-pointer border border-orange-500 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600 sm:mt-0 inline-flex items-center justify-center px-6 py-3 bg-orange-500 hover:bg-orange-600 focus:outline-none rounded">
+                    <p class="text-sm font-medium leading-none text-white">
+                        <span wire:loading wire:target="guardarInspeccion">
+                            <i class="fas fa-spinner animate-spin"></i>
+                            &nbsp;
+                        </span>
+                        &nbsp;Guardar & Certificar
+                    </p>
                 </button>
             </div>
-        </div>
+        @endif
+        @if ($paso == 2)
+            <div class="max-w-5xl m-auto bg-white rounded-lg shadow-md my-4 py-4">
+                <div class="my-2 flex flex-row justify-evenly items-center" x-data="{ menu: false }">
+                    <button type="button" x-on:click="menu = ! menu" id="menu-button" aria-expanded="true"
+                        aria-haspopup="true" data-te-ripple-init data-te-ripple-color="light"
+                        class="hover:cursor-pointer border border-indigo-500 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600 sm:mt-0 inline-flex items-center justify-center px-6 py-2 bg-indigo-400 text-white hover:bg-indigo-500 focus:outline-none rounded">
+                        Documentos &nbsp; <i class="fas fa-angle-down"></i>
+                    </button>
+                    <div x-show="menu" x-on:click.away="menu = false"
+                        class="dropdown-menu transition-all duration-300 transform origin-top-right -translate-y-2 scale-95 absolute  dropdown-content bg-white shadow w-56 z-30 mt-6 border border-slate-800 rounded-md"
+                        role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
+                        <div class="" role="none">
+                            <a href="" target="__blank" rel="noopener noreferrer"
+                                class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between items-center rounded-t-md hover:cursor-pointer">
+                                <i class="fas fa-eye"></i>
+                                <span>Ver Certificado.</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <a href="{{ route('inspeccion.extra') }}"
+                        class="hover:cursor-pointer focus:ring-2 focus:ring-offset-2 focus:ring-amber-600 sm:mt-0 inline-flex items-center justify-center px-6 py-3 bg-red-400 hover:bg-red-500 focus:outline-none rounded">
+                        <p class="text-sm font-medium leading-none text-white">
+                            <i class="fas fa-archive"></i>&nbsp;Finalizar
+                        </p>
+                    </a>
+                </div>
+            </div>
+        @endif
+
     @endif
 </div>

@@ -10,9 +10,11 @@ class DetalleOpacidad extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'inspeccion_extra_id', 'maquina', 'marca_equipo', 'modelo_equipo', 'serie_equipo',
-        'ciclo1_k', 'ciclo1_t', 'ciclo2_k', 'ciclo2_t', 
-        'ciclo3_k', 'ciclo3_t', 'ciclo4_k', 'ciclo4_t', 
+        // Lecturas (K = Opacidad, T = Temperatura)
+        'ciclo1_k', 'ciclo1_t', 
+        'ciclo2_k', 'ciclo2_t', 
+        'ciclo3_k', 'ciclo3_t',
+        'ciclo4_k', 'ciclo4_t', 
         'promedio_k', 'limite_permitido'
     ];
 

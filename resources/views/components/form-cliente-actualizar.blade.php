@@ -1,4 +1,3 @@
-<!-- resources/views/components/form-cliente-actualizar.blade.php -->
 @props(['tipo_cliente', 'tipo_documento', 'numero_documento'])
 <div class="max-w-5xl m-auto bg-white rounded-lg shadow-md mb-4">
     <div class="flex items-center justify-between bg-accent py-4 px-6 rounded-t-lg">

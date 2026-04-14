@@ -1,4 +1,3 @@
-<!-- resources/views/livewire/form-cliente.blade.php -->
 <div>
     @switch($estado)
         @case('nuevo')
@@ -16,7 +15,7 @@
 
     <x-dialog-modal wire:model="busqueda">
         <x-slot name="title">
-            <h1 class="text-3xl font-medium">Clientes Encontrados</h1>
+            <h1 class="font-medium">Clientes Encontrados</h1>
         </x-slot>
         <x-slot name="content">
             @if ($clientes)

@@ -3,7 +3,6 @@
 namespace App\Livewire;
 
 use App\Models\Vehiculo;
-use Livewire\WithDispatchable;
 use Livewire\Component;
 
 class FormVehiculo extends Component
@@ -24,10 +23,10 @@ class FormVehiculo extends Component
 
     //VARIABLES DEL COMPONENTE
     public Vehiculo $vehiculo;
-    public $estado, $vehiculos, $busqueda;
+    public $estado = 'nuevo', $vehiculos, $busqueda = false;
 
-    protected $listeners = ['cargarDatosVehiculo' => 'cargarDesdeRespuesta']; // cargamos datos de respuesta mtc
-    public function cargarDesdeRespuesta(array $datos)
+    //protected $listeners = ['cargarDatosVehiculo' => 'cargarDesdeRespuesta']; // cargamos datos de respuesta mtc
+    /*public function cargarDesdeRespuesta(array $datos)
     {
         $this->placa = $datos['PLACA'] ?? $this->placa;
         $this->categoria = $datos['CATEGORIA'] ?? null;
@@ -51,22 +50,32 @@ class FormVehiculo extends Component
         $this->peso_util = $datos['PESOUTIL'] ?? null;
         // Emitir hacia componente Prueba
         $this->dispatch('actualizarCategoria', $this->categoria)->to('prueba');
+    }*/
+
+    public function mount($nombreDelInvocador = null)
+    {
+        $this->nombreDelInvocador = $nombreDelInvocador;
     }
 
     public function buscarVehiculo()
     {
-        if (strlen($this->placa) >= 6) {
+        /*if (strlen($this->placa) >= 6) {
             $this->dispatch('consultarDatosMTC', $this->placa)->to('prueba');
+        }*/
+        $this->validate(['placa' => 'required|min:3']);
+
+        $resultados = Vehiculo::where('placa', 'like', '%' . strtoupper($this->placa) . '%')->get();
+
+        if ($resultados->count() > 0) {
+            $this->vehiculos = $resultados;
+            $this->busqueda = true;
+        } else {
+            $this->dispatch('minAlert', titulo: "SIN RESULTADOS", mensaje: "No existe el vehículo. Puede registrarlo ahora.", icono: "info");
+            $this->estado = 'nuevo';
         }
     }
 
-
-    public function mount()
-    {
-        $this->estado = "nuevo";
-    }
-
-    protected $rules = [
+    /*protected $rules = [
 
         "placa" => "required|min:6|max:7",
         "propietario" => "required",
@@ -91,7 +100,7 @@ class FormVehiculo extends Component
         "peso_neto" => "nullable|numeric",
         "peso_bruto" => "nullable|numeric",
         "peso_util" => "nullable|numeric",
-        /* 
+        
             "vehiculo.placa" => "required|min:6",
             "vehiculo.propietario" => "required",
             "vehiculo.categoria" => "nullable",
@@ -115,8 +124,8 @@ class FormVehiculo extends Component
             "vehiculo.peso_neto" => "nullable|numeric",
             "vehiculo.peso_bruto" => "nullable|numeric",
             "vehiculo.peso_util" => "nullable|numeric",
-        */
-    ];
+        
+    ];*/
 
     public function render()
     {
@@ -203,17 +212,17 @@ class FormVehiculo extends Component
             $this->m_peso_bruto = $vehiculo->peso_bruto;
             $this->m_peso_util = $vehiculo->peso_util;
             $this->estado = 'cargado';
-            $this->dispatch(
-                'minAlert',
-                titulo: "¡BUEN TRABAJO!",
-                mensaje: "El vehículo con placa {$vehiculo->placa} se registró correctamente.",
-                icono: "success"
-            );
+            $this->dispatch('minAlert', titulo: "¡BUEN TRABAJO!", mensaje: "El vehículo con placa {$vehiculo->placa} se registró correctamente.", icono: "success");
 
-            if ($this->nombreDelInvocador != null) {
+            /*if ($this->nombreDelInvocador != null) {
                 $this->dispatch('cargaVehiculo', $vehiculo->id)->to($this->nombreDelInvocador);
             } else {
                 $this->dispatch('cargaVehiculo', $vehiculo->id)->to('prueba');
+            }*/
+            if ($this->nombreDelInvocador != null) {
+                $this->dispatch('vehiculoSeleccionado', id: $vehiculo->id)->to($this->nombreDelInvocador);
+            } else {
+                $this->dispatch('vehiculoSeleccionado', id: $vehiculo->id)->to('prueba');
             }
         } else {
             $this->dispatch(
@@ -331,7 +340,12 @@ class FormVehiculo extends Component
         $this->m_peso_bruto = $veh->peso_bruto;
         $this->m_peso_util = $veh->peso_util;
         $this->estado = 'cargado';
-        $this->dispatch('cargaVehiculo', $veh->id)->to($this->nombreDelInvocador ?? 'prueba');
+        //$this->dispatch('cargaVehiculo', $veh->id)->to($this->nombreDelInvocador ?? 'prueba');
+        if ($this->nombreDelInvocador != null) {
+            $this->dispatch('vehiculoSeleccionado', id: $veh->id)->to($this->nombreDelInvocador);
+        } else {
+            $this->dispatch('vehiculoSeleccionado', id: $veh->id)->to('prueba');
+        }
         $this->vehiculos = null;
         $this->busqueda = false;
     }

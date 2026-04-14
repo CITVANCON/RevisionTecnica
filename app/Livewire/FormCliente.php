@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\Cliente;
 use Livewire\Component;
+use Illuminate\Support\Facades\Http;
 use Livewire\Attributes\On;
 
 class FormCliente extends Component
@@ -48,7 +49,7 @@ class FormCliente extends Component
 
     public function buscarCliente()
     {
-        if (strlen($this->numero_documento) >= 8) {
+        /*if (strlen($this->numero_documento) >= 8) {
             $this->clientes = Cliente::where('numero_documento', 'like', '%' . $this->numero_documento . '%')->get();
             if ($this->clientes->count() > 0) {
                 $this->busqueda = true;
@@ -56,6 +57,65 @@ class FormCliente extends Component
                 // En Livewire 3 se recomienda usar dispatch directamente
                 $this->dispatch('consultarPadron', numero: $this->numero_documento);
             }
+        }*/
+
+        $this->validate(['numero_documento' => 'required']);
+
+        // 1. INTENTAR BUSCAR EN BASE DE DATOS LOCAL
+        $this->clientes = Cliente::where('numero_documento', $this->numero_documento)->get();
+
+        if ($this->clientes->count() > 0) {
+            // Si hay resultados locales, abrimos el modal para que el usuario elija
+            $this->busqueda = true;
+            return;
+        }
+
+        // 2. SI NO EXISTE LOCAL, CONSULTAR API EXTERNA
+        $this->consultarApiExterna();
+    }
+    public function consultarApiExterna()
+    {        
+        // Obtenemos el token desde la configuración
+        $token = config('services.apis_peru.token');
+        $tipo = ($this->tipo_documento === 'RUC') ? 'ruc' : 'dni';
+        $url = "https://dniruc.apisperu.com/api/v1/{$tipo}/{$this->numero_documento}?token={$token}";
+
+        try {
+            $response = Http::timeout(10)->get($url);
+
+            if ($response->successful()) {
+                $data = $response->json();
+
+                // VALIDACIÓN CRÍTICA: Verificar si la API realmente encontró resultados
+                if (isset($data['success']) && $data['success'] === false) {
+                    $this->dispatch('minAlert', 
+                        titulo: "SIN RESULTADOS", 
+                        mensaje: $data['message'] ?? "No se encontró el documento.", 
+                        icono: "warning"
+                    );
+                    return; // Salimos del método para no ejecutar el código de éxito
+                }
+
+                // Si llegamos aquí, es porque sí hubo éxito real
+                if ($this->tipo_documento === 'RUC') {
+                    // Mapeo para RUC
+                    $this->nombre_razon_social = $data['razonSocial'] ?? '';
+                    $this->direccion = $data['direccion'] ?? '';
+                } else {
+                    // Mapeo para DNI (Concatenamos nombres y apellidos)
+                    if (isset($data['nombres'])) {
+                        $this->nombre_razon_social = "{$data['nombres']} {$data['apellidoPaterno']} {$data['apellidoMaterno']}";
+                        $this->direccion = ''; // El API de DNI usualmente no trae dirección por seguridad
+                    }
+                }
+
+                $this->dispatch('minAlert', titulo: "¡ENCONTRADO!", mensaje: "Datos cargados desde la nube.", icono: "success");
+
+            } else {
+                $this->dispatch('minAlert', titulo: "AVISO", mensaje: "No se encontró el documento en la nube.", icono: "warning");
+            }
+        } catch (\Exception $e) {
+            $this->dispatch('minAlert', titulo: "ERROR", mensaje: "Error al conectar con el servicio de búsqueda.", icono: "error");
         }
     }
 
@@ -80,6 +140,7 @@ class FormCliente extends Component
             "email" => strtolower($this->email),
         ]);
 
+        $this->estado = 'cargado';
         $this->seleccionaCliente($nuevoCliente->id); // Pasamos solo el ID para mayor seguridad
 
         $this->dispatch('minAlert', titulo: "¡ÉXITO!", mensaje: "Cliente registrado.", icono: "success");

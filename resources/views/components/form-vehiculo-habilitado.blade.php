@@ -16,7 +16,7 @@
             <div>
                 <x-label value="Placa:" />
                 <x-input list="vehiculos" type="text" class="w-full" wire:model="placa"
-                    wire:keydown.enter="buscarVehiculo" maxlength="6" />
+                    wire:keydown.enter="buscarVehiculo" placeholder="Buscar por placa...(ENTER)" maxlength="6" />
                 <x-input-error for="placa" />
             </div>
             {{--

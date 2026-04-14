@@ -6,6 +6,7 @@ use App\Livewire\AdministracionInspecciones;
 use App\Livewire\EditarLineaInspeccion;
 use App\Livewire\Expedientes;
 use App\Livewire\FormCliente;
+use App\Livewire\FormVehiculo;
 use App\Livewire\GastoModulo;
 use App\Livewire\InspeccionExtraComponent;
 use App\Livewire\Linea;
@@ -99,6 +100,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
         //Ruta para inspecciones extra
         Route::get('/inspecciones-extras', InspeccionExtraComponent::class)->name('inspeccion.extra');
         Route::get('/cliente', FormCliente::class)->name('cliente');
+        Route::get('/vehiculo', FormVehiculo::class)->name('vehiculo');
 
         Route::get('/Expedientes', Expedientes::class)->name('expedientes');
 
