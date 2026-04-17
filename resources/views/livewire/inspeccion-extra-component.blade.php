@@ -71,6 +71,16 @@
 
         @if ($paso == 1)
             <div class="max-w-5xl m-auto bg-white rounded-lg shadow-md flex flex-col md:flex-row justify-evenly items-center my-4 py-6 px-6">
+                <div class="flex items-center gap-3 w-full md:w-auto">
+                    <x-label value="RESULTADO:" class="font-bold text-secondary" />
+                    <select wire:model.live="resultado_final" wire:key="select-resultado-{{ $resultado_final }}"
+                        class="rounded-md border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 {{ $resultado_final == 'APROBADO' ? 'text-green-600' : ($resultado_final == 'DESAPROBADO' ? 'text-red-600' : 'text-gray-500') }}">                        
+                        <option value="">-- Por definir --</option>
+                        <option value="APROBADO">APROBADO</option>
+                        <option value="DESAPROBADO">DESAPROBADO</option>
+                    </select>
+                </div>
+
                 <button wire:click="guardarInspeccion" wire:loading.attr="disabled" wire:target="guardarInspeccion"
                     class="hover:cursor-pointer border border-orange-500 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600 sm:mt-0 inline-flex items-center justify-center px-6 py-3 bg-orange-500 hover:bg-orange-600 focus:outline-none rounded">
                     <p class="text-sm font-medium leading-none text-white">
@@ -80,9 +90,10 @@
                         </span>
                         &nbsp;Guardar & Certificar
                     </p>
-                </button>
+                </button>                
             </div>
         @endif
+
         @if ($paso == 2)
             <div class="max-w-5xl m-auto bg-white rounded-lg shadow-md my-4 py-4">
                 <div class="my-2 flex flex-row justify-evenly items-center" x-data="{ menu: false }">
@@ -95,7 +106,7 @@
                         class="dropdown-menu transition-all duration-300 transform origin-top-right -translate-y-2 scale-95 absolute  dropdown-content bg-white shadow w-56 z-30 mt-6 border border-slate-800 rounded-md"
                         role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
                         <div class="" role="none">
-                            <a href="" target="__blank" rel="noopener noreferrer"
+                            <a href="{{ $inspeccion_generada->url_certificado }}" target="__blank" rel="noopener noreferrer"
                                 class="flex px-4 py-2 text-sm text-indigo-700 hover:bg-slate-600 hover:text-white justify-between items-center rounded-t-md hover:cursor-pointer">
                                 <i class="fas fa-eye"></i>
                                 <span>Ver Certificado.</span>

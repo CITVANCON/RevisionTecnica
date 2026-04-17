@@ -136,6 +136,9 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
             Route::get('/inspeccion/{id}/descargar', 'descargarPdfInspeccion')->name("descargarInspeccion");
 
             Route::get('/rrhh/contrato/{id}/pdf', 'generarContrato')->name('rrhh.contrato.pdf');
+
+            Route::get('/inspeccion/pdf/hermeticidad/{id}', 'generarPdfHermeticidad')->name('pdf.hermeticidad');
+            Route::get('/inspeccion/pdf/opacidad/{id}', 'generarPdfOpacidad')->name('pdf.opacidad');
         });
 
 

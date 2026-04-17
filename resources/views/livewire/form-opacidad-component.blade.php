@@ -24,7 +24,7 @@
                             <td class="p-3 font-semibold text-secondary text-xs bg-gray-50/50">CICLO N° 0{{ $i }}</td>
                             <td class="p-2">
                                 <x-input type="number" step="0.001" 
-                                    wire:model.live="opacidad.ciclo{{$i}}_k" 
+                                    wire:model.blur="opacidad.ciclo{{$i}}_k"
                                     class="w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm text-center text-[11px] p-1" />
                             </td>
                             <td class="p-2">

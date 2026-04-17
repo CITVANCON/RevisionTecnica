@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Contrato;
+use App\Models\InspeccionExtra;
 use App\Models\InspeccionFinalizada;
 use Illuminate\Support\Facades\App;
 use Illuminate\Http\Request;
@@ -88,5 +89,44 @@ class PdfController extends Controller
         }
 
         return (string)$num; // Para montos mayores a un millón, se necesitaría ampliar la lógica
+    }
+
+
+    public function generarPdfHermeticidad($id)
+    {
+        // Cargamos la inspección asegurándonos que el detalle sea de hermeticidad
+        $inspeccion = InspeccionExtra::with(['cliente', 'vehiculo', 'detalleHermeticidad', 'usuario'])
+            ->where('tipo_servicio_id', 1) // Seguridad: solo hermeticidad
+            ->findOrFail($id);
+
+        $data = [
+            'inspeccion' => $inspeccion,
+            'detalle'    => $inspeccion->detalleHermeticidad,
+            'fecha'      => now()->format('d/m/Y'),
+        ];
+
+        $pdf = App::make('dompdf.wrapper');
+        $pdf->loadView('pdf.servicios.hermeticidad', $data);
+
+        return $pdf->stream("Certificado_Hermeticidad_{$inspeccion->numero_certificado}.pdf");
+    }
+
+    public function generarPdfOpacidad($id)
+    {
+        // Cargamos la inspección asegurándonos que el detalle sea de opacidad
+        $inspeccion = InspeccionExtra::with(['cliente', 'vehiculo', 'detalleOpacidad', 'usuario'])
+            ->where('tipo_servicio_id', 2) // Seguridad: solo opacidad
+            ->findOrFail($id);
+
+        $data = [
+            'inspeccion' => $inspeccion,
+            'detalle'    => $inspeccion->detalleOpacidad,
+            'fecha'      => now()->format('d/m/Y'),
+        ];
+
+        $pdf = App::make('dompdf.wrapper');
+        $pdf->loadView('pdf.servicios.opacidad', $data);
+
+        return $pdf->stream("Certificado_Opacidad_{$inspeccion->numero_certificado}.pdf");
     }
 }

@@ -63,7 +63,7 @@
                             <th class="px-1 py-4 text-center bg-yellow-600 text-white">BANCO 1Q</th>
                             <th class="px-1 py-4 text-center bg-green-700 text-white">EFECTIVO</th>
                             <th class="px-2 py-4 text-center">PAGADO</th>
-                            <th class="px-3 py-4 text-center">ACCIONES</th>
+                            <th class="px-3 py-4 text-center">BOLETAS</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200 bg-white">

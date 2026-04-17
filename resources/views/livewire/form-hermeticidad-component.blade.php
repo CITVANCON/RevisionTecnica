@@ -39,7 +39,7 @@
                             <td class="p-3 font-semibold text-secondary text-xs bg-gray-50/50">{{ $label }}</td>
                             @foreach ($criterios as $critKey => $critLabel)
                                 <td class="p-1">
-                                    <select wire:model="hermeticidad.{{ $key }}_{{ $critKey }}" 
+                                    <select wire:model.live="hermeticidad.{{ $key }}_{{ $critKey }}" 
                                         class="w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm text-[11px] p-1
                                         @if($hermeticidad[$key.'_'.$critKey] == 'O') text-red-600 font-bold border-red-300 @endif">
                                         <option value="A">A</option>
@@ -86,17 +86,17 @@
 
                     {{-- Fila Número --}}
                     <div class="text-xs font-bold text-secondary self-center border-r pr-2">Número</div>
-                    <x-input type="number" wire:model="hermeticidad.cant_bisagras" class="w-full text-center p-1" />
-                    <x-input type="number" wire:model="hermeticidad.cant_pistones" class="w-full text-center p-1" />
-                    <x-input type="number" wire:model="hermeticidad.cant_mangueras" class="w-full text-center p-1" />
-                    <x-input type="number" wire:model="hermeticidad.cant_remaches" class="w-full text-center p-1" />
+                    <x-input type="number" wire:model.live="hermeticidad.cant_bisagras" class="w-full text-center p-1" />
+                    <x-input type="number" wire:model.live="hermeticidad.cant_pistones" class="w-full text-center p-1" />
+                    <x-input type="number" wire:model.live="hermeticidad.cant_mangueras" class="w-full text-center p-1" />
+                    <x-input type="number" wire:model.live="hermeticidad.cant_remaches" class="w-full text-center p-1" />
 
                     {{-- Fila Faltantes --}}
                     <div class="text-xs font-bold text-red-600 self-center border-r pr-2">Faltantes</div>
-                    <x-input type="number" wire:model="hermeticidad.faltas_bisagras" class="w-full text-center p-1 border-red-200 focus:ring-red-500" />
-                    <x-input type="number" wire:model="hermeticidad.faltas_pistones" class="w-full text-center p-1 border-red-200 focus:ring-red-500" />
-                    <x-input type="number" wire:model="hermeticidad.faltas_mangueras" class="w-full text-center p-1 border-red-200 focus:ring-red-500" />
-                    <x-input type="number" wire:model="hermeticidad.faltas_remaches" class="w-full text-center p-1 border-red-200 focus:ring-red-500" />
+                    <x-input type="number" wire:model.live="hermeticidad.faltas_bisagras" class="w-full text-center p-1 border-red-200 focus:ring-red-500" />
+                    <x-input type="number" wire:model.live="hermeticidad.faltas_pistones" class="w-full text-center p-1 border-red-200 focus:ring-red-500" />
+                    <x-input type="number" wire:model.live="hermeticidad.faltas_mangueras" class="w-full text-center p-1 border-red-200 focus:ring-red-500" />
+                    <x-input type="number" wire:model.live="hermeticidad.faltas_remaches" class="w-full text-center p-1 border-red-200 focus:ring-red-500" />
                 </div>
             </div>
         </div>

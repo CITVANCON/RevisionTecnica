@@ -13,8 +13,41 @@ class FormHermeticidadComponent extends Component
     public function enviarDatosAlPadre()
     {
         // Emitimos los datos de vuelta al padre
-        $this->dispatch('datosHermeticidadListos', datos: $this->hermeticidad);
+        //$this->dispatch('datosHermeticidadListos', datos: $this->hermeticidad);
+
+        // Podríamos validar aquí que el campo tiempo_prueba no esté vacío
+        if (empty($this->hermeticidad['tiempo_prueba'])) {
+            $this->dispatch('minAlert', titulo: "DATO FALTANTE", mensaje: "Debe ingresar el tiempo de la prueba de esfuerzo.", icono: "warning");
+            return;
+        }
+
+        // Emitimos los datos de vuelta al padre
+        $this->dispatch('datosHermeticidadListos', $this->hermeticidad);
     }
+
+    public function updated($propertyName)
+    {
+        // Solo actuamos si el cambio fue dentro del array de hermeticidad
+        if (str_contains($propertyName, 'hermeticidad')) {
+            
+            // 1. Verificamos si hay algún elemento "Observado" (O)
+            // Usamos array_values para asegurarnos de buscar en todo el contenido
+            $tieneObservaciones = in_array('O', array_values($this->hermeticidad));
+
+            // 2. Verificamos si hay faltantes en la cuantificación
+            $faltantes = (int)($this->hermeticidad['faltas_bisagras'] ?? 0) + 
+                        (int)($this->hermeticidad['faltas_pistones'] ?? 0) + 
+                        (int)($this->hermeticidad['faltas_mangueras'] ?? 0) + 
+                        (int)($this->hermeticidad['faltas_remaches'] ?? 0);
+
+            // LÓGICA DE NEGOCIO:
+            $resultado = ($tieneObservaciones || $faltantes > 0) ? 'DESAPROBADO' : 'APROBADO';
+
+            // 3. Enviamos el resultado preliminar al padre inmediatamente
+            $this->dispatch('calculoPreliminarHermeticidad', resultado: $resultado);
+        }
+    }
+
 
     public function mount()
     {
