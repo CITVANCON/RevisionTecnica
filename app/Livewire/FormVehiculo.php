@@ -136,15 +136,15 @@ class FormVehiculo extends Component
     {
         $this->validate(
             [
-                "placa" => "required|min:6|max:7",
-                "propietario" => "required",
+                "placa" => "nullable|min:6|max:7",
+                "propietario" => "nullable",
                 "categoria" => "nullable",
                 "marca" => "required|min:2",
                 "modelo" => "required|min:2",
                 "anio_fabricacion" => "nullable|numeric|min:1900",
                 "kilometraje" => "required|min:2",
                 "combustible" => "nullable|min:2",
-                "vin_serie" => "nullable|min:2",
+                "vin_serie" => "nullable", // Eliminado min:2 para permitir vacíos
                 "numero_motor" => "nullable|min:2",
                 "carroceria" => "nullable",
                 "marca_carroceria" => "nullable",
@@ -237,16 +237,16 @@ class FormVehiculo extends Component
     public function actualizarVehiculo()
     {
         $this->validate([
-            "m_placa" => "required|min:6",
-            "m_propietario" => "required",
+            "m_placa" => "nullable|min:6|max:7",
+            "m_propietario" => "nullable",
             "m_categoria" => "nullable",
             "m_marca" => "required|min:2",
             "m_modelo" => "required|min:2",
             "m_anio_fabricacion" => "nullable|numeric|min:1900",
             "m_kilometraje" => "required|min:2",
             "m_combustible" => "nullable|min:2",
-            "m_vin_serie" => "nullable|min:2",
-            "m_numero_motor" => "nullable|min:2",
+            "m_vin_serie" => "nullable",
+            "m_numero_motor" => "nullable",
             "m_carroceria" => "nullable",
             "m_marca_carroceria" => "nullable",
             "m_ejes" => "nullable|numeric|min:1",

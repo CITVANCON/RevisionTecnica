@@ -458,3 +458,33 @@ CREATE TABLE detalle_hermeticidad (
 );
 
 
+ALTER TABLE vehiculos 
+MODIFY numero_motor VARCHAR(50) NULL,
+MODIFY vin_serie VARCHAR(50) NULL;
+
+-- 1. Eliminamos los índices únicos actuales
+ALTER TABLE vehiculos DROP INDEX vin_serie;
+ALTER TABLE vehiculos DROP INDEX numero_motor;
+
+-- 2. Los volvemos a crear pero como índices normales (permiten duplicados)
+CREATE INDEX vin_serie ON vehiculos (vin_serie);
+CREATE INDEX numero_motor ON vehiculos (numero_motor);
+
+
+ALTER TABLE vehiculos 
+    MODIFY placa VARCHAR(10) NULL,
+    MODIFY propietario VARCHAR(100) NULL,
+    MODIFY categoria VARCHAR(10) NULL,
+    MODIFY anio_fabricacion INT(11) NULL,
+    MODIFY kilometraje INT(11) NULL,
+    MODIFY largo DECIMAL(5,2) NULL,
+    MODIFY ancho DECIMAL(5,2) NULL,
+    MODIFY alto DECIMAL(5,2) NULL,
+    MODIFY color VARCHAR(30) NULL,
+    MODIFY peso_neto INT(11) NULL,
+    MODIFY peso_bruto INT(11) NULL,
+    MODIFY peso_util INT(11) NULL;
+
+
+
+

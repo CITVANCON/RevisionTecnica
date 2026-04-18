@@ -17,7 +17,6 @@
                 <x-input list="vehiculos" type="text" class="w-full" wire:model="m_placa" />
                 <x-input-error for="m_placa" />
             </div>
-            {{--
             <div>
                 <x-label value="Categoria:" />
                 <select wire:model="m_categoria"
@@ -48,7 +47,6 @@
                 </select>
                 <x-input-error for="m_categoria" />
             </div>
-            --}}
             <div>
                 <x-label value="Marca:" />
                 <x-input type="text" class="w-full" wire:model="m_marca" />
