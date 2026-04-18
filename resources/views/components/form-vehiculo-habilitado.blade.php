@@ -72,7 +72,7 @@
             </div>
             <div>
                 <x-label value="Kilometraje:" />
-                <x-input type="text" class="w-full" wire:model="kilometraje" />
+                <x-input type="number" class="w-full" wire:model="kilometraje" />
                 <x-input-error for="kilometraje" />
             </div>
             <div>

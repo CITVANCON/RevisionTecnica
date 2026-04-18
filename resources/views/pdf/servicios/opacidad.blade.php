@@ -91,7 +91,7 @@
             </tr>
             <tr>
                 <td class="bg-gray">PLACA:</td>
-                <td>{{ $inspeccion->vehiculo->placa }}</td>
+                <td>{{ $inspeccion->vehiculo->placa ?? 'NE' }}</td>
                 <td class="bg-gray">COMBUSTIBLE:</td>
                 <td>{{ $inspeccion->vehiculo->combustible }}</td>
                 <td class="bg-gray">ASIENTOS/PASAJEROS:</td>
@@ -103,7 +103,9 @@
                 <td class="bg-gray">VIN N° SERIE:</td>
                 <td>{{ $inspeccion->vehiculo->vin_serie }}</td>
                 <td class="bg-gray">LARGO/ANCHO/ALTO:</td>
-                <td>{{ $inspeccion->vehiculo->largo . '/' . $inspeccion->vehiculo->ancho . '/' . $inspeccion->vehiculo->alto }}</td>
+                <td>{{-- $inspeccion->vehiculo->largo . '/' . $inspeccion->vehiculo->ancho . '/' . $inspeccion->vehiculo->alto --}}
+                    {{ ($inspeccion->vehiculo->largo ?? 'NE') . ' / ' . ($inspeccion->vehiculo->ancho ?? 'NE') . ' / ' . ($inspeccion->vehiculo->alto ?? 'NE') }}
+                </td>
             </tr>
             <tr>
                 <td class="bg-gray">MARCA:</td>
@@ -119,7 +121,7 @@
                 <td class="bg-gray">N° MOTOR:</td>
                 <td>{{ $inspeccion->vehiculo->numero_motor }}</td>
                 <td class="bg-gray">PESO NETO:</td>
-                <td>{{ $inspeccion->vehiculo->peso_neto }}</td>
+                <td>{{ $inspeccion->vehiculo->peso_neto ?? 'NE' }}</td>
             </tr>
             <tr>
                 <td class="bg-gray">AÑO FABRICACION</td>
@@ -127,7 +129,7 @@
                 <td class="bg-gray">MARCA CARROCERIA:</td>
                 <td>{{ $inspeccion->vehiculo->marca_carroceria }}</td>
                 <td class="bg-gray">PESO BRUTO:</td>
-                <td>{{ $inspeccion->vehiculo->peso_bruto }}</td>
+                <td>{{ $inspeccion->vehiculo->peso_bruto ?? 'NE' }}</td>
             </tr>
             <tr>
                 <td class="bg-gray">KILOMETRAJE</td>
@@ -135,7 +137,7 @@
                 <td class="bg-gray">EJES/RUEDAS:</td>
                 <td>{{ $inspeccion->vehiculo->ejes . ' / ' . $inspeccion->vehiculo->ruedas }}</td>
                 <td class="bg-gray">CARGA UTIL:</td>
-                <td>{{ $inspeccion->vehiculo->peso_util }}</td>
+                <td>{{ $inspeccion->vehiculo->peso_util ?? 'NE' }}</td>
             </tr>
         </table>
 
