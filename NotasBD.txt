@@ -487,4 +487,16 @@ ALTER TABLE vehiculos
 
 
 
+ALTER TABLE inspecciones_extras 
+    ADD COLUMN monto_total DECIMAL(10,2) NULL AFTER proxima_inspeccion,
+    ADD COLUMN estado VARCHAR(20) DEFAULT 'COMPLETADO' AFTER usuario_id;
+
+
+-- 1. Eliminamos el índice único actual (asumiendo que se llama igual que la columna)
+ALTER TABLE inspecciones_extras DROP INDEX numero_certificado;
+
+-- 2. Creamos el nuevo índice único compuesto
+ALTER TABLE inspecciones_extras ADD UNIQUE INDEX certificado_servicio_unique (numero_certificado, tipo_servicio_id);
+
+
 

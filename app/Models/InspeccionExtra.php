@@ -12,9 +12,9 @@ class InspeccionExtra extends Model
         'cliente_id', 'vehiculo_id', 'tipo_servicio_id', 'numero_certificado',
         'fecha_inspeccion', 'hora_inspeccion', 'vigencia_meses', 'proxima_inspeccion',
         
-        'metodo_pago', 'nro_comprobante', 'comision_monto', 'observaciones',
+        'monto_total', 'metodo_pago', 'nro_comprobante', 'comision_monto', 'observaciones',
         'resultado_final', //enum('APTO', 'OBSERVADO', 'NO APTO', 'APROBADO', 'DESAPROBADO')
-        'usuario_id'
+        'usuario_id', 'estado'
     ];
 
     // Esto hace que url_certificado esté siempre disponible, incluso en Livewire

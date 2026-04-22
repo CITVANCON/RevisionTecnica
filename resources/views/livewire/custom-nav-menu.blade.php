@@ -182,6 +182,11 @@ Change class "fixed" to "sticky" in "navbar" (l. 33) so the navbar doesn't hide 
                                             {{ __('Admin. Inspecciones') }}
                                         </x-responsive-nav-link>
 
+                                        <x-responsive-nav-link class="text-sm" href="{{ route('AdminInspeccionExtra') }}"
+                                            :active="request()->routeIs('AdminInspeccionExtra')">
+                                            {{ __('Admin. Insp. Extras') }}
+                                        </x-responsive-nav-link>
+
                                         <x-responsive-nav-link class="text-sm" href="{{ route('inspeccion.extra') }}"
                                             :active="request()->routeIs('inspeccion.extra')">
                                             {{ __('Nueva Inspeccion') }}
@@ -261,6 +266,11 @@ Change class "fixed" to "sticky" in "navbar" (l. 33) so the navbar doesn't hide 
                                         <x-responsive-nav-link class="text-sm" href="{{ route('reportes.inspecciones.mensual') }}"
                                             :active="request()->routeIs('reportes.inspecciones.mensual')">
                                             {{ __('Mensual') }}
+                                        </x-responsive-nav-link>
+
+                                        <x-responsive-nav-link class="text-sm" href="{{ route('reportes.comisiones') }}"
+                                            :active="request()->routeIs('reportes.comisiones')">
+                                            {{ __('Comisiones') }}
                                         </x-responsive-nav-link>
 
                                         <x-responsive-nav-link class="text-sm" href="{{ route('reportes.mtc') }}"

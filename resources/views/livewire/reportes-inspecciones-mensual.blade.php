@@ -5,8 +5,7 @@
             <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-6">
                 <div class="px-2">
                     <h2 class="text-gray-600 font-semibold text-2xl uppercase">
-                        <i class="fas fa-clipboard-check mr-2"></i>RESULTADO DE AUDITORIA CITV {{ $nombreMes }}
-                        {{ $anio }}
+                        <i class="fas fa-clipboard-check mr-2"></i>RESULTADO DE AUDITORIA CITV {{ $nombreMes }} {{ $anio }}
                     </h2>
                     <span class="text-xs">Resumen consolidado de operaciones diarias y balance de ingresos</span>
                 </div>

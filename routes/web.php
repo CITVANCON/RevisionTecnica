@@ -3,6 +3,7 @@
 use App\Http\Controllers\MTCSoapController;
 use App\Http\Controllers\PdfController;
 use App\Livewire\AdministracionInspecciones;
+use App\Livewire\AdministracionInspeccionExtra;
 use App\Livewire\EditarLineaInspeccion;
 use App\Livewire\Expedientes;
 use App\Livewire\FormCliente;
@@ -12,6 +13,7 @@ use App\Livewire\InspeccionExtraComponent;
 use App\Livewire\Linea;
 use App\Livewire\Permisos;
 use App\Livewire\Prueba;
+use App\Livewire\ReporteComisiones;
 use App\Livewire\ReporteMtc;
 use App\Livewire\ReportesInspecciones;
 use App\Livewire\ReportesInspeccionesEjecutivo;
@@ -96,6 +98,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
 
         //Ruta para admin inspecciones
         Route::get('/Admin-inspecciones', AdministracionInspecciones::class)->name('AdminInspecciones');
+        Route::get('/Admin-inspecciones-extra', AdministracionInspeccionExtra::class)->name('AdminInspeccionExtra');
 
         //Ruta para inspecciones extra
         Route::get('/inspecciones-extras', InspeccionExtraComponent::class)->name('inspeccion.extra');
@@ -108,9 +111,10 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
         Route::get('gasto-egreso', GastoModulo::class)->name('gastos');
 
         //Ruta para reportes de inspecciones
-        Route::get('/reportes-inspecciones', ReportesInspecciones::class)->name('reportes.inspecciones');
-        Route::get('/reportes-inspecciones-ejecutivo', ReportesInspeccionesEjecutivo::class)->name('reportes.inspecciones.ejecutivo');
-        Route::get('/reportes-inspecciones-mensual', ReportesInspeccionesMensual::class)->name('reportes.inspecciones.mensual');
+        Route::get('/reporte-inspecciones', ReportesInspecciones::class)->name('reportes.inspecciones');
+        Route::get('/reporte-inspecciones-ejecutivo', ReportesInspeccionesEjecutivo::class)->name('reportes.inspecciones.ejecutivo');
+        Route::get('/reporte-inspecciones-mensual', ReportesInspeccionesMensual::class)->name('reportes.inspecciones.mensual');
+        Route::get('/reporte-comisiones', ReporteComisiones::class)->name('reportes.comisiones');
         Route::get('/reportes-mtc', ReporteMtc::class)->name('reportes.mtc');
 
 

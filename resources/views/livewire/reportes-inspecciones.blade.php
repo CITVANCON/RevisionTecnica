@@ -105,7 +105,7 @@
                                 @foreach ($porTipo as $tipo)
                                     <tr class="border-b border-gray-100 hover:bg-gray-50 transition">
                                         <td class="px-5 py-4">
-                                            <p class="text-gray-900 font-semibold">{{ $tipo->tipo_atencion ?? 'No Definido' }}</p>
+                                            <p class="text-gray-900 font-semibold">{{ $tipo->nombre ?? 'No Definido' }}</p>
                                         </td>
                                         <td class="px-5 py-4 text-center">
                                             <span class="px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-xs font-bold">

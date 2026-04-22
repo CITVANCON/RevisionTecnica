@@ -6,6 +6,7 @@ use App\Models\TipoServicioExtra;
 use App\Models\InspeccionExtra;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 use Livewire\Component;
 use Livewire\Attributes\On;
 
@@ -16,8 +17,9 @@ class InspeccionExtraComponent extends Component
 
     // Propiedades generales
     public $cliente_id, $vehiculo_id, $numero_certificado, $fecha_inspeccion;
-    public $metodo_pago, $nro_comprobante, $comision_monto = 0, $resultado_final;
+    public $monto_total = 40, $metodo_pago, $nro_comprobante, $comision_monto = 0, $resultado_final;
     public $vigencia_meses = 6;
+    public $estado = 'COMPLETADO';
 
     public $hermeticidadData = [];
     public $opacidadData = [];
@@ -100,7 +102,22 @@ class InspeccionExtraComponent extends Component
         $this->resultado_final = "";
         $this->hermeticidadData = [];
         $this->opacidadData = [];
-        $this->numero_certificado = ""; // Opcional, si quieres que cada servicio pida su nro.
+        //$this->numero_certificado = ""; // Opcional, si quieres que cada servicio pida su nro.
+        if ($this->servicio_seleccionado) {
+            // Lógica para obtener el último certificado de este servicio
+            $ultimo = InspeccionExtra::where('tipo_servicio_id', $value)->latest('id')->first();
+
+            if ($ultimo) {
+                // Si existe, extraemos el número, le sumamos 1 y lo formateamos (ej. 5 dígitos)
+                $nuevoNumero = (int)$ultimo->numero_certificado + 1;
+                $this->numero_certificado = str_pad($nuevoNumero, 5, '0', STR_PAD_LEFT);
+            } else {
+                // Si es el primer certificado del servicio, empezamos en 00001 o el que prefieras
+                $this->numero_certificado = '00001';
+            }
+        } else {
+            $this->numero_certificado = "";
+        }
     }
 
     public function guardarInspeccion()
@@ -110,16 +127,20 @@ class InspeccionExtraComponent extends Component
                 'cliente_id' => 'required',
                 'vehiculo_id' => 'required',
                 'servicio_id' => 'required',
-                'numero_certificado' => 'required|unique:inspecciones_extras,numero_certificado',
+                //'numero_certificado' => 'required|unique:inspecciones_extras,numero_certificado',
+                'numero_certificado' => ['required', Rule::unique('inspecciones_extras', 'numero_certificado')->where('tipo_servicio_id', $this->servicio_id)],
                 'resultado_final' => 'required|in:APROBADO,DESAPROBADO',
                 'metodo_pago' => 'required',
+                'monto_total' => 'required|numeric|min:0',
             ], [
                 'cliente_id.required' => 'Debe seleccionar o registrar un cliente.',
                 'vehiculo_id.required' => 'Debe seleccionar un vehículo.',
                 'numero_certificado.required' => 'El número de certificado es obligatorio.',
-                'numero_certificado.unique' => 'Este número de certificado ya ha sido utilizado.',
+                'numero_certificado.unique' => 'Este número de certificado ya existe para el servicio seleccionado.',
                 'resultado_final.required' => 'El resultado de la inspección no ha sido determinado.',
                 'metodo_pago.required' => 'Seleccione un método de pago.',
+                'monto_total.required' => 'Debe ingresar el monto cobrado.',
+                'monto_total.numeric' => 'El monto debe ser un número válido.',
             ]);
 
             // Si pasa la validación, procedemos
@@ -154,12 +175,14 @@ class InspeccionExtraComponent extends Component
                 'numero_certificado' => $this->numero_certificado,
                 'fecha_inspeccion' => $this->fecha_inspeccion,
                 'hora_inspeccion' => date('H:i:s'),
+                'monto_total' => $this->monto_total,
                 'metodo_pago' => $this->metodo_pago,
                 'comision_monto' => $this->comision_monto,
                 'resultado_final' => $this->resultado_final,
-                'vigencia_meses'     => $this->vigencia_meses, // Enviamos vigencia
+                'vigencia_meses'     => $this->vigencia_meses,
                 'proxima_inspeccion' => $proxima,
                 'usuario_id' => Auth::id(),
+                'estado' => 'COMPLETADO', // Nuevo
             ]);
 
             if ($this->servicio_id == 1) {

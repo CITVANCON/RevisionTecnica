@@ -131,57 +131,62 @@
                                 </thead>
                                 <tbody class="text-sm">
                                     @foreach ($inspecciones as $item)
-                                        <tr class="border-b border-gray-100 hover:bg-gray-50 transition
-                                            {{ $item->fecha_anulacion ? 'bg-red-50 italic text-gray-400' : '' }}
-                                            {{ $item->estado_inspeccion === 'Anulada' ? 'bg-yellow-50 text-yellow-700' : '' }}
-                                            {{ $item->resultado_estado === 'D' && !$item->fecha_anulacion ? 'bg-blue-50 text-blue-700' : '' }}"
-                                            wire:key="rep-{{ $item->id }}">
-
+                                        <tr class="border-b border-gray-100 hover:bg-gray-50 transition {{ $item['clase_fila'] }}" wire:key="rep-{{ $item['id'] }}">
                                             <td class="px-4 py-3 text-gray-500 font-mono text-xs">
                                                 {{ $loop->iteration }}
                                             </td>
                                             <td class="px-4 py-3 whitespace-nowrap">
-                                                {{ \Carbon\Carbon::parse($item->fecha_inspeccion)->format('d/m/Y') }}
+                                                {{ \Carbon\Carbon::parse($item['fecha'])->format('d/m/Y') }}
                                             </td>
                                             <td class="px-4 py-3 font-bold uppercase text-gray-900">
-                                                {{ $item->placa_vehiculo }}
+                                                {{ $item['placa'] }}
                                             </td>
                                             <td class="px-4 py-3 w-62 uppercase text-[11px] text-gray-700 font-medium">
-                                                {{ $item->tipo_atencion }}
+                                                {{ $item['servicio'] }}
                                             </td>
-                                            <td
-                                                class="px-4 py-3 text-center uppercase text-indigo-700 font-bold text-sm">
-                                                {{ $item->categoria_vehiculo }}
+                                            <td class="px-4 py-3 text-center uppercase text-indigo-700 font-bold text-sm">
+                                                {{ $item['categoria'] }}
+                                                @if ($item['badge'])
+                                                    <span class="block text-[9px] text-orange-600 font-black mt-0.5">{{ $item['badge'] }}</span>
+                                                @endif
+                                                {{-- 
                                                 @if ($item->es_reinspeccion === 'S')
                                                     <span class="block text-[9px] text-orange-600 font-black mt-0.5">REINSP.</span>
                                                 @endif
                                                 @if ($item->resultado_estado === 'D')
                                                     <span class="block text-[9px] text-blue-600 font-black mt-0.5">DESAPRO.</span>
                                                 @endif
+                                                --}}
                                             </td>
+                                            {{-- 
                                             <td class="px-4 py-3 text-right font-bold {{ $item->estado_inspeccion === 'Anulada' || $item->fecha_anulacion ? 'text-gray-400' : 'text-gray-950' }} decimal-align">
                                                 {{ number_format($item->monto_total, 2) }}
                                             </td>
+                                            --}}
+                                            <td class="px-4 py-3 text-right font-bold {{ !$item['activo'] ? 'text-gray-400' : 'text-gray-950' }} decimal-align">
+                                                {{ number_format($item['monto'], 2) }}
+                                            </td>
                                             <td class="px-4 py-3 font-mono text-sm text-gray-600">
-                                                {{ $item->serie_certificado }}-{{ $item->correlativo_certificado }}
+                                                {{ $item['formato'] }}
                                             </td>
                                             <td class="px-4 py-3 text-center">
                                                 <div class="text-xs font-bold text-gray-800">
-                                                    {{ $item->metodo_pago ?? 'SN' }}
+                                                    {{ $item['metodo_pago'] }}
                                                 </div>
                                                 <div class="text-[11px] text-indigo-600">
-                                                    {{ $item->nro_comprobante ?? 'NN' }}
+                                                    {{ $item['comprobante'] }}
                                                 </div>
                                             </td>
                                             <td class="px-4 py-3 text-center text-gray-500 font-medium">
-                                                {{ $item->comision_monto > 0 ? 'S/ ' . number_format($item->comision_monto, 2) : '-' }}
+                                                {{ $item['comision'] > 0 ? 'S/ ' . number_format($item['comision'], 2) : '-' }}
                                             </td>
                                         </tr>
                                     @endforeach
                                     <tr class="bg-accent text-white font-bold">
                                         <td colspan="5"
                                             class="px-4 py-4 text-right uppercase tracking-wider text-xs">
-                                            TOTALES GENERALES ({{ $inspecciones->whereNull('fecha_anulacion')->where('estado_inspeccion', '!=', 'Anulada')->count() }} VÁLIDAS DE {{ $inspecciones->count() }} REGISTROS)
+                                            {{--TOTALES GENERALES ({{ $inspecciones->whereNull('fecha_anulacion')->where('estado_inspeccion', '!=', 'Anulada')->count() }} VÁLIDAS DE {{ $inspecciones->count() }} REGISTROS)--}}
+                                            TOTALES GENERALES ({{ $validasCount }} VÁLIDAS DE {{ $inspecciones->count() }} REGISTROS)
                                         </td>
                                         <td class="px-4 py-4 text-right text-orange-500 text-base">
                                             S/ {{ number_format($total_monto, 2) }}
@@ -279,17 +284,17 @@
                     @endhasanyrole
                 </div>
                 <div class="bg-gray-50 p-3 rounded border">
-                    <span class="text-xs font-bold text-gray-500 uppercase">Tarjetas/Yape (Sistema)</span>
+                    <span class="text-xs font-bold text-gray-500 uppercase">VISA/Yape/Transferencia (Sistema)</span>
                     <div class="text-xl font-bold">S/ {{ number_format($formAuditoria['pos_esperado'], 2) }}</div>
                     @hasanyrole('Administrador del sistema|Auditoria')
                         <div class="mt-2 grid grid-cols-2 gap-2">
                             <div>
-                                <x-label value="Monto Real POS" class="text-[10px]" />
-                                <x-input type="number" step="0.01" class="w-full text-sm" wire:model.live="formAuditoria.pos_real" />
+                                <x-label value="Monto Sistema" class="text-[10px]" />
+                                <x-input type="number" step="0.01" inputmode="decimal" class="w-full text-sm" wire:model.live.debounce.500ms="formAuditoria.pos_real" />
                             </div>
                             <div>
                                 <x-label value="Comisión POS (-)" class="text-[10px] text-red-500" />
-                                <x-input type="number" step="0.01" class="w-full text-sm border-red-200" wire:model.live="formAuditoria.comision_pos" />
+                                <x-input type="number" step="0.01" inputmode="decimal" class="w-full text-sm border-red-200" wire:model.live.debounce.500ms="formAuditoria.comision_pos" />
                             </div>
                         </div>
                         <div class="mt-2 bg-blue-100 p-2 rounded flex justify-between items-center">

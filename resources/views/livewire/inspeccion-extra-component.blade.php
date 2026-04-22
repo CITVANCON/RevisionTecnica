@@ -25,10 +25,14 @@
             @livewire('form-vehiculo', ['nombreDelInvocador' => 'inspeccion-extra-component'])
 
             <h3 class="font-bold text-secondary border-b my-4 uppercase">3. Datos del Certificado y Pago</h3>
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
                 <div>
                     <x-label value="N° Certificado:" />
-                    <x-input type="text" wire:model="numero_certificado" class="w-full" placeholder="00060" />
+                    <x-input type="text" wire:model="numero_certificado" class="w-full" />
+                </div>
+                <div>
+                    <x-label value="Monto S/ (Precio):" />
+                    <x-input type="number" step="0.1" wire:model="monto_total" class="w-full font-bold text-green-700" />
                 </div>
                 <div>
                     <x-label value="Método de Pago:" />
