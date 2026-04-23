@@ -44,7 +44,7 @@ class ReporteMtc extends Component
             ->whereNotNull('fecha_anulacion')
             ->orderBy('fecha_anulacion', 'asc')
             ->get();
-        // 5. CORRECCIÓN: Los 9 huérfanos (Basado en tu consulta SQL)
+        // 5. CORRECCIÓN: Los huérfanos (Basado en tu consulta SQL)
         // Registros que NO tienen A ni D, son NULL y NO están anulados.
         $huerfanos = (clone $queryBase)
             ->whereNull('fecha_anulacion')
@@ -65,7 +65,7 @@ class ReporteMtc extends Component
         ];
     }
 
-    public function descargarPdf()
+    /*public function descargarPdf()
     {
         $data = $this->obtenerDatosReporte();
 
@@ -75,55 +75,127 @@ class ReporteMtc extends Component
         return response()->streamDownload(function () use ($pdf) {
             echo $pdf->stream();
         }, "Reporte_MTC_{$this->mes}_{$this->anio}.pdf");
-    }
-
-    /*public function descargarPdf()
+    }*/
+    
+    public function descargarPdf()
     {
         $data = $this->obtenerDatosReporte();
+        $imagenBase64 = $this->getImagenBase64();
+        $finalPdf = new \setasign\Fpdi\Fpdi();
 
-        // 1. Generar el PDF normal con DomPDF
-        // Importante: La vista debe tener el comunicado primero y luego las tablas
-        $domPdf = Pdf::loadView('pdf.reporte-mtc-documento', $data)
-                    ->setPaper('a4', 'portrait') // Empezamos en vertical
-                    ->output();
+        // Definimos los asuntos específicos para cada sección
+        $asuntos = [
+            1 => "INFORME DE LOS VEHÍCULOS INSPECCIONADOS (APROBADOS)",
+            2 => "INFORME DE LOS VEHÍCULOS INSPECCIONADOS (DESAPROBADOS)",
+            3 => "INFORME DE LOS FORMATOS Y CALCOMANIAS (ANULADAS)",
+        ];
 
-        // Guardar temporalmente el PDF generado para procesarlo con FPDI
-        $tempPath = storage_path('app/public/temp_reporte.pdf');
-        file_put_contents($tempPath, $domPdf);
+        for ($seccion = 1; $seccion <= 3; $seccion++) {
+            
+            // --- A. GENERAR HOJA MEMBRETADA CON COMUNICADO ESPECÍFICO ---
+            $htmlCarta = $this->generarHtmlCarta($asuntos[$seccion], $imagenBase64);
+            
+            $pdfVertical = Pdf::loadHTML($htmlCarta)->setPaper('a4', 'portrait')->output();
+            $tmpVertical = tempnam(sys_get_temp_dir(), 'vert');
+            file_put_contents($tmpVertical, $pdfVertical);
 
-        // 2. Usar FPDI para fusionar con la hoja membretada
-        $pdf = new Fpdi();
-        $pageCount = $pdf->setSourceFile($tempPath);
-        $fondoPath = public_path('images/HOJAMEMBRETADA_CITV.pdf');
+            $finalPdf->setSourceFile($tmpVertical);
+            $finalPdf->AddPage('P', 'A4');
+            $finalPdf->useTemplate($finalPdf->importPage(1));
+            unlink($tmpVertical);
 
-        for ($i = 1; $i <= $pageCount; $i++) {
-            // Importar la página del reporte generado
-            $template = $pdf->importPage($i);
-            $size = $pdf->getTemplateSize($template);
+            // --- B. GENERAR TABLA (HORIZONTAL) ---
+            $data['seccion'] = $seccion;
+            $pdfTablas = Pdf::loadView('pdf.reporte-mtc-documento', $data)
+                ->setPaper('a4', 'landscape')->output();
 
-            // Añadir página (Si es la pág 1 es Vertical, las otras pueden ser Landscape si lo definiste)
-            // Por ahora, asumamos Vertical para el comunicado
-            $pdf->AddPage($size['orientation'], [$size['width'], $size['height']]);
-
-            // Si es la PRIMERA PÁGINA, ponemos el fondo membretado
-            if ($i == 1 && file_exists($fondoPath)) {
-                $pdf->setSourceFile($fondoPath);
-                $fondoImportado = $pdf->importPage(1);
-                $pdf->useTemplate($fondoImportado, 0, 0, 210, 297); // Ajustar a A4
-                
-                // Volvemos al archivo del reporte para traer el texto
-                $pdf->setSourceFile($tempPath);
-                $template = $pdf->importPage($i);
+            $tmpHorizontal = tempnam(sys_get_temp_dir(), 'horz');
+            file_put_contents($tmpHorizontal, $pdfTablas);
+            
+            $pageCount = $finalPdf->setSourceFile($tmpHorizontal);
+            for ($i = 1; $i <= $pageCount; $i++) {
+                $finalPdf->AddPage('L', 'A4');
+                $finalPdf->useTemplate($finalPdf->importPage($i));
             }
-
-            // Colocar el contenido del reporte encima
-            $pdf->useTemplate($template);
+            unlink($tmpHorizontal);
         }
 
-        return response()->streamDownload(function () use ($pdf) {
-            echo $pdf->Output('S');
+        return response()->streamDownload(function () use ($finalPdf) {
+            echo $finalPdf->Output('S');
         }, "Reporte_MTC_{$this->mes}_{$this->anio}.pdf");
-    }*/
+    }
+
+    private function generarHtmlCarta($asunto, $imagenBase64)
+    {
+        // Formateamos el mes actual para el texto (puedes usar $this->mes)
+        $mesTexto = Carbon::create(null, $this->mes)->translatedFormat('F');
+
+        return "
+        <html>
+        <head>
+            <style>
+                @page { margin: 0px; }
+                body { 
+                    margin: 0px; padding: 0px; font-family: 'Helvetica', Arial; font-size: 13px; line-height: 1.5;
+                }
+                .fondo {
+                    width: 210mm; height: 297mm; position: absolute; top: 0; left: 0; z-index: -1;
+                }
+                .contenido {
+                    margin-top: 4.5cm; /* Ajusta según el membrete superior */
+                    margin-left: 2.5cm;
+                    margin-right: 2.5cm;
+                }
+                .negrita { font-weight: bold; }
+                .derecha { text-align: right; }
+                .justificado { text-align: justify; }
+            </style>
+        </head>
+        <body>
+            <img class='fondo' src='{$imagenBase64}'>
+            <div class='contenido'>
+                <p class='negrita'>Carta N° 000025 /2026-CITV/ANCÓN</p>
+                <p>Lima, " . Carbon::now()->translatedFormat('d \d\e F \d\e\l Y') . "</p>
+                
+                <p>Señor:<br>
+                <span class='negrita'>JORGE CAYO ESPINOZA GALARZA</span><br>
+                Director de la Dirección de Circulación Vial de la General de Autorizaciones en Transportes (e)<br>
+                <span class='negrita'>Pte.-</span></p>
+
+                <p><span class='negrita'>ASUNTO:</span> <span class='negrita'>{$asunto} EN “CITV ANCÓN S.A.C\".</span></p>
+                <p><span class='negrita'>REFERENCIA: RESOLUCIÓN DIRECTORAL N° 287-2022-MTC/17.03</span></p>
+
+                <p>De mi consideración.</p>
+
+                <div class='justificado'>
+                    Yo, <span class='negrita'>KATHERINE LOPEZ HENRIQUEZ</span>, con DNI N.° 08884851 en calidad de Gerente General de CITV ANCÓN S.A.C, con RUC N.° 20606636823, con Partida Registral N° 14541103, con dirección Fiscal en: Mz. 04 lote.04 – Autopista Panamericana Norte – Variante – Asociación Popular la Variante de Ancón – Distrito de Ancón – Provincia de Lima – Departamento de Lima, tengo el gusto de dirigirme a su distinguida persona para manifestarle lo siguiente:
+                </div>
+
+                <p class='justificado'>Que estamos enviando a su despacho la información estadística de los vehículos inspeccionados en la planta de Revisión Técnica Vehicular CITV ANCON S.A.C. lo cual está incluida la cantidad de rangos de los números de la series de los formatos y calcomanías del mes de <span class='negrita'>" . strtoupper($mesTexto) . " {$this->anio}</span> (De acuerdo a R.D.N° 5453-2017-MTC/15.)</p>
+
+                <p>Aprovecho la oportunidad para expresarle los sentimientos de mi especial consideración y estima personal.</p>
+
+                <p style='margin-top: 2cm;'>Atentamente.</p>
+            </div>
+        </body>
+        </html>";
+    }
+
+    private function getImagenBase64()
+    {
+        // Usamos public_path para asegurar la ruta en el proyecto Laravel
+        $ruta = public_path('images/fondomembretada.png');
+
+        if (!file_exists($ruta)) {
+            // Esto te ayudará a debuguear si la ruta está mal
+            return '';
+        }
+
+        $tipo = pathinfo($ruta, PATHINFO_EXTENSION);
+        $data = file_get_contents($ruta);
+        return 'data:image/' . $tipo . ';base64,' . base64_encode($data);
+    }
+
 
     public function render()
     {

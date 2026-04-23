@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 
 <head>
+    <meta charset="UTF-8">
     <title>Reporte MTC</title>
     <style>
         @page {
@@ -138,90 +139,95 @@
         <h2>Reporte Mensual MTC - {{ $mes_nombre }} {{ $anio }}</h2>
     </div>
     --}}
-
-    <div class="title-seccion">1. VEHÍCULOS INSPECCIONADOS (APROBADOS)</div>
-    <table>
-        <thead>
-            <tr>
-                <th class="col-fecha">FECHA ING.</th>
-                <th class="col-placa">N° PLACA</th>
-                <th class="col-serie">SERIE HOJA</th>
-                <th class="col-resultado">RESULTADO</th>
-                <th class="col-servicio">SERVICIO BRINDADO</th>
-                <th class="col-servicio">SERVICIO DESTINADO</th>
-                <th class="col-categoria">CATEGORIA</th>
-                <th class="col-fecha">PROX. CERT.</th>
-                <th class="col-formato">NUM. FORMATO</th>
-                <th class="col-reinsp">REINSP.</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($inspeccionados as $item)
+    @if($seccion == 1)
+        <div class="title-seccion">1. VEHÍCULOS INSPECCIONADOS (APROBADOS)</div>
+        <table>
+            <thead>
                 <tr>
-                    <td class="nowrap">{{ $item->fecha_inspeccion?->format('d/m/Y') }}</td>
-                    <td class="nowrap" style="font-weight: bold;">{{ $item->placa_vehiculo }}</td>
-                    <td class="nowrap">{{ $item->serie_certificado }}-{{ $item->correlativo_certificado }}</td>
-                    <td class="aprobado">{{ $item->resultado_estado }}</td>
-                    <td class="text-left">{{ $item->tipo_inspeccion }}</td>
-                    <td class="text-left">{{ $item->tipo_atencion }}</td>
-                    <td>{{ $item->categoria_vehiculo }}</td>
-                    <td class="nowrap">{{ $item->fecha_vencimiento?->format('d/m/Y') }}</td>
-                    <td class="nowrap">{{ $item->numero_certificado_mtc }}</td>
-                    <td>{{ $item->es_reinspeccion }}</td>
+                    <th class="col-fecha">FECHA ING.</th>
+                    <th class="col-placa">N° PLACA</th>
+                    <th class="col-serie">SERIE HOJA</th>
+                    <th class="col-resultado">RESULTADO</th>
+                    <th class="col-servicio">SERVICIO BRINDADO</th>
+                    <th class="col-servicio">SERVICIO DESTINADO</th>
+                    <th class="col-categoria">CATEGORIA</th>
+                    <th class="col-fecha">PROX. CERT.</th>
+                    <th class="col-formato">NUM. FORMATO</th>
+                    <th class="col-reinsp">REINSP.</th>
                 </tr>
-            @endforeach
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach ($inspeccionados as $item)
+                    <tr>
+                        <td class="nowrap">{{ $item->fecha_inspeccion?->format('d/m/Y') }}</td>
+                        <td class="nowrap" style="font-weight: bold;">{{ $item->placa_vehiculo }}</td>
+                        <td class="nowrap">{{ $item->serie_certificado }}-{{ $item->correlativo_certificado }}</td>
+                        <td class="aprobado">{{ $item->resultado_estado }}</td>
+                        <td class="text-left">{{ $item->tipo_inspeccion }}</td>
+                        <td class="text-left">{{ $item->tipo_atencion }}</td>
+                        <td>{{ $item->categoria_vehiculo }}</td>
+                        <td class="nowrap">{{ $item->fecha_vencimiento?->format('d/m/Y') }}</td>
+                        <td class="nowrap">{{ $item->numero_certificado_mtc }}</td>
+                        <td>{{ $item->es_reinspeccion }}</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    @endif
 
-    <div class="title-seccion">2. VEHÍCULOS DESAPROBADOS</div>
-    <table>
-        <thead>
-            <tr>
-                <th class="col-fecha">FECHA</th>
-                <th class="col-placa">N° PLACA</th>
-                <th style="width: 50px;">P. BRUTO</th>
-                <th style="width: 40px;">CATEGORIA</th>
-                <th style="width: 80px;">N° INFORME</th>
-                <th>DEFECTOS (GRAVE / M. GRAVE)</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($desaprobados as $item)
+    @if($seccion == 2)
+        <div class="title-seccion">2. VEHÍCULOS DESAPROBADOS</div>
+        <table>
+            <thead>
                 <tr>
-                    <td class="nowrap">{{ $item->fecha_inspeccion?->format('d/m/Y') }}</td>
-                    <td class="nowrap" style="font-weight: bold;">{{ $item->placa_vehiculo }}</td>
-                    <td>{{ number_format($item->peso_bruto_v, 2) }}</td>
-                    <td>{{ $item->categoria_vehiculo }}</td>
-                    <td class="nowrap">{{ $item->numero_certificado_mtc }}</td>
-                    <td class="desaprobado text-left">{{ $item->codigos_defectos }}</td>
+                    <th class="col-fecha">FECHA</th>
+                    <th class="col-placa">N° PLACA</th>
+                    <th style="width: 50px;">P. BRUTO</th>
+                    <th style="width: 40px;">CATEGORIA</th>
+                    <th style="width: 80px;">N° INFORME</th>
+                    <th>DEFECTOS (GRAVE / M. GRAVE)</th>
                 </tr>
-            @endforeach
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach ($desaprobados as $item)
+                    <tr>
+                        <td class="nowrap">{{ $item->fecha_inspeccion?->format('d/m/Y') }}</td>
+                        <td class="nowrap" style="font-weight: bold;">{{ $item->placa_vehiculo }}</td>
+                        <td>{{ number_format($item->peso_bruto_v, 2) }}</td>
+                        <td>{{ $item->categoria_vehiculo }}</td>
+                        <td class="nowrap">{{ $item->numero_certificado_mtc }}</td>
+                        <td class="desaprobado text-left">{{ $item->codigos_defectos }}</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    @endif
 
-    <div class="title-seccion">3. CERTIFICADOS ANULADOS</div>
-    <table>
-        <thead>
-            <tr>
-                <th style="width: 30px;">ITEM</th>
-                <th>N° FORMATO</th>
-                <th>N° CALCOMANIA</th>
-                <th>TIPO ERROR</th>
-                <th>ACCIÓN TOMADA</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($anulados as $item)
+    @if($seccion == 3)
+        <div class="title-seccion">3. CERTIFICADOS ANULADOS</div>
+        <table>
+            <thead>
                 <tr>
-                    <td>{{ $loop->iteration }}</td>
-                    <td class="nowrap">{{ $item->serie_certificado }}-{{ $item->correlativo_certificado }}</td>
-                    <td class="nowrap">{{ $item->serie_certificado }}-{{ $item->correlativo_certificado }}</td>
-                    <td class="text-left">ERROR DE IMPRESIÓN</td>
-                    <td class="text-left">SD‐388‐0018618</td>
+                    <th style="width: 30px;">ITEM</th>
+                    <th>N° FORMATO</th>
+                    <th>N° CALCOMANIA</th>
+                    <th>TIPO ERROR</th>
+                    <th>ACCIÓN TOMADA</th>
                 </tr>
-            @endforeach
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach ($anulados as $item)
+                    <tr>
+                        <td>{{ $loop->iteration }}</td>
+                        <td class="nowrap">{{ $item->serie_certificado }}-{{ $item->correlativo_certificado }}</td>
+                        <td class="nowrap">{{ $item->serie_certificado }}-{{ $item->correlativo_certificado }}</td>
+                        <td class="text-left">ERROR DE IMPRESIÓN</td>
+                        <td class="text-left">SD‐388‐0018618</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    @endif
 </body>
 
 </html>
