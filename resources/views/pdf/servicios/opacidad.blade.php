@@ -93,15 +93,15 @@
                 <td class="bg-gray">PLACA:</td>
                 <td>{{ $inspeccion->vehiculo->placa ?? 'NE' }}</td>
                 <td class="bg-gray">COMBUSTIBLE:</td>
-                <td>{{ $inspeccion->vehiculo->combustible }}</td>
+                <td>{{ $inspeccion->vehiculo->combustible ?? 'NE' }}</td>
                 <td class="bg-gray">ASIENTOS/PASAJEROS:</td>
-                <td>{{ $inspeccion->vehiculo->asientos . ' / ' . $inspeccion->vehiculo->pasajeros }}</td>
+                <td>{{ ($inspeccion->vehiculo->asientos ?? '0') . ' / ' . ($inspeccion->vehiculo->pasajeros ?? '0') }}</td>
             </tr>
             <tr>
                 <td class="bg-gray">CATEGORIA:</td>
-                <td>{{ $inspeccion->vehiculo->categoria }}</td>
+                <td>{{ $inspeccion->vehiculo->categoria ?? 'NE' }}</td>
                 <td class="bg-gray">VIN N° SERIE:</td>
-                <td>{{ $inspeccion->vehiculo->vin_serie }}</td>
+                <td>{{ $inspeccion->vehiculo->vin_serie ?? 'NE'}}</td>
                 <td class="bg-gray">LARGO/ANCHO/ALTO:</td>
                 <td>{{-- $inspeccion->vehiculo->largo . '/' . $inspeccion->vehiculo->ancho . '/' . $inspeccion->vehiculo->alto --}}
                     {{ ($inspeccion->vehiculo->largo ?? 'NE') . ' / ' . ($inspeccion->vehiculo->ancho ?? 'NE') . ' / ' . ($inspeccion->vehiculo->alto ?? 'NE') }}
@@ -109,33 +109,33 @@
             </tr>
             <tr>
                 <td class="bg-gray">MARCA:</td>
-                <td class="uppercase">{{ $inspeccion->vehiculo->marca }}</td>
+                <td class="uppercase">{{ $inspeccion->vehiculo->marca ?? 'NE' }}</td>
                 <td class="bg-gray">CARROCERIA:</td>
-                <td class="uppercase">{{ $inspeccion->vehiculo->carroceria }}</td>
+                <td class="uppercase">{{ $inspeccion->vehiculo->carroceria ?? 'NE' }}</td>
                 <td class="bg-gray">COLOR:</td>
-                <td class="uppercase">{{ $inspeccion->vehiculo->color }}</td>
+                <td class="uppercase">{{ $inspeccion->vehiculo->color ?? 'NE' }}</td>
             </tr>
             <tr>
                 <td class="bg-gray">MODELO:</td>
-                <td class="uppercase">{{ $inspeccion->vehiculo->modelo }}</td>
+                <td class="uppercase">{{ $inspeccion->vehiculo->modelo ?? 'NE' }}</td>
                 <td class="bg-gray">N° MOTOR:</td>
-                <td>{{ $inspeccion->vehiculo->numero_motor }}</td>
+                <td>{{ $inspeccion->vehiculo->numero_motor ?? 'NE' }}</td>
                 <td class="bg-gray">PESO NETO:</td>
                 <td>{{ $inspeccion->vehiculo->peso_neto ?? 'NE' }}</td>
             </tr>
             <tr>
                 <td class="bg-gray">AÑO FABRICACION</td>
-                <td>{{ $inspeccion->vehiculo->anio_fabricacion }}</td>
+                <td>{{ $inspeccion->vehiculo->anio_fabricacion ?? 'NE' }}</td>
                 <td class="bg-gray">MARCA CARROCERIA:</td>
-                <td>{{ $inspeccion->vehiculo->marca_carroceria }}</td>
+                <td>{{ $inspeccion->vehiculo->marca_carroceria ?? 'NE' }}</td>
                 <td class="bg-gray">PESO BRUTO:</td>
                 <td>{{ $inspeccion->vehiculo->peso_bruto ?? 'NE' }}</td>
             </tr>
             <tr>
                 <td class="bg-gray">KILOMETRAJE</td>
-                <td>{{ $inspeccion->vehiculo->kilometraje }}</td>
+                <td>{{ $inspeccion->vehiculo->kilometraje ?? 'NE' }}</td>
                 <td class="bg-gray">EJES/RUEDAS:</td>
-                <td>{{ $inspeccion->vehiculo->ejes . ' / ' . $inspeccion->vehiculo->ruedas }}</td>
+                <td>{{ ($inspeccion->vehiculo->ejes ?? 'NE') . ' / ' . ($inspeccion->vehiculo->ruedas ?? 'NE') }}</td>
                 <td class="bg-gray">CARGA UTIL:</td>
                 <td>{{ $inspeccion->vehiculo->peso_util ?? 'NE' }}</td>
             </tr>

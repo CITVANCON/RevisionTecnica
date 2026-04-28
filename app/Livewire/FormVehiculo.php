@@ -165,8 +165,8 @@ class FormVehiculo extends Component
         if ($vehiculo = Vehiculo::create([
             //"placa" => strtoupper($this->placa),
             "placa" => $this->retornaNulo($this->placa),
-            "propietario" => strtoupper($this->propietario),
-            "categoria" => strtoupper($this->categoria),
+            "propietario" => $this->retornaNulo($this->propietario),
+            "categoria" => $this->retornaNulo($this->categoria),
             "marca" => $this->retornaNE($this->marca),
             "modelo" => $this->retornaNE($this->modelo),
             "anio_fabricacion" => $this->retornaNulo($this->anio_fabricacion),
@@ -264,9 +264,9 @@ class FormVehiculo extends Component
         ]);
 
         if ($this->vehiculo->update([
-            "placa" => strtoupper($this->m_placa),
-            "propietario" => strtoupper($this->m_propietario),
-            "categoria" => strtoupper($this->m_categoria),
+            "placa" => $this->retornaNulo($this->m_placa),
+            "propietario" => $this->retornaNulo($this->m_propietario),
+            "categoria" => $this->retornaNulo($this->m_categoria),
             "marca" => $this->retornaNE($this->m_marca),
             "modelo" => $this->retornaNE($this->m_modelo),
             "anio_fabricacion" => $this->retornaNulo($this->m_anio_fabricacion),

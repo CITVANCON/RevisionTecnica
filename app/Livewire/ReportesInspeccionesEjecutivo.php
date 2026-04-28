@@ -273,8 +273,8 @@ class ReportesInspeccionesEjecutivo extends Component
     }
 
     private function getClaseMaestra($i) {
-        if (!is_null($i->fecha_anulacion) || $i->estado_inspeccion === 'Anulada') return 'bg-red-50 italic text-gray-400';
-        if ($i->resultado_estado === 'D') return 'bg-blue-50 text-blue-700';
+        if (!is_null($i->fecha_anulacion) || $i->estado_inspeccion === 'Anulada') return 'bg-red-100 italic text-gray-400';
+        if ($i->resultado_estado === 'D') return 'bg-blue-100 text-blue-700';
         return '';
     }
 }

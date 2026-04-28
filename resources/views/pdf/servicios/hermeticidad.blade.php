@@ -123,13 +123,13 @@
             </tr>
             <tr>
                 <td class="bg-gray">Placa N°:</td>
-                <td>{{ $inspeccion->vehiculo->placa }}</td>
+                <td>{{ $inspeccion->vehiculo->placa ?? 'NE' }}</td>
                 <td colspan="3" class="bg-gray">Carga Habitual:</td>
                 <td colspan="3">C. MINERALES Cu, Pb, Zn, </td>
             </tr>
             <tr>
                 <td class="bg-gray">Año de Fabricación:</td>
-                <td>{{ $inspeccion->vehiculo->anio_fabricacion }}</td>
+                <td>{{ $inspeccion->vehiculo->anio_fabricacion ?? 'NE' }}</td>
                 <td class="bg-gray">Ejes:</td>
                 <td>{{ $inspeccion->vehiculo->ejes }}</td>
                 <td class="bg-gray">Ruedas:</td>
