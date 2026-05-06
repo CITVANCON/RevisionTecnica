@@ -58,4 +58,16 @@ class InspeccionMaestra extends Model
         'monto_total' => 'decimal:2',
         'comision_monto' => 'decimal:2',
     ];
+
+    public function pagos()
+    {
+        // Esto permite que ambos modelos usen la misma tabla de pagos
+        return $this->morphMany(DetallePago::class, 'pagoable');
+    }
+
+    // Atributo para verificar el saldo pendiente
+    public function getSaldoPendienteAttribute()
+    {
+        return $this->monto_total - $this->pagos->sum('monto');
+    }
 }

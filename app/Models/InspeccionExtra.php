@@ -46,6 +46,18 @@ class InspeccionExtra extends Model
         return $this->hasOne(DetalleOpacidad::class, 'inspeccion_extra_id');
     }
 
+    public function pagos()
+    {
+        // Esto permite que ambos modelos usen la misma tabla de pagos
+        return $this->morphMany(DetallePago::class, 'pagoable');
+    }
+
+    // Atributo para verificar el saldo pendiente
+    public function getSaldoPendienteAttribute()
+    {
+        return $this->monto_total - $this->pagos->sum('monto');
+    }
+
     // --- NUEVO MÉTODO PARA OBTENER LA RUTA DEL PDF ---
     public function getUrlCertificadoAttribute()
     {

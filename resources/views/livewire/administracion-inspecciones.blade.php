@@ -159,6 +159,7 @@
                                             {{ $item->serie_certificado }}-{{ $item->correlativo_certificado }}</p>
                                     </div>
                                 </td>
+                                {{-- 
                                 <td class="px-5 py-4 text-center">
                                     <p class="px-3 py-1 rounded-full bg-green-100 text-green-700 font-bold">
                                         S/{{ number_format($item->monto_total, 2) }}
@@ -168,6 +169,27 @@
                                     @else
                                         <span
                                             class="text-[10px] text-gray-500 uppercase">{{ $item->metodo_pago }}</span>
+                                    @endif
+                                </td>
+                                --}}
+                                <td class="px-5 py-4 text-center">
+                                    <p class="px-3 py-1 rounded-full bg-green-100 text-green-700 font-bold">
+                                        S/{{ number_format($item->monto_total, 2) }}
+                                    </p>
+                                    
+                                    @if ($item->pagos->isEmpty())
+                                        <span class="text-[10px] text-red-500 font-bold">PENDIENTE</span>
+                                    @else
+                                        <div class="flex flex-col items-center">
+                                            <span class="text-[10px] text-gray-500 uppercase font-medium leading-tight">
+                                                {{ $item->pagos->pluck('metodo_pago')->unique()->implode(' - ') }}
+                                            </span>
+                                            {{--
+                                            @if($item->pagos->count() > 1)
+                                                <span class="text-[9px] text-indigo-500 font-bold">(PAGO MIXTO)</span>
+                                            @endif
+                                            --}}
+                                        </div>
                                     @endif
                                 </td>
                                 <td class="px-5 py-4 text-right" x-data="{ open: false }">
@@ -190,16 +212,6 @@
                                                     class="w-full text-left flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-red-600 hover:text-white transition">
                                                     <i class="fas fa-trash w-5 mr-2 text-red-600"></i> Eliminar
                                             </button>
-                                            {{-- 
-                                            <button
-                                                class="w-full text-left flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white transition">
-                                                <i class="fas fa-eye w-5 mr-2 text-blue-500"></i> Ver Detalles
-                                            </button>
-                                            <button
-                                                class="w-full text-left flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white transition">
-                                                <i class="fas fa-print w-5 mr-2 text-gray-500"></i> Imprimir Constancia
-                                            </button>
-                                            --}}
                                         </div>
                                     </div>
                                 </td>
@@ -218,11 +230,13 @@
         @endif
     </div>
 
+    <!-- Modal para Editar Inspección -->
     <x-dialog-modal wire:model.live="modalDetallesCaja">
         <x-slot name="title">
             {{ __('Completar Información') }} - Placa: <span
                 class="text-indigo-600 font-bold uppercase">{{ $inspecciones->find($selected_id)->placa_vehiculo ?? '' }}</span>
         </x-slot>
+        {{-- 
         <x-slot name="content">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="col-span-1">
@@ -252,6 +266,71 @@
                     <x-label for="comision_monto" value="{{ __('Comisión (S/)') }}" />
                     <x-input id="comision_monto" type="number" step="0.01" class="w-full"
                         wire:model="comision_monto" />
+                    <x-input-error for="comision_monto" class="mt-2" />
+                </div>
+                <div class="col-span-2">
+                    <x-label for="observaciones" value="{{ __('Observaciones / Convenio') }}" />
+                    <textarea id="observaciones" wire:model="observaciones"
+                        class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm w-full text-sm"
+                        rows="2" placeholder="Ej: CONVENIO B SOTO / PAGO ADELANTADO"></textarea>
+                    <x-input-error for="observaciones" class="mt-2" />
+                </div>
+            </div>
+        </x-slot>
+        --}}
+        <x-slot name="content">
+            <div class="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                <div class="flex justify-between items-center mb-3">
+                    <h3 class="font-bold text-gray-700 uppercase text-xs tracking-wider">Desglose de Pagos</h3>
+                    <button wire:click="agregarPago" type="button" class="text-xs bg-indigo-600 text-white px-2 py-1 rounded hover:bg-indigo-700">
+                        <i class="fas fa-plus mr-1"></i> Agregar Método
+                    </button>
+                </div>
+                @foreach($lista_pagos as $index => $pago)
+                    <div class="grid grid-cols-12 gap-2 mb-2 items-center" wire:key="pago-row-{{ $index }}">
+                        <div class="col-span-4">
+                            <select wire:model="lista_pagos.{{ $index }}.metodo_pago" class="w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500">
+                                <option value="">Método...</option>
+                                <option value="EFECTIVO">EFECTIVO</option>
+                                <option value="YAPE">YAPE</option>
+                                <option value="VISA">VISA (POS)</option>
+                                <option value="TRANSFERENCIA">TRANSFERENCIA</option>
+                            </select>
+                        </div>
+                        <div class="col-span-3">
+                            <x-input type="number" step="0.01" class="w-full" placeholder="Monto" wire:model="lista_pagos.{{ $index }}.monto" />
+                        </div>
+                        <div class="col-span-4">
+                            <x-input type="text" class="w-full" placeholder="Ref/Operación" wire:model="lista_pagos.{{ $index }}.nro_referencia" />
+                        </div>
+                        <div class="col-span-1 text-center">
+                            @if(count($lista_pagos) > 1)
+                                <button wire:click="quitarPago({{ $index }})" class="text-red-500 hover:text-red-700">
+                                    <i class="fas fa-times-circle"></i>
+                                </button>
+                            @endif
+                        </div>
+                    </div>
+                @endforeach
+                <div class="flex justify-between items-center p-2 bg-indigo-100 rounded mt-2">
+                    <span class="text-xs font-bold text-indigo-800">TOTAL REGISTRADO:</span>
+                    <span class="text-sm font-black text-indigo-900">
+                         S/ {{ number_format(collect($lista_pagos)->sum(fn($p) => (float)($p['monto'] ?? 0)), 2) }}
+                    </span>
+                </div>
+
+                @error('suma_pagos') <span class="text-red-500 text-xs font-bold mt-2 block">{{ $message }}</span> @enderror
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                <div>
+                    <x-label for="nro_comprobante" value="{{ __('N° Comprobante') }}" />
+                    <x-input id="nro_comprobante" type="text" class="w-full" wire:model="nro_comprobante" placeholder="Ej: EB01-7976" />
+                    <x-input-error for="nro_comprobante" class="mt-2" />
+                </div>
+                <div>
+                    <x-label for="comision_monto" value="{{ __('Comisión (S/)') }}" />
+                    <x-input id="comision_monto" type="number" step="0.01" class="w-full" wire:model="comision_monto" />
                     <x-input-error for="comision_monto" class="mt-2" />
                 </div>
                 <div class="col-span-2">

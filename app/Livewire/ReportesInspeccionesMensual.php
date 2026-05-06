@@ -19,115 +19,103 @@ class ReportesInspeccionesMensual extends Component
         $this->mes_seleccionado = Carbon::now()->format('Y-m');
     }
 
-    /*public function render()
+    public function render()
     {
         $fecha = Carbon::parse($this->mes_seleccionado);
         $nombreMes = $fecha->translatedFormat('F');
         $anio = $fecha->year;
 
-        // Ingresos Agrupados por día
-        $reporteMensual = InspeccionMaestra::query()
-            ->select(
-                'fecha_inspeccion',
-                DB::raw('count(*) as total_certificados'),
-                DB::raw('sum(monto_total) as monto_dia'),
-                DB::raw("SUM(CASE WHEN metodo_pago = 'EFECTIVO' THEN monto_total ELSE 0 END) as monto_efectivo"),
-                DB::raw("SUM(CASE WHEN metodo_pago IN ('YAPE', 'VISA', 'TRANSFERENCIA') THEN monto_total ELSE 0 END) as monto_pos")
-            )
+        // 1. Unificar IDs y Fechas de todas las inspecciones del mes (Maestras + Extras)
+        // Esto sirve para tener la lista de días con actividad y conteo de certificados
+        $inspeccionesPrincipales = DB::table('inspecciones_maestras')
+            ->select('id', 'fecha_inspeccion', DB::raw("'App\\\\Models\\\\InspeccionMaestra' as tipo"))
             ->whereMonth('fecha_inspeccion', $fecha->month)
             ->whereYear('fecha_inspeccion', $anio)
-
-            ->whereNull('fecha_anulacion')
             ->where('estado_inspeccion', '!=', 'Anulada')
-            
-            ->groupBy('fecha_inspeccion')
-            ->orderBy('fecha_inspeccion', 'asc')
+            ->whereNull('fecha_anulacion');
+
+        $inspeccionesExtras = DB::table('inspecciones_extras')
+            ->select('id', 'fecha_inspeccion', DB::raw("'App\\\\Models\\\\InspeccionExtra' as tipo"))
+            ->whereMonth('fecha_inspeccion', $fecha->month)
+            ->whereYear('fecha_inspeccion', $anio)
+            ->where('estado', '!=', 'Anulada');
+
+        $unificadas = $inspeccionesPrincipales->unionAll($inspeccionesExtras);
+
+        // 2. Agrupar por día y sumar desde DETALLES_PAGOS usando los tipos polimórficos
+        $reporteMensual = DB::query()
+            ->fromSub($unificadas, 'u')
+            ->join('detalles_pagos as dp', function($join) {
+                $join->on('dp.pagoable_id', '=', 'u.id')
+                     ->on('dp.pagoable_type', '=', 'u.tipo');
+            })
+            ->select(
+                'u.fecha_inspeccion',
+                DB::raw('COUNT(DISTINCT CONCAT(u.tipo, u.id)) as total_certificados'),
+                DB::raw('SUM(dp.monto) as monto_dia'),
+                DB::raw("SUM(CASE WHEN dp.metodo_pago = 'EFECTIVO' THEN dp.monto ELSE 0 END) as monto_efectivo"),
+                DB::raw("SUM(CASE WHEN dp.metodo_pago IN ('YAPE', 'VISA', 'TRANSFERENCIA') THEN dp.monto ELSE 0 END) as monto_pos")
+            )
+            ->groupBy('u.fecha_inspeccion')
+            ->orderBy('u.fecha_inspeccion', 'asc')
             ->get();
 
-        // Gastos DIARIOS del mes agrupados por fecha
-        $gastosDiarios = Gasto::query()
-            ->select('fecha', DB::raw('sum(monto) as total_gasto_dia'))
-            ->whereMonth('fecha', $fecha->month)
+        // 3. Obtener Gastos DIARIOS
+        $gastosDiarios = Gasto::whereMonth('fecha', $fecha->month)
             ->whereYear('fecha', $anio)
             ->where('tipo_egreso', 'DIARIO')
+            ->select('fecha', DB::raw('sum(monto) as total_gasto_dia'))
             ->groupBy('fecha')
             ->get()
-            ->keyBy(function($item) {
-                return $item->fecha->format('Y-m-d');
-            });
+            ->keyBy(fn($i) => Carbon::parse($i->fecha)->format('Y-m-d'));
 
-        // egresis MENSUALES
-        $egresosMensuales = Gasto::query()
-            ->whereMonth('fecha', $fecha->month)
-            ->whereYear('fecha', $anio)
-            ->where('tipo_egreso', 'MENSUAL')
-            ->orderBy('fecha', 'asc')
-            ->get();
-
-        // Obtener todos los cierres diarios del mes seleccionado
+        // 4. Obtener Cierres Diarios (La verdad auditada)
         $cierresDelMes = CierreDiario::whereMonth('fecha', $fecha->month)
             ->whereYear('fecha', $anio)
             ->get()
-            ->keyBy(function($item) {
-                // Forzamos a que la llave sea un string YYYY-MM-DD aunque el cast sea date
-                return is_string($item->fecha) ? $item->fecha : $item->fecha->format('Y-m-d');
-            });
+            ->keyBy('fecha');
 
+        // 5. Transformar datos cruzando con Auditoría
         $reporteMensual->transform(function ($fila) use ($gastosDiarios, $cierresDelMes) {
             $fechaKey = Carbon::parse($fila->fecha_inspeccion)->format('Y-m-d');
             $cierre = $cierresDelMes->get($fechaKey);
+            $gastoDia = $gastosDiarios->get($fechaKey)->total_gasto_dia ?? 0;
 
-            // Gastos operativos diarios
-            $fila->monto_gastos = $gastosDiarios->has($fechaKey) ? $gastosDiarios[$fechaKey]->total_gasto_dia : 0;
+            $fila->monto_gastos = $gastoDia;
             
-            // Lógica de POS y Comisiones
             if ($cierre) {
-                // CASO CON CIERRE:
-                // El banco ya viene neto
-                $fila->comision_pos = $cierre->comision_pos;
-                $fila->monto_pos_neto = $cierre->monto_neto_pos;
-                
-                // IMPORTANTE: El efectivo real YA NO resta gastos porque ya fue restado al cerrar caja
-                $fila->monto_efectivo_final = $cierre->efectivo_real; 
-                $fila->saldo_efectivo = $cierre->efectivo_real; 
+                // Si hay cierre, mandan los montos reales que el auditor contó
+                $fila->comision_pos = (float)$cierre->comision_pos;
+                $fila->monto_pos_neto = (float)$cierre->monto_neto_pos;
+                $fila->saldo_efectivo = (float)$cierre->efectivo_real; 
+                $fila->estado_cierre = $cierre->estado;
             } else {
-                // CASO SIN CIERRE (Estimado del sistema):
+                // Si no hay cierre, usamos el cálculo teórico del sistema
                 $fila->comision_pos = 0; 
-                $fila->monto_pos_neto = $fila->monto_pos;
-                
-                // Aquí SÍ restamos los gastos porque el sistema solo conoce el Ingreso Bruto
-                $fila->saldo_efectivo = $fila->monto_efectivo - $fila->monto_gastos;
+                $fila->monto_pos_neto = (float)$fila->monto_pos;
+                $fila->saldo_efectivo = (float)$fila->monto_efectivo - $gastoDia;
+                $fila->estado_cierre = 'Sin Registro';
             }
-
-            //$fila->saldo_efectivo = $fila->monto_efectivo_real - $fila->monto_gastos;
             
-            // Saldo del día = Efectivo neto + POS ya descontado la comisión
             $fila->saldo_dia = $fila->saldo_efectivo + $fila->monto_pos_neto;
-
             $fila->cierre = $cierre; 
             
             return $fila;
         });
 
-        // Totales finales para el balance
-        $ingresoBruto = $reporteMensual->sum('monto_dia');
+        // 6. Egresos MENSUALES y Balance
+        $egresosMensuales = Gasto::whereMonth('fecha', $fecha->month)
+            ->whereYear('fecha', $anio)
+            ->where('tipo_egreso', 'MENSUAL')
+            ->get();
 
-        $totalComisiones = $reporteMensual->sum('comision_pos');
-
-        $ingresosOperativos = $reporteMensual->sum('saldo_dia'); // Suma de saldos por día
-        $egresosMensualesTotal = $egresosMensuales->sum('monto');
-
-        // Totales finales para el balance
         $balance = [
             'total_certificados' => $reporteMensual->sum('total_certificados'),
-            'ingreso_bruto'      => $ingresoBruto,
-
-            'total_comisiones'   => $totalComisiones,
-
-            'ingresos_operativos' => $ingresosOperativos,
-            'egresos_mensuales'   => $egresosMensualesTotal,
-            'utilidad_real'       => $ingresosOperativos - $egresosMensualesTotal,
-
+            'ingreso_bruto'      => $reporteMensual->sum('monto_dia'),
+            'total_comisiones'   => $reporteMensual->sum('comision_pos'),
+            'ingresos_operativos' => $reporteMensual->sum('saldo_dia'),
+            'egresos_mensuales'   => $egresosMensuales->sum('monto'),
+            'utilidad_real'       => $reporteMensual->sum('saldo_dia') - $egresosMensuales->sum('monto'),
         ];
 
         return view('livewire.reportes-inspecciones-mensual', [
@@ -137,9 +125,9 @@ class ReportesInspeccionesMensual extends Component
             'nombreMes' => $nombreMes,
             'anio' => $anio,
         ]);
-    }*/
+    }
 
-    public function render()
+    /*public function render()
     {
         $fecha = Carbon::parse($this->mes_seleccionado);
         $nombreMes = $fecha->translatedFormat('F');
@@ -255,5 +243,6 @@ class ReportesInspeccionesMensual extends Component
             'nombreMes' => $nombreMes,
             'anio' => $anio,
         ]);
-    }
+    }*/
 }
+

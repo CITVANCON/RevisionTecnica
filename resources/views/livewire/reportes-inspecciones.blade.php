@@ -43,7 +43,7 @@
                         <div>
                             <p class="text-[10px] text-gray-400 font-bold uppercase">Costos Operativos</p>
                             <p class="text-lg font-bold text-gray-700">S/ {{ number_format($stats['total_gastos'] + $stats['total_comisiones'], 2) }}</p>
-                            <p class="text-[9px] text-gray-500">Gastos: {{ number_format($stats['total_gastos'], 2) }} | Com: {{ number_format($stats['total_comisiones'], 2) }}</p>
+                            <p class="text-[9px] text-gray-500">Gastos: {{ number_format($stats['total_gastos'], 2) }} | Com POS: {{ number_format($stats['total_comisiones'], 2) }}</p>
                         </div>
                     </div>
                 </div>

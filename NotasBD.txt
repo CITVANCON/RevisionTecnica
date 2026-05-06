@@ -500,3 +500,95 @@ ALTER TABLE inspecciones_extras ADD UNIQUE INDEX certificado_servicio_unique (nu
 
 
 
+
+CREATE TABLE detalles_pagos (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    -- Campos para la relación polimórfica (Laravel Morph)
+    pagoable_id BIGINT UNSIGNED NOT NULL, 
+    pagoable_type VARCHAR(255) NOT NULL, 
+    
+    -- Información del pago
+    metodo_pago VARCHAR(50) NOT NULL, -- Ej: 'Efectivo', 'Yape', 'Tarjeta'
+    monto DECIMAL(10, 2) NOT NULL,
+    nro_referencia VARCHAR(100) NULL, -- Para el número de operación
+    fecha_pago TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    -- Auditoría básica
+    user_id BIGINT UNSIGNED NULL, -- Quién registró el pago
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    
+    -- Índices para velocidad de búsqueda
+    INDEX idx_pagoable (pagoable_id, pagoable_type)
+);
+
+
+-- Script SQL para Migrar inspecciones_extras
+INSERT INTO detalles_pagos (
+    pagoable_id, 
+    pagoable_type, 
+    metodo_pago, 
+    monto, 
+    nro_referencia, 
+    fecha_pago, 
+    user_id, 
+    created_at, 
+    updated_at
+)
+SELECT 
+    id, 
+    'App\\Models\\InspeccionExtra', -- Asegúrate que este sea el namespace de tu modelo
+    metodo_pago, 
+    monto_total, 
+    NULL,                           -- En la tabla origen no tenías nro_referencia
+    created_at,                     -- Usamos la fecha de creación como fecha de pago
+    usuario_id,                     -- Mapeo de usuario_id a user_id
+    NOW(), 
+    NOW()
+FROM inspecciones_extras
+WHERE metodo_pago IS NOT NULL 
+  AND monto_total > 0
+  AND NOT EXISTS (
+      SELECT 1 FROM detalles_pagos 
+      WHERE detalles_pagos.pagoable_id = inspecciones_extras.id 
+      AND detalles_pagos.pagoable_type = 'App\\Models\\InspeccionExtra'
+  );
+
+-- Script SQL para Migrar inspecciones_maestras
+INSERT INTO detalles_pagos (
+    pagoable_id, 
+    pagoable_type, 
+    metodo_pago, 
+    monto, 
+    nro_referencia, 
+    fecha_pago, 
+    user_id, 
+    created_at, 
+    updated_at
+)
+SELECT 
+    id, 
+    'App\\Models\\InspeccionMaestra',
+    metodo_pago, 
+    monto_total, 
+    NULL,                             -- No hay nro_referencia en la origen
+    created_at,                       -- Fecha del pago
+    NULL,                             -- Se pone NULL porque no existe usuario_id en la tabla origen
+    NOW(), 
+    NOW()
+FROM inspecciones_maestras
+WHERE metodo_pago IS NOT NULL 
+  AND monto_total > 0
+  AND NOT EXISTS (
+      SELECT 1 FROM detalles_pagos 
+      WHERE detalles_pagos.pagoable_id = inspecciones_maestras.id 
+      AND detalles_pagos.pagoable_type = 'App\\Models\\InspeccionMaestra'
+  );
+
+
+
+
+
+
+
+

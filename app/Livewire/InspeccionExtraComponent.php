@@ -17,7 +17,7 @@ class InspeccionExtraComponent extends Component
 
     // Propiedades generales
     public $cliente_id, $vehiculo_id, $numero_certificado, $fecha_inspeccion;
-    public $monto_total = 40, $metodo_pago, $nro_comprobante, $comision_monto = 0, $resultado_final;
+    public $monto_total = 0, $metodo_pago, $nro_comprobante, $comision_monto = 0, $resultado_final;
     public $vigencia_meses = 6;
     public $estado = 'COMPLETADO';
 
@@ -28,10 +28,35 @@ class InspeccionExtraComponent extends Component
     public $inspeccion_generada;
     public $inspeccion_id; // Para los enlaces de impresión
 
+    // Reemplazamos $metodo_pago por un array para pagos múltiples
+    public $pagos_multiples = [];
+
     public function mount()
     {
         $this->fecha_inspeccion = date('Y-m-d');
         $this->resultado_final = "";
+        // Inicializar con una fila de pago vacía
+        $this->agregarPago();
+    }
+
+    public function agregarPago()
+    {
+        //$this->pagos_multiples[] = ['metodo_pago' => '', 'monto' => 0];
+        $this->pagos_multiples[] = [
+            'metodo_pago' => '', 
+            'monto' => 0, 
+            'nro_referencia' => ''
+        ];
+    }
+    public function eliminarPago($index)
+    {
+        unset($this->pagos_multiples[$index]);
+        $this->pagos_multiples = array_values($this->pagos_multiples);
+        $this->actualizarMontoTotal();
+    }
+    public function actualizarMontoTotal()
+    {
+        $this->monto_total = array_sum(array_column($this->pagos_multiples, 'monto'));
     }
 
     // Escuchar el ID del cliente enviado desde FormCliente (Livewire 3)
@@ -102,7 +127,6 @@ class InspeccionExtraComponent extends Component
         $this->resultado_final = "";
         $this->hermeticidadData = [];
         $this->opacidadData = [];
-        //$this->numero_certificado = ""; // Opcional, si quieres que cada servicio pida su nro.
         if ($this->servicio_seleccionado) {
             // Lógica para obtener el último certificado de este servicio
             $ultimo = InspeccionExtra::where('tipo_servicio_id', $value)->latest('id')->first();
@@ -127,21 +151,27 @@ class InspeccionExtraComponent extends Component
                 'cliente_id' => 'required',
                 'vehiculo_id' => 'required',
                 'servicio_id' => 'required',
-                //'numero_certificado' => 'required|unique:inspecciones_extras,numero_certificado',
                 'numero_certificado' => ['required', Rule::unique('inspecciones_extras', 'numero_certificado')->where('tipo_servicio_id', $this->servicio_id)],
                 'resultado_final' => 'required|in:APROBADO,DESAPROBADO',
-                'metodo_pago' => 'required',
-                'monto_total' => 'required|numeric|min:0',
+                'pagos_multiples.*.metodo_pago' => 'required',
+                'pagos_multiples.*.monto' => 'required|numeric|min:0.1',
             ], [
                 'cliente_id.required' => 'Debe seleccionar o registrar un cliente.',
                 'vehiculo_id.required' => 'Debe seleccionar un vehículo.',
                 'numero_certificado.required' => 'El número de certificado es obligatorio.',
                 'numero_certificado.unique' => 'Este número de certificado ya existe para el servicio seleccionado.',
                 'resultado_final.required' => 'El resultado de la inspección no ha sido determinado.',
-                'metodo_pago.required' => 'Seleccione un método de pago.',
-                'monto_total.required' => 'Debe ingresar el monto cobrado.',
-                'monto_total.numeric' => 'El monto debe ser un número válido.',
+                'pagos_multiples.*.metodo_pago.required' => 'Seleccione el método para todos los pagos.',
+                'pagos_multiples.*.monto.required' => 'Falta ingresar el monto en uno de los pagos.',
+                'pagos_multiples.*.monto.numeric' => 'El monto debe ser un número.',
+                'pagos_multiples.*.monto.min' => 'El monto de cada pago debe ser mayor a 0.',
             ]);
+
+            // Validar que la suma sea coherente (Opcional pero recomendado)
+            if ($this->monto_total <= 0) {
+                $this->dispatch('minAlert', titulo: "¡ATENCIÓN!", mensaje: "El monto total debe ser mayor a cero.", icono: "warning");
+                return;
+            }
 
             // Si pasa la validación, procedemos
             if ($this->servicio_id == 1) {
@@ -176,7 +206,7 @@ class InspeccionExtraComponent extends Component
                 'fecha_inspeccion' => $this->fecha_inspeccion,
                 'hora_inspeccion' => date('H:i:s'),
                 'monto_total' => $this->monto_total,
-                'metodo_pago' => $this->metodo_pago,
+                //'metodo_pago' => $this->metodo_pago,
                 'comision_monto' => $this->comision_monto,
                 'resultado_final' => $this->resultado_final,
                 'vigencia_meses'     => $this->vigencia_meses,
@@ -184,6 +214,16 @@ class InspeccionExtraComponent extends Component
                 'usuario_id' => Auth::id(),
                 'estado' => 'COMPLETADO', // Nuevo
             ]);
+
+            // GUARDAR CADA PAGO EN LA TABLA RELACIONADA
+            foreach ($this->pagos_multiples as $pago) {
+                $this->inspeccion_generada->pagos()->create([
+                    'metodo_pago' => $pago['metodo_pago'],
+                    'monto' => $pago['monto'],
+                    'nro_referencia' => $pago['nro_referencia'],
+                    'user_id' => Auth::id(),
+                ]);
+            }
 
             if ($this->servicio_id == 1) {
                 $this->inspeccion_generada->detalleHermeticidad()->create($this->hermeticidadData);

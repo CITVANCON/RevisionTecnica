@@ -1,6 +1,6 @@
 <div class="container mx-auto py-12">
     <div class="bg-gray-200 p-8 rounded-xl w-full">
-        <div class="pb-4">
+        <div class="pb-4" id="printArea">
             <!-- Título y Filtros -->
             <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-6">
                 <div class="px-2">
@@ -9,15 +9,6 @@
                     </h2>
                     <span class="text-xs">Reporte de pagos, Control de Boletas y Certificados por dia</span>
                 </div>
-                {{-- 
-                    <div class="flex gap-3 mt-4 md:mt-0 px-2">
-                        <div class="flex bg-gray-50 items-center p-2 rounded-md shadow-sm border border-gray-100">
-                            <span class="text-sm mr-2 font-medium text-gray-500">Fecha:</span>
-                            <input type="date" wire:model.live="fecha"
-                                class="bg-gray-50 border-none outline-none focus:ring-0 text-sm text-indigo-700 font-bold">
-                        </div>
-                    </div>
-                --}}
                 <div class="flex flex-wrap gap-3 mt-4 md:mt-0 px-2 items-center">
                     <div class="flex bg-gray-50 items-center p-2 rounded-md shadow-sm border border-gray-100 h-12">
                         <span class="text-sm mr-2 font-medium text-gray-500">Fecha:</span>
@@ -54,7 +45,7 @@
                         <span class="text-xl font-black text-gray-800">S/ {{ number_format($total_comisiones, 2) }}</span>
                         <i class="fas fa-hand-holding-usd text-blue-400 fa-lg"></i>
                 </div>
-                <div Onclick="window.print()" class="bg-white p-4 rounded-lg shadow-sm border-l-4 border-gray-400 flex items-center justify-between hover:bg-gray-50 cursor-pointer transition">
+                <div onclick="window.print()" class="bg-white p-4 rounded-lg shadow-sm border-l-4 border-gray-400 flex items-center justify-between hover:bg-gray-50 cursor-pointer transition">
                     <span class="text-sm text-gray-600 font-medium">Imprimir Reporte</span>
                     <i class="fas fa-print text-gray-500 fa-lg"></i>
                 </div>
@@ -63,11 +54,11 @@
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4 px-2 mb-2">
                 @foreach ($resumenPagos as $metodo => $datos)
                     @php
-                        $color = match ($metodo) {
-                            'EFECTIVO' => 'green',
+                        $color = match (trim(strtoupper($metodo))) {
+                            'EFECTIVO' => 'orange',
                             'YAPE' => 'indigo',
                             'VISA' => 'blue',
-                            'TRANSFERENCIA' => 'orange',
+                            'TRANSFERENCIA' => 'green',
                             default => 'gray',
                         };
                     @endphp
@@ -131,7 +122,7 @@
                                 </thead>
                                 <tbody class="text-sm">
                                     @foreach ($inspecciones as $item)
-                                        <tr class="border-b border-gray-100 hover:bg-gray-50 transition {{ $item['clase_fila'] }}" wire:key="rep-{{ $item['id'] }}">
+                                        <tr class="border-b border-gray-100 hover:bg-gray-100 transition {{ $item['clase_fila'] }}" wire:key="rep-{{ $item['id'] }}">
                                             <td class="px-4 py-3 text-gray-500 font-mono text-xs">
                                                 {{ $loop->iteration }}
                                             </td>
@@ -149,20 +140,7 @@
                                                 @if ($item['badge'])
                                                     <span class="block text-[9px] text-orange-600 font-black mt-0.5">{{ $item['badge'] }}</span>
                                                 @endif
-                                                {{-- 
-                                                @if ($item->es_reinspeccion === 'S')
-                                                    <span class="block text-[9px] text-orange-600 font-black mt-0.5">REINSP.</span>
-                                                @endif
-                                                @if ($item->resultado_estado === 'D')
-                                                    <span class="block text-[9px] text-blue-600 font-black mt-0.5">DESAPRO.</span>
-                                                @endif
-                                                --}}
                                             </td>
-                                            {{-- 
-                                            <td class="px-4 py-3 text-right font-bold {{ $item->estado_inspeccion === 'Anulada' || $item->fecha_anulacion ? 'text-gray-400' : 'text-gray-950' }} decimal-align">
-                                                {{ number_format($item->monto_total, 2) }}
-                                            </td>
-                                            --}}
                                             <td class="px-4 py-3 text-right font-bold {{ !$item['activo'] ? 'text-gray-400' : 'text-gray-950' }} decimal-align">
                                                 {{ number_format($item['monto'], 2) }}
                                             </td>
@@ -170,10 +148,14 @@
                                                 {{ $item['formato'] }}
                                             </td>
                                             <td class="px-4 py-3 text-center">
-                                                <div class="text-xs font-bold text-gray-800">
-                                                    {{ $item['metodo_pago'] }}
+                                                <div class="flex flex-col gap-1">
+                                                    @foreach($item['detalles_pago'] as $pago)
+                                                        <span class="text-[10px] bg-gray-100 px-1 rounded text-gray-800 font-bold border border-gray-200">
+                                                            {{ $pago['metodo'] }}: S/ {{ number_format($pago['monto'], 2) }}
+                                                        </span>
+                                                    @endforeach
                                                 </div>
-                                                <div class="text-[11px] text-indigo-600">
+                                                <div class="text-[11px] text-indigo-600 mt-1 font-mono">
                                                     {{ $item['comprobante'] }}
                                                 </div>
                                             </td>
@@ -273,18 +255,24 @@
         </x-slot>
         <x-slot name="content">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="bg-gray-50 p-3 rounded border">
-                    <span class="text-xs font-bold text-gray-500 uppercase">Efectivo en Caja (Neto)</span>
+                <div class="p-3 rounded border {{ $formAuditoria['efectivo_real'] != $formAuditoria['efectivo_esperado'] ? 'bg-red-50 border-red-200' : 'bg-gray-50 border-gray-200' }}">
+                    <span class="text-xs font-bold text-gray-500 uppercase">Efectivo en Caja (Sistema)</span>
                     <div class="text-xl font-bold">S/ {{ number_format($formAuditoria['efectivo_esperado'], 2) }}</div>
                     @hasanyrole('Administrador del sistema|Auditoria')
                         <div class="mt-2">
                             <x-label value="Monto Real Depositado/Contado" />
                             <x-input type="number" step="0.01" class="w-full" wire:model="formAuditoria.efectivo_real" />
+                            @php $difEfectivo = $formAuditoria['efectivo_real'] - $formAuditoria['efectivo_esperado']; @endphp
+                            @if($difEfectivo != 0)
+                                <div class="text-[10px] mt-1 font-bold {{ $difEfectivo > 0 ? 'text-green-600' : 'text-red-600' }}">
+                                    Diferencia: S/ {{ number_format($difEfectivo, 2) }}
+                                </div>
+                            @endif
                         </div>
                     @endhasanyrole
                 </div>
-                <div class="bg-gray-50 p-3 rounded border">
-                    <span class="text-xs font-bold text-gray-500 uppercase">VISA/Yape/Transferencia (Sistema)</span>
+                <div class="p-3 rounded border {{ $formAuditoria['pos_real'] != $formAuditoria['pos_esperado'] ? 'bg-red-50 border-red-200' : 'bg-gray-50 border-gray-200' }}">
+                    <span class="text-xs font-bold text-gray-500 uppercase">Digital / POS (Sistema)</span>
                     <div class="text-xl font-bold">S/ {{ number_format($formAuditoria['pos_esperado'], 2) }}</div>
                     @hasanyrole('Administrador del sistema|Auditoria')
                         <div class="mt-2 grid grid-cols-2 gap-2">
@@ -297,6 +285,12 @@
                                 <x-input type="number" step="0.01" inputmode="decimal" class="w-full text-sm border-red-200" wire:model.live.debounce.500ms="formAuditoria.comision_pos" />
                             </div>
                         </div>
+                        @php $difPos = $formAuditoria['pos_real'] - $formAuditoria['pos_esperado']; @endphp
+                        @if($difPos != 0)
+                            <div class="text-[10px] mt-1 font-bold {{ $difPos > 0 ? 'text-green-600' : 'text-red-600' }}">
+                                Diferencia vouchers: S/ {{ number_format($difPos, 2) }}
+                            </div>
+                        @endif
                         <div class="mt-2 bg-blue-100 p-2 rounded flex justify-between items-center">
                             <span class="text-xs font-bold text-blue-800 uppercase">Neto a Banco:</span>
                             <span class="text-lg font-black text-blue-900">S/ {{ number_format($formAuditoria['monto_neto_pos'], 2) }}</span>
@@ -327,4 +321,12 @@
         </x-slot>
     </x-dialog-modal>
 
+    <style>
+        @media print {
+            body * { visibility: hidden; }
+            #printArea, #printArea * { visibility: visible; }
+            #printArea { position: absolute; left: 0; top: 0; width: 100%; }
+            .no-print { display: none; }
+        }
+    </style>
 </div>
