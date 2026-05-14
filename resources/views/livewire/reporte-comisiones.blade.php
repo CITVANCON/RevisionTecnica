@@ -12,8 +12,18 @@
                 <p class="text-sm text-gray-500">Periodo: {{ \Carbon\Carbon::parse($fecha_inicio)->format('d/m/Y') }} al {{ \Carbon\Carbon::parse($fecha_fin)->format('d/m/Y') }}</p>
             </div>
             <div class="flex flex-wrap gap-3 w-full lg:w-auto">
-                <input type="text" wire:model.live="search" placeholder="Buscar placa o formato..." 
-                    class="border-gray-300 rounded-lg text-sm focus:ring-indigo-500 focus:border-indigo-500 w-full lg:w-64">                
+                <!-- Búsqueda -->
+                <input type="text" wire:model.live="search" placeholder="Buscar placa o certificado..." 
+                    class="border-gray-300 rounded-lg text-sm focus:ring-indigo-500 focus:border-indigo-500 w-full lg:w-48">              
+                <!-- Filtro Vendedor -->
+                <select wire:model.live="vendedor_id" 
+                    class="border-gray-300 rounded-lg text-sm focus:ring-indigo-500 focus:border-indigo-500 bg-white">
+                    <option value="">Todos los Vendedores</option>
+                    @foreach($vendedores as $v)
+                        <option value="{{ $v->id }}">{{ $v->nombre }}</option>
+                    @endforeach
+                </select>
+                <!-- Rango de Fechas -->
                 <div class="flex bg-gray-50 border rounded-lg overflow-hidden">
                     <input type="date" wire:model.live="fecha_inicio" class="bg-transparent border-none text-xs focus:ring-0">
                     <span class="flex items-center text-gray-400 px-1">al</span>

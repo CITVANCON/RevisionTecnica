@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\InspeccionExtra;
 use App\Models\InspeccionMaestra;
+use App\Models\Vendedor;
 use Livewire\Component;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -13,6 +14,7 @@ class ReporteComisiones extends Component
     public $fecha_inicio;
     public $fecha_fin;
     public $search = '';
+    public $vendedor_id = '';
 
     public function mount()
     {
@@ -26,14 +28,19 @@ class ReporteComisiones extends Component
         $rango = [$this->fecha_inicio, $this->fecha_fin];
 
         // 1. MAESTRAS
-        $maestras = InspeccionMaestra::whereBetween('fecha_inspeccion', $rango)
+        $maestras = InspeccionMaestra::with('vendedor')
+            ->whereBetween('fecha_inspeccion', $rango)
             ->where('comision_monto', '>', 0)
+            ->when($this->vendedor_id, function ($query) {
+                return $query->where('vendedor_id', $this->vendedor_id);
+            })
             ->get()
             ->map(fn($i) => [
                 'id'            => $i->id,
                 'fecha'         => $i->fecha_inspeccion,
                 'placa'         => $i->placa_vehiculo,
                 'servicio'      => $i->tipo_atencion,
+                'vendedor'      => $i->vendedor->nombre ?? 'S/V',
                 'categoria'     => $i->categoria_vehiculo,
                 'monto'         => (float)$i->monto_total,
                 'comision'      => (float)$i->comision_monto,
@@ -46,15 +53,19 @@ class ReporteComisiones extends Component
             ]);
 
         // 2. EXTRAS
-        $extras = InspeccionExtra::with(['vehiculo', 'tipoServicio'])
+        $extras = InspeccionExtra::with(['vehiculo', 'tipoServicio', 'vendedor'])
             ->whereBetween('fecha_inspeccion', $rango)
             ->where('comision_monto', '>', 0)
+            ->when($this->vendedor_id, function ($query) {
+                return $query->where('vendedor_id', $this->vendedor_id);
+            })
             ->get()
             ->map(fn($i) => [
                 'id'            => $i->id,
                 'fecha'         => $i->fecha_inspeccion,
                 'placa'         => $i->vehiculo->placa ?? 'S/P',
                 'servicio'      => $i->tipoServicio->nombre_servicio ?? 'SERVICIO EXTRA',
+                'vendedor'      => $i->vendedor->nombre ?? 'S/V',
                 'categoria'     => $i->vehiculo->categoria ?? 'NE',
                 'monto'         => (float)$i->monto_total,
                 'comision'      => (float)$i->comision_monto,
@@ -88,7 +99,8 @@ class ReporteComisiones extends Component
 
         return view('livewire.reporte-comisiones', [
             'inspComision' => $inspComision,
-            'stats' => $stats
+            'stats' => $stats,
+            'vendedores' => Vendedor::orderBy('nombre')->get(),
         ]);
     }
 

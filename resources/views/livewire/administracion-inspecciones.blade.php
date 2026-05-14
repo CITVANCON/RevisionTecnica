@@ -1,6 +1,7 @@
 <div class="container mx-auto py-12">
     <div class="bg-gray-200 p-8 rounded-xl w-full">
         <div class="pb-6">
+            <!-- Titulo y encabezado -->
             <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-6">
                 <div class="px-2">
                     <h2 class="text-gray-600 font-semibold text-2xl">
@@ -21,7 +22,7 @@
                     </div>
                 </div>
             </div>
-
+            <!-- Filtros de busqueda -->
             <div class="w-full items-center md:flex md:justify-between space-y-4 md:space-y-0 md:space-x-4 px-2">
                 <div class="flex flex-wrap gap-3">
                     <div class="flex bg-gray-50 items-center p-2 rounded-md shadow-sm border border-gray-100">
@@ -323,6 +324,17 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                <div class="col-span-1 md:col-span-2">
+                    <x-label for="vendedor_id" value="{{ __('Vendedor / Captador') }}" />
+                    <select id="vendedor_id" wire:model="vendedor_id" 
+                            class="w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm text-sm">
+                        <option value="">-- Sin Vendedor (Venta Directa) --</option>
+                        @foreach($vendedores as $vendedor)
+                            <option value="{{ $vendedor->id }}">{{ $vendedor->nombre }}</option>
+                        @endforeach
+                    </select>
+                    <x-input-error for="vendedor_id" class="mt-2" />
+                </div>
                 <div>
                     <x-label for="nro_comprobante" value="{{ __('N° Comprobante') }}" />
                     <x-input id="nro_comprobante" type="text" class="w-full" wire:model="nro_comprobante" placeholder="Ej: EB01-7976" />

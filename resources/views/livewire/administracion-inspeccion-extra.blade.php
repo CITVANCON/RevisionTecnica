@@ -313,6 +313,17 @@
                     @enderror
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="col-span-1 md:col-span-2">
+                        <x-label for="vendedor_id" value="{{ __('Vendedor / Captador') }}" />
+                        <select id="vendedor_id" wire:model="vendedor_id" 
+                                class="w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm text-sm">
+                            <option value="">-- Sin Vendedor (Venta Directa) --</option>
+                            @foreach($vendedores as $vendedor)
+                                <option value="{{ $vendedor->id }}">{{ $vendedor->nombre }}</option>
+                            @endforeach
+                        </select>
+                        <x-input-error for="vendedor_id" class="mt-2" />
+                    </div>
                     <div>
                         <x-label for="nro_comprobante" value="{{ __('N° Comprobante (Boleta/Factura)') }}" />
                         <x-input id="nro_comprobante" type="text" class="w-full mt-1"

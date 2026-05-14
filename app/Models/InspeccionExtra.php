@@ -12,7 +12,7 @@ class InspeccionExtra extends Model
         'cliente_id', 'vehiculo_id', 'tipo_servicio_id', 'numero_certificado',
         'fecha_inspeccion', 'hora_inspeccion', 'vigencia_meses', 'proxima_inspeccion',
         
-        'monto_total', 'metodo_pago', 'nro_comprobante', 'comision_monto', 'observaciones',
+        'monto_total', 'metodo_pago', 'nro_comprobante', 'comision_monto', 'vendedor_id', 'observaciones',
         'resultado_final', //enum('APTO', 'OBSERVADO', 'NO APTO', 'APROBADO', 'DESAPROBADO')
         'usuario_id', 'estado'
     ];
@@ -50,6 +50,11 @@ class InspeccionExtra extends Model
     {
         // Esto permite que ambos modelos usen la misma tabla de pagos
         return $this->morphMany(DetallePago::class, 'pagoable');
+    }
+
+    public function vendedor()
+    {
+        return $this->belongsTo(Vendedor::class, 'vendedor_id');
     }
 
     // Atributo para verificar el saldo pendiente

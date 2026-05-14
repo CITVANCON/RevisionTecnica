@@ -49,6 +49,7 @@ class InspeccionMaestra extends Model
         'nro_comprobante',
         'nro_orden',
         'comision_monto',
+        'vendedor_id',
         'observaciones',
     ];
 
@@ -63,6 +64,11 @@ class InspeccionMaestra extends Model
     {
         // Esto permite que ambos modelos usen la misma tabla de pagos
         return $this->morphMany(DetallePago::class, 'pagoable');
+    }
+
+    public function vendedor()
+    {
+        return $this->belongsTo(Vendedor::class, 'vendedor_id');
     }
 
     // Atributo para verificar el saldo pendiente

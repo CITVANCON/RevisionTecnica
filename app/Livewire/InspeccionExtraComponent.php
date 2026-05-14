@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\TipoServicioExtra;
 use App\Models\InspeccionExtra;
+use App\Models\Vendedor;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
@@ -16,7 +17,7 @@ class InspeccionExtraComponent extends Component
     public $servicio_seleccionado; // Objeto del modelo
 
     // Propiedades generales
-    public $cliente_id, $vehiculo_id, $numero_certificado, $fecha_inspeccion;
+    public $cliente_id, $vehiculo_id, $vendedor_id, $numero_certificado, $fecha_inspeccion;
     public $monto_total = 0, $metodo_pago, $nro_comprobante, $comision_monto = 0, $resultado_final;
     public $vigencia_meses = 6;
     public $estado = 'COMPLETADO';
@@ -151,6 +152,7 @@ class InspeccionExtraComponent extends Component
                 'cliente_id' => 'required',
                 'vehiculo_id' => 'required',
                 'servicio_id' => 'required',
+                'vendedor_id' => 'nullable',
                 'numero_certificado' => ['required', Rule::unique('inspecciones_extras', 'numero_certificado')->where('tipo_servicio_id', $this->servicio_id)],
                 'resultado_final' => 'required|in:APROBADO,DESAPROBADO',
                 'pagos_multiples.*.metodo_pago' => 'required',
@@ -202,6 +204,7 @@ class InspeccionExtraComponent extends Component
                 'cliente_id' => $this->cliente_id,
                 'vehiculo_id' => $this->vehiculo_id,
                 'tipo_servicio_id' => $this->servicio_id,
+                'vendedor_id' => $this->vendedor_id,
                 'numero_certificado' => $this->numero_certificado,
                 'fecha_inspeccion' => $this->fecha_inspeccion,
                 'hora_inspeccion' => date('H:i:s'),
@@ -246,7 +249,9 @@ class InspeccionExtraComponent extends Component
     public function render()
     {
         return view('livewire.inspeccion-extra-component', [
-            'servicios' => TipoServicioExtra::where('estado', 1)->get()
+            'servicios' => TipoServicioExtra::where('estado', 1)->get(),
+            'vendedores' => Vendedor::where('activo', true)->orderBy('nombre', 'asc')->get(),
+        
         ]);
     }
 }

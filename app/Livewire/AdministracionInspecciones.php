@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\InspeccionMaestra;
+use App\Models\Vendedor;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -18,7 +19,7 @@ class AdministracionInspecciones extends Component
     public $cant = '10';
 
     public $modalDetallesCaja = false; // Controla el modal de Jetstream
-    public $selected_id, $metodo_pago, $nro_comprobante, $nro_orden, $comision_monto, $observaciones;
+    public $selected_id, $metodo_pago, $nro_comprobante, $nro_orden, $comision_monto, $vendedor_id, $observaciones;
 
     // Nuevas propiedades para pagos múltiples
     public $lista_pagos = []; 
@@ -39,6 +40,10 @@ class AdministracionInspecciones extends Component
 
     public function render()
     {
+        $vendedores = Vendedor::where('activo', true)
+        ->orderBy('nombre', 'asc')
+        ->get();
+        
         $query = InspeccionMaestra::query();
 
         if ($this->placa_vehiculo) {
@@ -54,10 +59,11 @@ class AdministracionInspecciones extends Component
         }
 
         return view('livewire.administracion-inspecciones', [
-            'inspecciones' => $query->with('pagos')
+            'inspecciones' => $query->with('pagos', 'vendedor')
                 ->orderBy('fecha_inspeccion', 'desc')
                 ->orderBy('id_inspeccion_local', 'desc')
                 ->paginate($this->cant),
+            'vendedores' => $vendedores,
         ]);
     }
 
@@ -68,6 +74,7 @@ class AdministracionInspecciones extends Component
         $this->selected_id = $id;
         $this->monto_total_inspeccion = $inspeccion->monto_total;
         // caragar campos 
+        $this->vendedor_id = $inspeccion->vendedor_id;
         $this->metodo_pago = $inspeccion->metodo_pago;
         //$this->nro_comprobante = $inspeccion->nro_comprobante;
         $this->nro_orden = $inspeccion->nro_orden ?? 1;
@@ -122,6 +129,7 @@ class AdministracionInspecciones extends Component
             'lista_pagos.*.monto' => 'required',//|numeric|min:0.1
             'nro_comprobante' => 'nullable',
             'nro_orden' => 'nullable|integer',
+            'vendedor_id' => 'nullable',
         ], [
             'lista_pagos.*.metodo_pago.required' => 'Seleccione método.',
             'lista_pagos.*.monto.required' => 'Ingrese monto.',
@@ -141,6 +149,7 @@ class AdministracionInspecciones extends Component
             'nro_comprobante' => $this->nro_comprobante,
             'nro_orden' => $this->nro_orden,
             'comision_monto' => $this->comision_monto,
+            'vendedor_id' => $this->vendedor_id,
             'observaciones' => $this->observaciones,
             // Opcional: podrías guardar el primer método en 'metodo_pago' para compatibilidad legacy
             //'metodo_pago' => $this->lista_pagos[0]['metodo_pago'] ?? null 
