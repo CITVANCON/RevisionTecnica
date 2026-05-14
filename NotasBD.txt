@@ -614,4 +614,6 @@ ADD CONSTRAINT `fk_extras_vendedor`
     ON DELETE SET NULL;
 
 
+ALTER TABLE vehiculos ADD COLUMN horometro DECIMAL(10,2) NULL AFTER kilometraje;
+
 

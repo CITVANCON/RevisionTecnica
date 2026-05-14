@@ -63,11 +63,17 @@
                     <x-input-error for="categoria" />
                 </div>
             </div>
-
-            <div>
-                <x-label value="Kilometraje:" />
-                <x-input type="text" class="w-full bg-gray-100" wire:model="m_kilometraje" />
-                <x-input-error for="kilometraje" />
+            <div class="grid grid-cols-2 gap-2">
+                <div>
+                    <x-label value="Kilometraje:" />
+                    <x-input type="text" class="w-full bg-gray-100" wire:model="m_kilometraje" />
+                    <x-input-error for="kilometraje" />
+                </div>
+                <div>
+                    <x-label value="Horómetro:" />
+                    <x-input type="text" class="w-full bg-gray-100" wire:model="m_horometro" />
+                    <x-input-error for="horometro" />
+                </div>
             </div>
             <div>
                 <x-label value="Combustible:" />

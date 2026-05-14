@@ -16,37 +16,7 @@
                 <x-label value="Placa:" />
                 <x-input list="vehiculos" type="text" class="w-full" wire:model="m_placa" />
                 <x-input-error for="m_placa" />
-            </div>
-            <div>
-                <x-label value="Categoria:" />
-                <select wire:model="m_categoria"
-                    class="bg-gray-50 border-indigo-500 rounded-md outline-none block w-full ">
-                    <option value="">Seleccione</option>
-                    <option value="NE">NE</option>
-                    <option value="M1">M1</option>
-                    <option value="M2">M2</option>
-                    <option value="M3">M3</option>
-                    <option value="N1">N1</option>
-                    <option value="N2">N2</option>
-                    <option value="N3">N3</option>
-                    <option value="L1">L1</option>
-                    <option value="L2">L2</option>
-                    <option value="L3">L3</option>
-                    <option value="L5">L5</option>
-                    <option value="O1">O1</option>
-                    <option value="O2">O2</option>
-                    <option value="O3">O3</option>
-                    <option value="O4">O4</option>
-                    <option value="M1-C3">M1-C3</option>
-                    <option value="M2-C1">M2-C1</option>
-                    <option value="M2-C2">M2-C2</option>
-                    <option value="M2-C3">M2-C3</option>
-                    <option value="M3-C1">M3-C1</option>
-                    <option value="M3-C2">M3-C2</option>
-                    <option value="M3-C3">M3-C3</option>
-                </select>
-                <x-input-error for="m_categoria" />
-            </div>
+            </div>            
             <div>
                 <x-label value="Marca:" />
                 <x-input type="text" class="w-full" wire:model="m_marca" />
@@ -57,16 +27,55 @@
                 <x-input type="text" class="w-full" wire:model="m_modelo" />
                 <x-input-error for="m_modelo" />
             </div>
-            <div>
-                <x-label value="Año de fabricación:" />
-                <x-input type="text" class="w-full" wire:model="m_anio_fabricacion" type="number"
-                    inputmode="numeric" />
-                <x-input-error for="m_anio_fabricacion" />
+            <div class="flex flex-row">
+                <div class="w-1/2">
+                    <x-label value="Año de fabricación:" />
+                    <x-input type="text" class="w-full" wire:model="m_anio_fabricacion" type="number"
+                        inputmode="numeric" />
+                    <x-input-error for="m_anio_fabricacion" />
+                </div>
+                <div class="w-1/2">
+                    <x-label value="Categoria:" />
+                    <select wire:model="m_categoria"
+                        class="bg-gray-50 border-indigo-500 rounded-md outline-none block w-full ">
+                        <option value="">Seleccione</option>
+                        <option value="NE">NE</option>
+                        <option value="M1">M1</option>
+                        <option value="M2">M2</option>
+                        <option value="M3">M3</option>
+                        <option value="N1">N1</option>
+                        <option value="N2">N2</option>
+                        <option value="N3">N3</option>
+                        <option value="L1">L1</option>
+                        <option value="L2">L2</option>
+                        <option value="L3">L3</option>
+                        <option value="L5">L5</option>
+                        <option value="O1">O1</option>
+                        <option value="O2">O2</option>
+                        <option value="O3">O3</option>
+                        <option value="O4">O4</option>
+                        <option value="M1-C3">M1-C3</option>
+                        <option value="M2-C1">M2-C1</option>
+                        <option value="M2-C2">M2-C2</option>
+                        <option value="M2-C3">M2-C3</option>
+                        <option value="M3-C1">M3-C1</option>
+                        <option value="M3-C2">M3-C2</option>
+                        <option value="M3-C3">M3-C3</option>
+                    </select>
+                    <x-input-error for="m_categoria" />
+                </div>
             </div>
-            <div>
-                <x-label value="Kilometraje:" />
-                <x-input type="text" class="w-full" wire:model="m_kilometraje" />
-                <x-input-error for="m_kilometraje" />
+            <div class="grid grid-cols-2 gap-2">
+                <div>
+                    <x-label value="Kilometraje:" />
+                    <x-input type="text" class="w-full" wire:model="m_kilometraje" />
+                    <x-input-error for="m_kilometraje" />
+                </div>
+                <div>
+                    <x-label value="Horómetro:" />
+                    <x-input type="text" class="w-full" wire:model="m_horometro" />
+                    <x-input-error for="m_horometro" />
+                </div>
             </div>
             <div>
                 <x-label value="Combustible:" />

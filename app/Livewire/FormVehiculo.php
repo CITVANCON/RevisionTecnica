@@ -13,13 +13,13 @@ class FormVehiculo extends Component
     public $placa, $propietario, $categoria, $marca, $modelo, $anio_fabricacion,
         $kilometraje, $combustible, $vin_serie, $numero_motor, $carroceria,
         $marca_carroceria, $ejes, $ruedas, $asientos, $pasajeros, $largo, $ancho,
-        $alto, $color, $peso_neto, $peso_bruto, $peso_util;
+        $alto, $color, $peso_neto, $peso_bruto, $peso_util, $horometro;
 
     //VARIABLES PARA MOSTRAR EL VEHICULO
     public $m_placa, $m_propietario, $m_categoria, $m_marca, $m_modelo, $m_anio_fabricacion,
         $m_kilometraje, $m_combustible, $m_vin_serie, $m_numero_motor, $m_carroceria,
         $m_marca_carroceria, $m_ejes, $m_ruedas, $m_asientos, $m_pasajeros, $m_largo, $m_ancho,
-        $m_alto, $m_color, $m_peso_neto, $m_peso_bruto, $m_peso_util;
+        $m_alto, $m_color, $m_peso_neto, $m_peso_bruto, $m_peso_util, $m_horometro;
 
     //VARIABLES DEL COMPONENTE
     public Vehiculo $vehiculo;
@@ -142,7 +142,22 @@ class FormVehiculo extends Component
                 "marca" => "required|min:2",
                 "modelo" => "required|min:2",
                 "anio_fabricacion" => "nullable|numeric|min:1900",
-                "kilometraje" => "required",
+                //"kilometraje" => "nullable",
+                //"horometro" => "nullable",
+                "kilometraje" => [
+                    "nullable",
+                    "numeric",
+                    "required_without:horometro", // Obligatorio si horometro está vacío
+                    "prohibited_unless:horometro,null" // Prohibido si horometro tiene algo
+                ],
+
+                // REGLAS PARA HOROMETRO
+                "horometro" => [
+                    "nullable",
+                    "numeric",
+                    "required_without:kilometraje", // Obligatorio si kilometraje está vacío
+                    "prohibited_unless:kilometraje,null" // Prohibido si kilometraje tiene algo
+                ],
                 "combustible" => "nullable|min:2",
                 "vin_serie" => "nullable", // Eliminado min:2 para permitir vacíos
                 "numero_motor" => "nullable|min:2",
@@ -159,6 +174,14 @@ class FormVehiculo extends Component
                 "peso_neto" => "nullable|numeric",
                 "peso_bruto" => "nullable|numeric",
                 "peso_util" => "nullable|numeric",
+            ],
+            [
+                // Mensajes personalizados para que el usuario entienda el error
+                'kilometraje.prohibited_unless' => 'No ingresar Km si ya ingresó Hor.',
+                'horometro.prohibited_unless' => 'No ingresar Hor si ya ingresó Km.',
+                'kilometraje.required_without' => 'Debes ingresar Km o Hor.',
+                'horometro.required_without' => 'Debes ingresar Hor o Km.',
+
             ]
         );
 
@@ -170,7 +193,8 @@ class FormVehiculo extends Component
             "marca" => $this->retornaNE($this->marca),
             "modelo" => $this->retornaNE($this->modelo),
             "anio_fabricacion" => $this->retornaNulo($this->anio_fabricacion),
-            "kilometraje" => $this->retornaNE($this->kilometraje),
+            "kilometraje" => $this->retornaNulo($this->kilometraje),
+            "horometro" => $this->retornaNulo($this->horometro),
             "combustible" => $this->retornaNE($this->combustible),
             "vin_serie" => $this->retornaNE($this->vin_serie),
             "numero_motor" => $this->retornaNE($this->numero_motor),
@@ -196,6 +220,7 @@ class FormVehiculo extends Component
             $this->m_modelo = $vehiculo->modelo;
             $this->m_anio_fabricacion = $vehiculo->anio_fabricacion;
             $this->m_kilometraje = $vehiculo->kilometraje;
+            $this->m_horometro = $vehiculo->horometro;
             $this->m_combustible = $vehiculo->combustible;
             $this->m_vin_serie = $vehiculo->vin_serie;
             $this->m_numero_motor = $vehiculo->numero_motor;
@@ -244,7 +269,8 @@ class FormVehiculo extends Component
             "m_marca" => "required|min:2",
             "m_modelo" => "required|min:2",
             "m_anio_fabricacion" => "nullable|numeric|min:1900",
-            "m_kilometraje" => "required",
+            "m_kilometraje" => "nullable",
+            "m_horometro" => "nullable",
             "m_combustible" => "nullable|min:2",
             "m_vin_serie" => "nullable",
             "m_numero_motor" => "nullable",
@@ -270,7 +296,8 @@ class FormVehiculo extends Component
             "marca" => $this->retornaNE($this->m_marca),
             "modelo" => $this->retornaNE($this->m_modelo),
             "anio_fabricacion" => $this->retornaNulo($this->m_anio_fabricacion),
-            "kilometraje" => $this->retornaNE($this->m_kilometraje),
+            "kilometraje" => $this->retornaNulo($this->m_kilometraje),
+            "horometro" => $this->retornaNulo($this->m_horometro),
             "combustible" => $this->retornaNE($this->m_combustible),
             "vin_serie" => $this->retornaNE($this->m_vin_serie),
             "numero_motor" => $this->retornaNE($this->m_numero_motor),
@@ -324,6 +351,7 @@ class FormVehiculo extends Component
         $this->m_modelo = $veh->modelo;
         $this->m_anio_fabricacion = $veh->anio_fabricacion;
         $this->m_kilometraje = $veh->kilometraje;
+        $this->m_horometro = $veh->horometro;
         $this->m_combustible = $veh->combustible;
         $this->m_vin_serie = $veh->vin_serie;
         $this->m_numero_motor = $veh->numero_motor;

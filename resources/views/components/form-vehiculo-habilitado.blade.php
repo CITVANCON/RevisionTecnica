@@ -66,11 +66,26 @@
                     <x-input-error for="categoria" />
                 </div>
             </div>
+            <!-- SECCIÓN DE USO: KILOMETRAJE O HORÓMETRO -->
+            <div class="grid grid-cols-2 gap-2">
+                <div>
+                    <x-label value="Kilometraje:" />
+                    <x-input type="number" class="w-full" wire:model="kilometraje" placeholder="0" />
+                    <x-input-error for="kilometraje" />
+                </div>
+                <div>
+                    <x-label value="Horómetro:" />
+                    <x-input type="number" {{--step="0.1"--}} class="w-full" wire:model="horometro" placeholder="0" />
+                    <x-input-error for="horometro" />
+                </div>
+            </div>
+            {{-- 
             <div>
                 <x-label value="Kilometraje:" />
                 <x-input type="number" class="w-full" wire:model="kilometraje" />
                 <x-input-error for="kilometraje" />
             </div>
+            --}}
             <div>
                 <x-label value="Combustible:" />
                 <x-input type="text" class="w-full" wire:model="combustible" list="items" />

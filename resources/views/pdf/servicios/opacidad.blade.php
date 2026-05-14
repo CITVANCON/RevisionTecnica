@@ -132,13 +132,29 @@
                 <td>{{ $inspeccion->vehiculo->peso_bruto ?? 'NE' }}</td>
             </tr>
             <tr>
-                <td class="bg-gray">KILOMETRAJE</td>
-                <td>{{ $inspeccion->vehiculo->kilometraje ?? 'NE' }}</td>
+                <td class="bg-gray">
+                    {{ $inspeccion->vehiculo->horometro > 0 ? 'HORÓMETRO' : 'KILOMETRAJE' }}
+                </td>
+                <td>
+                    @if($inspeccion->vehiculo->horometro > 0)
+                        {{-- Formato para Máquina: 1,250.5 Hrs. --}}
+                        {{ number_format($inspeccion->vehiculo->horometro, 1, '.', ',') }} Hrs.
+                    @else
+                        {{-- Formato para Vehículo: 45,000 o NE si ambos son null --}}
+                        {{ isset($inspeccion->vehiculo->kilometraje) ? number_format($inspeccion->vehiculo->kilometraje, 0, '.', ',') : 'NE' }}
+                    @endif
+                </td>
                 <td class="bg-gray">EJES/RUEDAS:</td>
                 <td>{{ ($inspeccion->vehiculo->ejes ?? 'NE') . ' / ' . ($inspeccion->vehiculo->ruedas ?? 'NE') }}</td>
                 <td class="bg-gray">CARGA UTIL:</td>
                 <td>{{ $inspeccion->vehiculo->peso_util ?? 'NE' }}</td>
             </tr>
+            {{-- 
+            <tr>
+                <td class="bg-gray">KILOMETRAJE:</td>
+                <td colspan="5">{{ $inspeccion->vehiculo->kilometraje ?? 'NE' }}</td>
+            </tr>
+            --}}
         </table>
 
         {{-- II. Datos del Equipo (Opacímetro) --}}

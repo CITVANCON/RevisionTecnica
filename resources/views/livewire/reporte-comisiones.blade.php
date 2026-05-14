@@ -63,6 +63,7 @@
                             <th class="px-4 py-4 text-left">#</th>
                             <th class="px-4 py-4 text-left">Fecha</th>
                             <th class="px-4 py-4 text-left">Placa</th>
+                            <th class="px-4 py-4 text-left">Vendedor</th>
                             <th class="px-4 py-4 text-left">Servicio / Categoría</th>
                             <th class="px-4 py-4 text-right">Monto (S/)</th>
                             <th class="px-4 py-4 text-left">N° Formato / Pago</th>
@@ -75,6 +76,9 @@
                                 <td class="px-4 py-3 text-xs font-mono text-gray-400">{{ $loop->iteration }}</td>
                                 <td class="px-4 py-3 text-sm">{{ \Carbon\Carbon::parse($item['fecha'])->format('d/m/y') }}</td>
                                 <td class="px-4 py-3 font-bold text-gray-800">{{ $item['placa'] }}</td>
+                                <td class="px-4 py-3">
+                                    <span class="text-[11px] font-bold text-gray-600 uppercase">{{ $item['vendedor'] }}</span>
+                                </td>
                                 <td class="px-4 py-3">
                                     <div class="text-xs font-medium text-gray-700 uppercase">{{ $item['servicio'] }}</div>
                                     <div class="flex items-center gap-2">
@@ -101,7 +105,7 @@
                     </tbody>
                     <tfoot class="bg-accent text-white font-bold">
                         <tr>
-                            <td colspan="6" class="px-4 py-3 text-right text-sm uppercase">Total Acumulado en Comisiones:</td>
+                            <td colspan="7" class="px-4 py-3 text-right text-sm uppercase">Total Acumulado en Comisiones:</td>
                             <td class="px-4 py-3 text-center text-lg">S/ {{ number_format($stats['total_comisiones'], 2) }}</td>
                         </tr>
                     </tfoot>
