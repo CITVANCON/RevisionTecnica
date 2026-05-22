@@ -26,16 +26,16 @@
                 <x-input type="text" class="w-full bg-gray-100" wire:model="m_modelo" disabled />
                 <x-input-error for="modelo" />
             </div>
-            <div class="flex flex-row">
+            <div class="flex flex-row gap-4">
                 <div class="w-1/2">
                     <x-label value="Año de fabricación:" />
-                    <x-input type="text" class="w-5/6 bg-gray-100" wire:model="m_anio_fabricacion" type="number" disabled />
+                    <x-input type="text" class="w-full bg-gray-100" wire:model="m_anio_fabricacion" type="number" disabled />
                     <x-input-error for="anio_fabricacion" />
                 </div>
                 <div class="w-1/2">
                     <x-label value="Categoria:" />
                     <select wire:model="m_categoria"
-                        class="bg-gray-50 border-indigo-500 rounded-md outline-none block w-6/6 " disabled>
+                        class="bg-gray-50 border-indigo-500 rounded-md outline-none block w-full " disabled>
                         <option value="">Seleccione</option>
                         <option value="NE">NE</option>
                         <option value="M1">M1</option>
@@ -106,64 +106,69 @@
                 <x-input type="text" class="w-full bg-gray-100" wire:model="m_color" disabled />
                 <x-input-error for="color" />
             </div>
-            <div class="flex flex-row">
-                <div class="w-1/2">
+            <div class="flex flex-row gap-4">
+                <div class="w-1/4">
                     <x-label value="Ejes:" />
-                    <x-input type="text" class="w-5/6 bg-gray-100" wire:model="m_ejes" type="number" disabled />
+                    <x-input type="text" class="w-full bg-gray-100" wire:model="m_ejes" type="number" disabled />
                     <x-input-error for="ejes" />
                 </div>
-                <div class="w-1/2">
+                <div class="w-1/4">
                     <x-label value="Ruedas:" />
-                    <x-input type="text" class="w-5/6 bg-gray-100" wire:model="m_ruedas" type="number" disabled />
+                    <x-input type="text" class="w-full bg-gray-100" wire:model="m_ruedas" type="number" disabled />
                     <x-input-error for="ruedas" />
                 </div>
+                <div class="w-2/4">
+                    <x-label value="Capacidad:" />
+                    <x-input type="text" class="w-full bg-gray-100" wire:model="m_capacidad_tanque" type="number" disabled />
+                    <x-input-error for="capacidad_tanque" />
+                </div>
             </div>
-            <div class="flex flex-row">
+            <div class="flex flex-row gap-4">
                 <div class="w-1/2">
                     <x-label value="Asientos:" />
-                    <x-input type="text" class="w-5/6 bg-gray-100" wire:model="m_asientos" type="number" disabled />
+                    <x-input type="text" class="w-full bg-gray-100" wire:model="m_asientos" type="number" disabled />
                     <x-input-error for="asientos" />
                 </div>
                 <div class="w-1/2">
                     <x-label value="Pasajeros:" />
-                    <x-input type="text" class="w-5/6 bg-gray-100" wire:model="m_pasajeros" type="number"
+                    <x-input type="text" class="w-full bg-gray-100" wire:model="m_pasajeros" type="number"
                         disabled />
                     <x-input-error for="pasajeros" />
                 </div>
             </div>
-            <div class="flex flex-row w-full justify-center m-auto">
+            <div class="flex flex-row w-full justify-center m-auto gap-4">
                 <div class="w-1/3">
                     <x-label value="Largo:" />
-                    <x-input type="text" class="w-5/6 bg-gray-100" wire:model="m_largo" type="number" disabled />
+                    <x-input type="text" class="w-full bg-gray-100" wire:model="m_largo" type="number" disabled />
                     <x-input-error for="largo" />
                 </div>
                 <div class="w-1/3">
                     <x-label value="Ancho:" />
-                    <x-input type="text" class="w-5/6 bg-gray-100" wire:model="m_ancho" type="number" disabled />
+                    <x-input type="text" class="w-full bg-gray-100" wire:model="m_ancho" type="number" disabled />
                     <x-input-error for="ancho" />
                 </div>
                 <div class="w-1/3">
                     <x-label value="Altura:" />
-                    <x-input type="text" class="w-5/6 bg-gray-100" wire:model="m_alto" type="number" disabled />
+                    <x-input type="text" class="w-full bg-gray-100" wire:model="m_alto" type="number" disabled />
                     <x-input-error for="alto" />
                 </div>
             </div>
             
-            <div class="flex flex-row w-full justify-center m-auto">
+            <div class="flex flex-row w-full justify-center m-auto gap-4">
                 <div class="w-1/3">
                     <x-label value="Peso Neto:" />
-                    <x-input type="text" class="w-5/6 bg-gray-100" wire:model="m_peso_neto" type="number" disabled />
+                    <x-input type="text" class="w-full bg-gray-100" wire:model="m_peso_neto" type="number" disabled />
                     <x-input-error for="peso_neto" />
                 </div>
                 <div class="w-1/3">
                     <x-label value="Peso Bruto:" />
-                    <x-input type="text" class="w-5/6 bg-gray-100" wire:model="m_peso_bruto" type="number"
+                    <x-input type="text" class="w-full bg-gray-100" wire:model="m_peso_bruto" type="number"
                         disabled />
                     <x-input-error for="peso_bruto" />
                 </div>
                 <div class="w-1/3">
                     <x-label value="Carga Util:" />
-                    <x-input type="text" class="w-5/6 bg-gray-100" wire:model="m_peso_util" type="number"
+                    <x-input type="text" class="w-full bg-gray-100" wire:model="m_peso_util" type="number"
                         disabled />
                     <x-input-error for="peso_util" />
                 </div>

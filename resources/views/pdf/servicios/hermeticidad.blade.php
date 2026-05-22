@@ -135,12 +135,14 @@
                 <td class="bg-gray">Ruedas:</td>
                 <td>{{ $inspeccion->vehiculo->ruedas }}</td>
                 <td class="bg-gray">Capacidad:</td>
-                <td>{{ $inspeccion->vehiculo->peso_neto }}</td>
+                <td>{{ $inspeccion->vehiculo->capacidad_tanque ?? 'NE' }}</td>
             </tr>
             <tr>
                 <!-- Considerar un dia anterior a la fecha de inspección para el último mantenimiento y certificación -->
                 <td class="bg-gray">Último Mantenimiento:</td>
-                <td>{{ \Carbon\Carbon::parse($inspeccion->fecha_inspeccion)->subDay()->format('d/m/Y') }}</td>
+                <td>{{-- \Carbon\Carbon::parse($inspeccion->fecha_inspeccion)->subDay()->format('d/m/Y') --}}
+                    {{ \Carbon\Carbon::parse($inspeccion->fecha_inspeccion)->subDays(20)->format('d/m/Y') }}
+                </td>
                 <td colspan="3" class="bg-gray">Última Certificación de Hermeticidad:</td>
                 <td colspan="3">{{ \Carbon\Carbon::parse($inspeccion->fecha_inspeccion)->subDay()->format('d/m/Y') }}</td>
             </tr>

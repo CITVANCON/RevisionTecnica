@@ -14,6 +14,7 @@ use App\Livewire\Linea;
 use App\Livewire\Permisos;
 use App\Livewire\Prueba;
 use App\Livewire\ReporteComisiones;
+use App\Livewire\ReporteInspeccionesVencidas;
 use App\Livewire\ReporteMtc;
 use App\Livewire\ReportesInspecciones;
 use App\Livewire\ReportesInspeccionesEjecutivo;
@@ -116,6 +117,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
         Route::get('/reporte-inspecciones-mensual', ReportesInspeccionesMensual::class)->name('reportes.inspecciones.mensual');
         Route::get('/reporte-comisiones', ReporteComisiones::class)->name('reportes.comisiones');
         Route::get('/reportes-mtc', ReporteMtc::class)->name('reportes.mtc');
+        Route::get('/reporte-inspecciones-vencidas', ReporteInspeccionesVencidas::class)->name('reportes.inspecciones.vencidas');
 
 
         Route::get('/rrhh/contratos', Contratos::class)->middleware('can:rrhh.contratos')->name('rrhh.contratos');

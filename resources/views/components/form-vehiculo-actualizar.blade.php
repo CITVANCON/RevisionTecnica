@@ -27,7 +27,7 @@
                 <x-input type="text" class="w-full" wire:model="m_modelo" />
                 <x-input-error for="m_modelo" />
             </div>
-            <div class="flex flex-row">
+            <div class="flex flex-row gap-4">
                 <div class="w-1/2">
                     <x-label value="Año de fabricación:" />
                     <x-input type="text" class="w-full" wire:model="m_anio_fabricacion" type="number"
@@ -107,69 +107,74 @@
                 <x-input type="text" class="w-full" wire:model="m_color" />
                 <x-input-error for="m_color" />
             </div>
-            <div class="flex flex-row">
-                <div class="w-1/2">
+            <div class="flex flex-row gap-4">
+                <div class="w-1/4">
                     <x-label value="Ejes:" />
-                    <x-input type="text" class="w-5/6" wire:model="m_ejes" type="number"
+                    <x-input type="text" class="w-full" wire:model="m_ejes" type="number"
                         inputmode="numeric" />
                     <x-input-error for="m_ejes" />
                 </div>
-                <div class="w-1/2">
+                <div class="w-1/4">
                     <x-label value="Ruedas:" />
-                    <x-input type="text" class="w-5/6" wire:model="m_ruedas" type="number"
+                    <x-input type="text" class="w-full" wire:model="m_ruedas" type="number"
                         inputmode="numeric" />
                     <x-input-error for="m_ruedas" />
                 </div>
+                <div class="w-2/4">
+                    <x-label value="Capacidad:" />
+                    <x-input type="text" class="w-full" wire:model="m_capacidad_tanque" type="number" />
+                    <x-input-error for="m_capacidad_tanque" />
+                </div>
             </div>
-            <div class="flex flex-row">
+            <div class="flex flex-row gap-4">
                 <div class="w-1/2">
                     <x-label value="Asientos:" />
-                    <x-input type="text" class="w-5/6" wire:model="m_asientos" type="number"
+                    <x-input type="text" class="w-full" wire:model="m_asientos" type="number"
                         inputmode="numeric" />
                     <x-input-error for="m_asientos" />
                 </div>
                 <div class="w-1/2">
                     <x-label value="Pasajeros:" />
-                    <x-input type="text" class="w-5/6" wire:model="m_pasajeros" type="number"
+                    <x-input type="text" class="w-full" wire:model="m_pasajeros" type="number"
                         inputmode="numeric" />
                     <x-input-error for="m_pasajeros" />
                 </div>
             </div>
-            <div class="flex flex-row w-full justify-center m-auto">
+            <div class="flex flex-row w-full justify-center m-auto gap-4">
                 <div class="w-1/3">
                     <x-label value="Largo:" />
-                    <x-input type="text" class="w-5/6" wire:model="m_largo" type="number"
+                    <x-input type="text" class="w-full" wire:model="m_largo" type="number"
                         inputmode="numeric" />
                     <x-input-error for="m_largo" />
                 </div>
                 <div class="w-1/3">
                     <x-label value="Ancho:" />
-                    <x-input type="text" class="w-5/6" wire:model="m_ancho" type="number"
+                    <x-input type="text" class="w-full" wire:model="m_ancho" type="number"
                         inputmode="numeric" />
                     <x-input-error for="m_ancho" />
                 </div>
                 <div class="w-1/3">
                     <x-label value="Altura:" inputmode="numeric" />
-                    <x-input type="text" class="w-5/6" wire:model="m_alto" type="number" />
+                    <x-input type="text" class="w-full" wire:model="m_alto" type="number" />
                     <x-input-error for="m_alto" />
                 </div>
             </div>            
-            <div class="flex flex-row w-full justify-center m-auto">
+            <div class="flex flex-row w-full justify-center m-auto gap-4">
                 <div class="w-1/3">
                     <x-label value="Peso Neto:" />
-                    <x-input type="text" class="w-5/6" wire:model="m_peso_neto" type="number"
+                    <x-input type="text" class="w-full" wire:model="m_peso_neto" type="number"
                         inputmode="numeric" />
                     <x-input-error for="m_peso_neto" />
                 </div>
                 <div class="w-1/3">
                     <x-label value="Peso Bruto:" />
-                    <x-input type="text" class="w-5/6" wire:model="m_peso_bruto" type="number"
+                    <x-input type="text" class="w-full" wire:model="m_peso_bruto" type="number"
                         inputmode="numeric" />
                     <x-input-error for="m_peso_bruto" />
                 </div>
                 <div class="w-1/3">
                     <x-label value="Carga Util:" />
-                    <x-input type="text" class="w-5/6" wire:model="m_peso_util" type="number"
+                    <x-input type="text" class="w-full" wire:model="m_peso_util" type="number"
                         inputmode="numeric" />
                     <x-input-error for="m_peso_util" />
                 </div>

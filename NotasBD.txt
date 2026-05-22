@@ -616,4 +616,8 @@ ADD CONSTRAINT `fk_extras_vendedor`
 
 ALTER TABLE vehiculos ADD COLUMN horometro DECIMAL(10,2) NULL AFTER kilometraje;
 
+ALTER TABLE vehiculos
+ADD COLUMN capacidad_tanque INT(11) NULL AFTER peso_util,
+ADD COLUMN unidad_capacidad VARCHAR(10) NULL AFTER capacidad_tanque;
+
 

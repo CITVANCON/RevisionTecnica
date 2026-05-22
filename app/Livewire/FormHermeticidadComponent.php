@@ -65,10 +65,10 @@ class FormHermeticidadComponent extends Component
             foreach ($criterios as $cr) {
                 // Lógica de "No Aplica" por defecto según protocolo
                 $default = 'A';
-                if (($el == 'tapa' || $el == 'tolva') && ($cr == 'resequedad' || $cr == 'lubricacion')) $default = 'NA';
+                if (($el == 'tapa' || $el == 'tolva' || $el == 'remaches') && ($cr == 'resequedad' || $cr == 'lubricacion')) $default = 'NA';
                 if ($el == 'sellos' && ($cr == 'oxido' || $cr == 'lubricacion')) $default = 'NA';
                 if ($el == 'mangueras' && ($cr == 'oxido' || $cr == 'lubricacion')) $default = 'NA';
-                if ($el == 'remaches') $default = 'NA';
+                //if ($el == 'remaches') $default = 'NA';
 
                 $this->hermeticidad["{$el}_{$cr}"] = $default;
             }

@@ -13,13 +13,13 @@ class FormVehiculo extends Component
     public $placa, $propietario, $categoria, $marca, $modelo, $anio_fabricacion,
         $kilometraje, $combustible, $vin_serie, $numero_motor, $carroceria,
         $marca_carroceria, $ejes, $ruedas, $asientos, $pasajeros, $largo, $ancho,
-        $alto, $color, $peso_neto, $peso_bruto, $peso_util, $horometro;
+        $alto, $color, $peso_neto, $peso_bruto, $peso_util, $horometro, $capacidad_tanque;
 
     //VARIABLES PARA MOSTRAR EL VEHICULO
     public $m_placa, $m_propietario, $m_categoria, $m_marca, $m_modelo, $m_anio_fabricacion,
         $m_kilometraje, $m_combustible, $m_vin_serie, $m_numero_motor, $m_carroceria,
         $m_marca_carroceria, $m_ejes, $m_ruedas, $m_asientos, $m_pasajeros, $m_largo, $m_ancho,
-        $m_alto, $m_color, $m_peso_neto, $m_peso_bruto, $m_peso_util, $m_horometro;
+        $m_alto, $m_color, $m_peso_neto, $m_peso_bruto, $m_peso_util, $m_horometro, $m_capacidad_tanque;
 
     //VARIABLES DEL COMPONENTE
     public Vehiculo $vehiculo;
@@ -174,6 +174,7 @@ class FormVehiculo extends Component
                 "peso_neto" => "nullable|numeric",
                 "peso_bruto" => "nullable|numeric",
                 "peso_util" => "nullable|numeric",
+                "capacidad_tanque" => "nullable",
             ],
             [
                 // Mensajes personalizados para que el usuario entienda el error
@@ -211,6 +212,7 @@ class FormVehiculo extends Component
             "peso_neto" => $this->retornaNulo($this->peso_neto),
             "peso_bruto" => $this->retornaNulo($this->peso_bruto),
             "peso_util" => $this->retornaNulo($this->peso_util),
+            "capacidad_tanque" => $this->retornaNulo($this->capacidad_tanque),
         ])) {
             $this->vehiculo = $vehiculo;
             $this->m_placa = $vehiculo->placa;
@@ -237,6 +239,7 @@ class FormVehiculo extends Component
             $this->m_peso_neto = $vehiculo->peso_neto;
             $this->m_peso_bruto = $vehiculo->peso_bruto;
             $this->m_peso_util = $vehiculo->peso_util;
+            $this->m_capacidad_tanque = $vehiculo->capacidad_tanque;
             $this->estado = 'cargado';
             $this->dispatch('minAlert', titulo: "¡BUEN TRABAJO!", mensaje: "El vehículo con placa {$vehiculo->placa} se registró correctamente.", icono: "success");
 
@@ -287,6 +290,7 @@ class FormVehiculo extends Component
             "m_peso_neto" => "nullable|numeric",
             "m_peso_bruto" => "nullable|numeric",
             "m_peso_util" => "nullable|numeric",
+            "m_capacidad_tanque" => "nullable",
         ]);
 
         if ($this->vehiculo->update([
@@ -314,6 +318,7 @@ class FormVehiculo extends Component
             "peso_neto" => $this->retornaNulo($this->m_peso_neto),
             "peso_bruto" => $this->retornaNulo($this->m_peso_bruto),
             "peso_util" => $this->retornaNulo($this->m_peso_util),
+            "capacidad_tanque" => $this->retornaNulo($this->m_capacidad_tanque),
         ])) {
             $this->estado = 'cargado';
             $this->dispatch('minAlert', titulo: "¡BUEN TRABAJO!", mensaje: "Datos del vehículo actualizados correctamente", icono: "success");
@@ -368,6 +373,7 @@ class FormVehiculo extends Component
         $this->m_peso_neto = $veh->peso_neto;
         $this->m_peso_bruto = $veh->peso_bruto;
         $this->m_peso_util = $veh->peso_util;
+        $this->m_capacidad_tanque = $veh->capacidad_tanque;
         $this->estado = 'cargado';
         //$this->dispatch('cargaVehiculo', $veh->id)->to($this->nombreDelInvocador ?? 'prueba');
         if ($this->nombreDelInvocador != null) {

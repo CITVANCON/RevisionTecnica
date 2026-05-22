@@ -273,6 +273,11 @@ Change class "fixed" to "sticky" in "navbar" (l. 33) so the navbar doesn't hide 
                                             {{ __('Comisiones') }}
                                         </x-responsive-nav-link>
 
+                                        <x-responsive-nav-link class="text-sm" href="{{ route('reportes.inspecciones.vencidas') }}"
+                                            :active="request()->routeIs('reportes.inspecciones.vencidas')">
+                                            {{ __('Vencidas') }}
+                                        </x-responsive-nav-link>
+
                                         <x-responsive-nav-link class="text-sm" href="{{ route('reportes.mtc') }}"
                                             :active="request()->routeIs('reportes.mtc')">
                                             {{ __('MTC') }}

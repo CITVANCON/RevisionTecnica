@@ -15,7 +15,7 @@ class Vehiculo extends Model
         'placa', 'propietario', 'categoria', 'marca', 'modelo', 'anio_fabricacion',
         'kilometraje', 'horometro', 'combustible', 'vin_serie', 'numero_motor', 'carroceria',
         'marca_carroceria', 'ejes', 'ruedas', 'asientos', 'pasajeros', 'largo', 'ancho',
-        'alto', 'color', 'peso_neto', 'peso_bruto', 'peso_util'
+        'alto', 'color', 'peso_neto', 'peso_bruto', 'peso_util', 'capacidad_tanque', 'unidad_capacidad'
     ];
 
     //Nueva para servicios extras
