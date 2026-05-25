@@ -142,9 +142,9 @@ class FormVehiculo extends Component
                 "marca" => "required|min:2",
                 "modelo" => "required|min:2",
                 "anio_fabricacion" => "nullable|numeric|min:1900",
-                //"kilometraje" => "nullable",
-                //"horometro" => "nullable",
-                "kilometraje" => [
+                "kilometraje" => "nullable",
+                "horometro" => "nullable",
+                /*"kilometraje" => [
                     "nullable",
                     "numeric",
                     "required_without:horometro", // Obligatorio si horometro está vacío
@@ -157,7 +157,7 @@ class FormVehiculo extends Component
                     "numeric",
                     "required_without:kilometraje", // Obligatorio si kilometraje está vacío
                     "prohibited_unless:kilometraje,null" // Prohibido si kilometraje tiene algo
-                ],
+                ],*/
                 "combustible" => "nullable|min:2",
                 "vin_serie" => "nullable", // Eliminado min:2 para permitir vacíos
                 "numero_motor" => "nullable|min:2",
@@ -176,14 +176,14 @@ class FormVehiculo extends Component
                 "peso_util" => "nullable|numeric",
                 "capacidad_tanque" => "nullable",
             ],
-            [
+            /*[
                 // Mensajes personalizados para que el usuario entienda el error
                 'kilometraje.prohibited_unless' => 'No ingresar Km si ya ingresó Hor.',
                 'horometro.prohibited_unless' => 'No ingresar Hor si ya ingresó Km.',
                 'kilometraje.required_without' => 'Debes ingresar Km o Hor.',
                 'horometro.required_without' => 'Debes ingresar Hor o Km.',
 
-            ]
+            ]*/
         );
 
         if ($vehiculo = Vehiculo::create([
