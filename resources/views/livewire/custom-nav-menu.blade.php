@@ -31,7 +31,7 @@ Change class "fixed" to "sticky" in "navbar" (l. 33) so the navbar doesn't hide 
     </style>
 
     <!-- Navbar start -->
-    <nav id="navbar" class="sticky top-0 z-40 flex w-full flex-row justify-between bg-accent px-4 shadow-lg border-b">
+    <nav id="navbar" class="sticky top-0 z-40 flex w-full flex-row justify-between bg-gradient-to-r from-green-600 via-green-700 to-green-700 px-4 shadow-lg border-b">
         <button id="btnSidebarToggler" type="button" class="py-4 text-2xl text-white hover:text-black">
             <svg id="navClosed" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                 stroke="currentColor" class="h-8 w-8">
@@ -140,7 +140,7 @@ Change class "fixed" to "sticky" in "navbar" (l. 33) so the navbar doesn't hide 
     <div id="containerSidebar" class="z-40">
         <div class="navbar-menu relative z-40">
             <nav id="sidebar"
-                class="fixed left-0 bottom-0 flex w-3/4 -translate-x-full flex-col bg-secondary pt-2  sm:max-w-xs lg:w-80">
+                class="fixed left-0 bottom-0 flex w-3/4 -translate-x-full flex-col bg-gradient-to-br from-slate-900 via-green-950 to-slate-900 pt-2  sm:max-w-xs lg:w-80">
                 <!-- one category / navigation group -->
                 <div class="px-4 overflow-y-auto">
                     <h3 class="mb-2 text-xs font-medium uppercase text-gray-300">

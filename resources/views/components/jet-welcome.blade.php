@@ -1,8 +1,11 @@
-<div >
-    <div class="p-6 sm:px-20 bg-white border-b border-gray-200">
-        <div class="mt-4 text-2xl">
-            Hola, {{ Auth::user()->name }} 👋
-            <span> </span>
-        </div>
-    </div>
+<div class="bg-gradient-to-r from-green-600 via-green-700 to-green-700 rounded-xl shadow-lg text-white p-8">
+
+    <h1 class="text-3xl font-bold">
+        ¡Hola, {{ Auth::user()->name }}! 👋
+    </h1>
+
+    <p class="mt-2 text-green-100">
+        Bienvenido al Sistema de Gestión del Centro de Inspección Técnica Vehicular.
+    </p>
+
 </div>
