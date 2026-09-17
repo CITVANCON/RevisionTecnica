@@ -3,53 +3,51 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="icon" type="image/png" href="{{ asset('images/logo2.png') }}" />
-    <title>CITV ANCON</title>
+    <title>{{ config('app.name', 'CITV ANCON') }}</title>
     <!-- Este es el app.blade.php de components/layouts --> 
 
-    <!-- Fonts -->
+    <!-- Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
-    {{-- Agregue esto para date-picker--}}
-    <!-- Flatpickr CSS -->
+    <!-- CSS Externos -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
-
-
-    <!-- Styles -->
+    <!-- Styles & Scripts de App -->
     @livewireStyles
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="font-sans antialiased">
+<body class="font-sans antialiased bg-gray-100 min-h-screen flex flex-col justify-between">
     <x-banner />
 
-    <div class="min-h-screen bg-gray-100">
+    <div class="flex-grow">
         @livewire('custom-nav-menu')
+
         <!-- Page Content -->
         <main>
             {{ $slot }}
         </main>
     </div>
 
-    @stack('modals')
+    <footer class="py-4 px-6 border-t border-gray-200 bg-white">
+        <div class="max-w-7xl mx-auto flex justify-between items-center text-xs text-slate-500">
+            <span>&copy; {{ date('Y') }} CITV ANCON. Todos los derechos reservados.</span>
+            <span class="font-semibold tracking-wider text-slate-600">Powered by GHFDEV ®</span>
+        </div>
+    </footer>
 
+    @stack('modals')
     <!-- Livewire Scripts -->
     @livewireScripts
+    @stack('js')
 
-    {{-- Agregue esto para date-picker y comente xq da error
-    <!-- Alpine.js (si aún no está cargado) -->
-    <script src="https://unpkg.com/alpinejs" defer></script>--}}
-
-     {{-- Agregue esto para date-picker --}}
-    <!-- Flatpickr JS -->
+    <!-- JS Librerías Externas -->
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    
-
-    <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- Script para SweetAlert2 con Livewire -->
@@ -64,13 +62,6 @@
             });
         });
     </script>
-
-
-    <footer>
-        <div class="text-xs text-slate-700  float-right">
-            Powered by GHFDEV ®
-        </div>
-    </footer>
 </body>
 
 </html>

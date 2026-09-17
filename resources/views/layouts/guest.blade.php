@@ -1,33 +1,60 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="csrf-token" content="{{ csrf_token() }}">
-        <link rel="icon" type="image/png" href="{{ asset('images/logo2.png') }}" />
-        <title>CITV ANCON</title>
 
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link rel="icon" type="image/png" href="{{ asset('images/logo2.png') }}" />
+    <title>{{ config('app.name', 'CITV ANCON') }}</title>
 
-        <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
-        <!-- Styles -->
-        @livewireStyles
-    </head>
-    <body>
-        <div class="font-sans text-gray-900 antialiased">
-            {{ $slot }}
-            <div class="text-xs text-slate-700 -mt-4 float-right">
-                Powered by GHFDEV ®
-            </div>
+    <!-- CSS Externos -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+    <!-- Styles & Scripts de App -->
+    @livewireStyles
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+</head>
+
+<body class="font-sans text-gray-900 antialiased bg-slate-100 min-h-screen flex flex-col justify-between">
+
+    <main class="flex-grow">
+        {{ $slot }}
+    </main>
+
+    <footer class="py-4 px-6 border-t border-slate-200/80 bg-white/50 backdrop-blur-sm">
+        <div class="max-w-7xl mx-auto flex justify-between items-center text-xs text-slate-500">
+            <span>&copy; {{ date('Y') }} CITV ANCON. Todos los derechos reservados.</span>
+            <span class="font-semibold tracking-wider text-slate-600">Powered by GHFDEV ®</span>
         </div>
+    </footer>
 
-        @livewireStyles
-        @livewireScripts
-        @vite(['resources/css/app.css','resources/js/app.js'])
-        @stack('js')
-    </body>
+    @livewireScripts
+    @stack('js')
+
+    <!-- JS Librerías Externas -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Eventos SweetAlert2 para Livewire 3 -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            Livewire.on('minAlert', function(data) {
+                const params = Array.isArray(data) ? data[0] : data;
+                Swal.fire({
+                    title: params.titulo || 'Atención',
+                    text: params.mensaje || '',
+                    icon: params.icono || 'info',
+                    confirmButtonColor: '#0f172a'
+                });
+            });
+        });
+    </script>
+</body>
+
 </html>

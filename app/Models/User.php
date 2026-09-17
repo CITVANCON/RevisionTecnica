@@ -93,4 +93,18 @@ class User extends Authenticatable
     {
         return $this->hasMany(DocumentoUsuario::class, 'user_id');
     }
+
+    // Para asistencia
+    public function horariosAsignados()
+    {
+        return $this->hasMany(UsuarioHorario::class);
+    }
+    public function asistencias()
+    {
+        return $this->hasMany(Asistencia::class);
+    }
+    public function marcaciones()
+    {
+        return $this->hasMany(MarcacionRaw::class);
+    }
 }

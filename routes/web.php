@@ -2,6 +2,11 @@
 
 use App\Http\Controllers\MTCSoapController;
 use App\Http\Controllers\PdfController;
+use App\Livewire\AsignarHorario;
+use App\Livewire\Admin\AsistenciaDashboard;
+use App\Livewire\Admin\AsistenciaReportes;
+use App\Livewire\Admin\DispositivosManager;
+use App\Livewire\Admin\HorariosManager;
 use App\Livewire\AdministracionInspecciones;
 use App\Livewire\AdministracionInspeccionExtra;
 use App\Livewire\EditarLineaInspeccion;
@@ -11,6 +16,7 @@ use App\Livewire\FormVehiculo;
 use App\Livewire\GastoModulo;
 use App\Livewire\InspeccionExtraComponent;
 use App\Livewire\Linea;
+use App\Livewire\MarcadoAsistencia;
 use App\Livewire\Permisos;
 use App\Livewire\Prueba;
 use App\Livewire\ReporteComisiones;
@@ -58,7 +64,7 @@ Route::get('contact', function () {
     return view('contact');
 });
 
-//Route::get('/asistencia', MarcadoAsistencia::class)->name('marcar');
+Route::get('/asistencia', MarcadoAsistencia::class)->name('marcar');
 
 Route::get('phpmyinfo', function () {
     phpinfo();
@@ -131,6 +137,13 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
         Route::get('/Usuarios', Usuarios::class)->middleware('can:usuarios')->name('usuarios');
         Route::get('/Roles', Roles::class)->middleware('can:usuarios.roles')->name('usuarios.roles');
         Route::get('/Permisos', Permisos::class)->middleware('can:usuarios.permisos')->name('usuarios.permisos');
+
+        // RUTAS PARA CONTROL DE ASISTENCIAS
+        Route::get('/horario-empleados', HorariosManager::class)->middleware('can:horarioEmpleados')->name('horarioEmpleados');
+        Route::get('/Asignar-Horario', AsignarHorario::class)->middleware('can:AsignarHorario')->name('AsignarHorario');
+        Route::get('/dashboard-asistencia', AsistenciaDashboard::class)->middleware('can:dashboardAsistencia')->name('dashboardAsistencia');
+        Route::get('/reporte-asistencia', AsistenciaReportes::class)->middleware('can:reporteAsistencia')->name('reporteAsistencia');
+        Route::get('/autorizar-dispositivo', DispositivosManager::class)->middleware('can:autorizarDispositivo')->name('autorizarDispositivo');
 
 
         //RUTAS PARA STREAM Y DESCARGA DE PDFS
