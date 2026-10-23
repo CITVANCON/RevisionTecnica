@@ -750,3 +750,19 @@ CREATE TABLE `dispositivos_autorizados` (
 );
 
 
+
+CREATE TABLE `capturas_placas` (
+  `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  `numero_placa` VARCHAR(15) NOT NULL,
+  `ruta_imagen` VARCHAR(255) NOT NULL,
+  `fecha_captura` DATETIME NOT NULL,
+  `estado_conciliacion` ENUM('pendiente', 'coincide', 'no_encontrado') NOT NULL DEFAULT 'pendiente',
+  `inspeccion_maestra_id` BIGINT UNSIGNED NULL,
+  `nivel_confianza` DECIMAL(5, 2) NULL,
+  `created_at` TIMESTAMP NULL,
+  `updated_at` TIMESTAMP NULL,
+  INDEX `capturas_placas_numero_placa_index` (`numero_placa`)
+);
+
+ALTER TABLE `capturas_placas` MODIFY `ruta_imagen` VARCHAR(255) NULL;
+
