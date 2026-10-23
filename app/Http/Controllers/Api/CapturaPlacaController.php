@@ -22,14 +22,14 @@ class CapturaPlacaController extends Controller
 
         // Conciliación con la tabla inspecciones_maestras
         $coincidencia = DB::table('inspecciones_maestras')
-            ->whereRaw("REPLACE(numero_placa, '-', '') = ?", [$numeroPlaca])
+            ->whereRaw("REPLACE(placa_vehiculo, '-', '') = ?", [$numeroPlaca])
             ->whereDate('fecha_inspeccion', $fechaLimpia)
             ->first();
 
         $estadoConciliacion = $coincidencia ? 'coincide' : 'no_encontrado';
         $inspeccionId = $coincidencia ? $coincidencia->id : null;
 
-        // Registrar en la tabla capturas_placas (ruta_imagen queda en null para ahorrar espacio en el VPS de 50GB)
+        // Registrar en la tabla capturas_placas
         $idCaptura = DB::table('capturas_placas')->insertGetId([
             'numero_placa'          => $peticion->input('numero_placa'),
             'ruta_imagen'           => null,
