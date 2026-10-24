@@ -5,6 +5,7 @@ use App\Http\Controllers\PdfController;
 use App\Livewire\AsignarHorario;
 use App\Livewire\Admin\AsistenciaDashboard;
 use App\Livewire\Admin\AsistenciaReportes;
+use App\Livewire\Admin\ConciliacionPlacas;
 use App\Livewire\Admin\DispositivosManager;
 use App\Livewire\Admin\HorariosManager;
 use App\Livewire\AdministracionInspecciones;
@@ -145,6 +146,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
         Route::get('/reporte-asistencia', AsistenciaReportes::class)->middleware('can:reporteAsistencia')->name('reporteAsistencia');
         Route::get('/autorizar-dispositivo', DispositivosManager::class)->middleware('can:autorizarDispositivo')->name('autorizarDispositivo');
 
+        Route::get('/admin/conciliacion', ConciliacionPlacas::class)->name('admin.conciliacion');
 
         //RUTAS PARA STREAM Y DESCARGA DE PDFS
         Route::controller(PdfController::class)->group(function () {

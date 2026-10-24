@@ -283,6 +283,11 @@ Change class "fixed" to "sticky" in "navbar" (l. 33) so the navbar doesn't hide 
                                             {{ __('MTC') }}
                                         </x-responsive-nav-link>
 
+                                        <x-responsive-nav-link class="text-sm" href="{{ route('admin.conciliacion') }}"
+                                            :active="request()->routeIs('admin.conciliacion')">
+                                            {{ __('Conciliación de Placas') }}
+                                        </x-responsive-nav-link>
+
                                     </ul>
 
                                 </div>
