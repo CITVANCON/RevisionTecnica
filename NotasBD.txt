@@ -781,26 +781,39 @@ CREATE TABLE IF NOT EXISTS `tarifarios` (
 
 -- 2. Insertar la matriz de tarifas oficiales de CITV Ancón
 INSERT INTO `tarifarios` (`categoria_vehiculo`, `tipo_atencion`, `precio_minimo`, `precio_maximo`) VALUES
-('M1', 'PARTICULAR', 70.00, 90.00),
-('M1', 'PARTICULAR (SUV - MULTIPROPOSITO)', 80.00, 100.00),
-('M2', 'PARTICULAR', 80.00, 100.00),
-('M3', 'PARTICULAR', 100.00, 120.00),
-('M1', 'SERVICIO DE TAXI', 50.00, 70.00),
-('M2', 'SERVICIO PÚBLICO URBANO', 50.00, 70.00),
-('M3', 'SERVICIO PÚBLICO URBANO', 50.00, 70.00),
-('M3', 'SERVICIO INTERPROVINCIAL', 120.00, 140.00),
-('M2', 'SERVICIO TURISTICO', 100.00, 120.00),
-('M3', 'SERVICIO TURISTICO', 120.00, 140.00),
-('M2', 'SERVICIO DE TRABAJADORES', 100.00, 120.00),
-('M3', 'SERVICIO DE TRABAJADORES', 120.00, 140.00),
-('M2', 'SERVICIO ESCOLAR', 80.00, 100.00),
-('M3', 'SERVICIO ESCOLAR', 100.00, 120.00),
-('N1', 'SERVICIO DE MERCANCIA GENERAL HASTA 3500 PBV', 120.00, 140.00),
-('N2', 'SERVICIO DE MERCANCIA GENERAL HASTA 12000 PBV', 130.00, 150.00),
-('N3', 'SERVICIO DE MERCANCIA GENERAL A MÁS 12000 PBV', 140.00, 160.00),
-('N1', 'SERVICIO DE MERCANCIA PELIGROSO HASTA 3500 PBV', 120.00, 140.00),
-('N2', 'SERVICIO DE MERCANCIA PELIGROSO HASTA 12000 PBV', 140.00, 160.00),
-('N3', 'SERVICIO DE MERCANCIA PELIGROSO A MÁS 12000 PBV', 150.00, 170.00),
-('O3', 'SERVICIO DE MERCANCIA GENERAL / PELIGROSO HASTA 12000 PBV', 120.00, 140.00),
-('O4', 'SERVICIO DE MERCANCIA GENERAL / PELIGROSO A MÁS 12000 PBV', 130.00, 150.00);
+-- Categoría M1
+('M1', 'Particular', 70.00, 90.00),
+('M1', 'Particular (SUV - Multipropósito)', 80.00, 100.00),
+('M1', 'Transporte Especial de Personas – Taxi.', 50.00, 70.00),
+('M1', 'Transporte de Mercancías Privado', 120.00, 140.00),
 
+-- Categoría M2
+('M2', 'Particular', 80.00, 100.00),
+('M2', 'Transporte Regular de Personas', 50.00, 70.00),
+('M2', 'Transporte Regular de Personas con vehículos de la categoria M2', 50.00, 70.00),
+('M2', 'Transporte Especial de Personas – Turístico', 100.00, 120.00),
+('M2', 'Transporte Especial de Personas –Trabajadores', 100.00, 120.00),
+('M2', 'Transporte Especial de Personas –Estudiantes', 80.00, 100.00),
+('M2', 'Transporte de Estudiantes (Servicio Escolar)', 80.00, 100.00),
+
+-- Categoría M3
+('M3', 'Particular', 100.00, 120.00),
+('M3', 'Transporte Regular de Personas', 50.00, 70.00),
+('M3', 'Transporte Interprovincial', 120.00, 140.00),
+('M3', 'Transporte Especial de Personas – Turístico', 120.00, 140.00),
+('M3', 'Transporte Especial de Personas –Trabajadores', 120.00, 140.00),
+('M3', 'Transporte Especial de Personas –Estudiantes', 100.00, 120.00),
+
+-- Categoría N1, N2, N3 (Mercancías y Peligrosos)
+('N1', 'Transporte de Mercancías en General Público', 120.00, 140.00),
+('N1', 'Transporte de Materiales y Residuos Peligrosos.', 120.00, 140.00),
+('N2', 'Transporte de Mercancías en General Público', 130.00, 150.00),
+('N2', 'Transporte de Materiales y Residuos Peligrosos.', 140.00, 160.00),
+('N3', 'Transporte de Mercancías en General Público', 140.00, 160.00),
+('N3', 'Transporte de Materiales y Residuos Peligrosos.', 150.00, 170.00),
+
+-- Categoría O3 y O4 (Remolques / Semirremolques)
+('O3', 'Transporte de Mercancías en General Público', 120.00, 140.00),
+('O3', 'Transporte de Materiales y Residuos Peligrosos.', 120.00, 140.00),
+('O4', 'Transporte de Mercancías en General Público', 130.00, 150.00),
+('O4', 'Transporte de Materiales y Residuos Peligrosos.', 130.00, 150.00);

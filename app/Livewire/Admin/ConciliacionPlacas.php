@@ -8,11 +8,17 @@ use Livewire\Component;
 class ConciliacionPlacas extends Component
 {
     public $fecha;
+    public $mostrarTarifarioModal = false;
 
     public function mount()
     {
         // Por defecto arranca con la fecha de hoy
         $this->fecha = date('Y-m-d');
+    }
+
+    public function abrirModalTarifario()
+    {
+        $this->mostrarTarifarioModal = true;
     }
 
     /*public function render()
@@ -90,7 +96,9 @@ class ConciliacionPlacas extends Component
             ->get();
 
         // Obtener el tarifario oficial para la auditoría de cobros
-        $tarifarios = DB::table('tarifarios')->get();
+        $tarifarios = DB::table('tarifarios')
+            ->orderBy('categoria_vehiculo', 'asc')
+            ->get();
 
         // Normalizar placas para un cruce limpio
         $placasCapturadas = $capturas->keyBy(function ($item) {
@@ -129,6 +137,7 @@ class ConciliacionPlacas extends Component
                     $auditoriaTarifas[] = [
                         'placa' => $insp->placa_vehiculo,
                         'categoria' => $insp->categoria_vehiculo,
+                        'tipo_atencion' => $insp->tipo_atencion,
                         'monto' => $insp->monto_total,
                         'tipo' => $estadoTarifa['estado'], // subcobro o sobrecobro
                         'mensaje' => $estadoTarifa['mensaje']
@@ -159,7 +168,8 @@ class ConciliacionPlacas extends Component
             'coincidentes' => $coincidentes,
             'soloEnLinea' => $soloEnLinea,
             'soloEnSistema' => $soloEnSistema,
-            'auditoriaTarifas' => $auditoriaTarifas
+            'auditoriaTarifas' => $auditoriaTarifas,
+            'listaTarifarios' => $tarifarios
         ]);
     }
 

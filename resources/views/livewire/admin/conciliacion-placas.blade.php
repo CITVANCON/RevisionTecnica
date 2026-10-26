@@ -17,6 +17,11 @@
                         <input type="date" wire:model.live="fecha"
                             class="bg-gray-50 border-none outline-none focus:ring-0 text-sm text-indigo-700 font-bold">
                     </div>
+                    <!-- Botón para Abrir Tarifario -->
+                    <button wire:click="abrirModalTarifario" class="flex bg-indigo-50 px-4 py-2 rounded-md shadow-sm border border-indigo-200 h-12 items-center gap-2 hover:bg-indigo-100 text-indigo-700 transition font-medium text-sm">
+                        <i class="fas fa-table-list text-indigo-500"></i>
+                        <span>Ver Tarifario</span>
+                    </button>
                     <!-- Botón de Imprimir -->
                     <div onclick="window.print()" class="flex bg-gray-50 px-4 py-2 rounded-md shadow-sm border border-gray-100 h-12 items-center gap-2 hover:bg-white cursor-pointer transition">
                         <span class="text-sm text-gray-600 font-medium">Imprimir Reporte</span>
@@ -193,6 +198,7 @@
                                     <tr class="border-b-2 border-gray-200 bg-gray-100">
                                         <th class="px-4 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Placa</th>
                                         <th class="px-4 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Categoría</th>
+                                        <th class="px-4 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Tipo Atencion</th>
                                         <th class="px-4 py-3 text-right text-xs font-bold text-gray-600 uppercase tracking-wider">Monto Cobrado</th>
                                         <th class="px-4 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Detalle de Alerta</th>
                                     </tr>
@@ -202,6 +208,7 @@
                                     <tr class="border-b border-gray-100 hover:bg-indigo-50/50 transition">
                                         <td class="px-4 py-3 font-bold uppercase text-indigo-700">{{ $alerta['placa'] }}</td>
                                         <td class="px-4 py-3 text-gray-700 font-semibold">{{ $alerta['categoria'] }}</td>
+                                        <td class="px-4 py-3 text-gray-700 font-semibold">{{ $alerta['tipo_atencion'] }}</td>
                                         <td class="px-4 py-3 text-right font-bold text-gray-900">S/ {{ number_format($alerta['monto'], 2) }}</td>
                                         <td class="px-4 py-3">
                                             <span class="px-2 py-1 text-xs rounded font-bold {{ $alerta['tipo'] == 'subcobro' ? 'bg-rose-100 text-rose-800' : 'bg-amber-100 text-amber-800' }}">
@@ -226,6 +233,46 @@
 
         </div>
     </div>
+
+    <!-- Modal para Consultar el Tarifario Oficial -->
+    <x-dialog-modal wire:model.live="mostrarTarifarioModal">
+        <x-slot name="title">
+            <div class="flex items-center gap-2 font-bold">
+                <i class="fas fa-file-invoice-dollar"></i> Matriz del Tarifario Oficial de CITV ANCÓN S.A.C.
+            </div>
+        </x-slot>
+
+        <x-slot name="content">
+            <div class="max-h-[60vh] overflow-y-auto">
+                <table class="min-w-full leading-normal table-auto border border-gray-200">
+                    <thead class="sticky top-0 bg-gray-100 text-gray-600 text-xs uppercase">
+                        <tr>
+                            <th class="px-3 py-2 text-center">Cat.</th>
+                            <th class="px-3 py-2 text-left">Tipo de Servicio / Atención</th>
+                            <th class="px-3 py-2 text-right">Tarifa Base (Mín.)</th>
+                            <th class="px-3 py-2 text-right">Precio Máx. (Con recargo)</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-xs divide-y divide-gray-200">
+                        @foreach($listaTarifarios as $t)
+                        <tr class="hover:bg-indigo-50/50">
+                            <td class="px-3 py-2 text-center font-bold text-indigo-700 bg-gray-50">{{ $t->categoria_vehiculo }}</td>
+                            <td class="px-3 py-2 font-medium text-gray-800">{{ $t->tipo_atencion }}</td>
+                            <td class="px-3 py-2 text-right font-bold text-green-700">S/ {{ number_format($t->precio_minimo, 2) }}</td>
+                            <td class="px-3 py-2 text-right font-semibold text-gray-600">S/ {{ number_format($t->precio_maximo, 2) }}</td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </x-slot>
+
+        <x-slot name="footer">
+            <x-secondary-button wire:click="$set('mostrarTarifarioModal', false)">
+                Cerrar Ventana
+            </x-secondary-button>
+        </x-slot>
+    </x-dialog-modal>
 
     <!-- Estilo de impresión adaptado -->
     <style>
