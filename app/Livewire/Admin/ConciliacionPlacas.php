@@ -76,7 +76,7 @@ class ConciliacionPlacas extends Component
             'soloEnSistema' => $soloEnSistema
         ]);
     }*/
-    
+
     public function render()
     {
         // 1. Obtener capturas de la cámara en esa fecha
@@ -102,15 +102,15 @@ class ConciliacionPlacas extends Component
         });
 
         $coincidentes = [];
-        $soloEnLinea = [];     
-        $soloEnSistema = [];   
+        $soloEnLinea = [];
+        $soloEnSistema = [];
         $auditoriaTarifas = []; // Para almacenar las alertas de cobro
 
         // Evaluar capturas de línea y auditar tarifas de las inspecciones coincidentes
         foreach ($placasCapturadas as $placaNorm => $captura) {
             if ($placasInspeccionadas->has($placaNorm)) {
                 $insp = $placasInspeccionadas[$placaNorm];
-                
+
                 // Evaluar tarifa
                 $estadoTarifa = $this->evaluarTarifa($insp, $tarifarios);
 
@@ -163,7 +163,7 @@ class ConciliacionPlacas extends Component
         ]);
     }
 
-    private function evaluarTarifa($insp, $tarifarios)
+    /*private function evaluarTarifa($insp, $tarifarios)
     {
         // Buscar coincidencia en el tarifario por categoría y tipo de atención
         $tarifaRef = $tarifarios->first(function ($t) use ($insp) {
@@ -194,6 +194,47 @@ class ConciliacionPlacas extends Component
         if ($monto > (float) $tarifaRef->precio_maximo) {
             return [
                 'estado' => 'sobrecobro', 
+                'mensaje' => "Supera el máximo permitido (Máx: S/ {$tarifaRef->precio_maximo})"
+            ];
+        }
+
+        return ['estado' => 'correcto', 'mensaje' => 'Tarifa Correcta'];
+    }*/
+
+    private function evaluarTarifa($insp, $tarifarios)
+    {
+        $tipoAtencionInsp = trim($insp->tipo_atencion);
+        $categoriaInsp = strtoupper(trim($insp->categoria_vehiculo));
+
+        // Búsqueda exacta por categoría y tipo de atención registrado
+        $tarifaRef = $tarifarios->first(function ($t) use ($categoriaInsp, $tipoAtencionInsp) {
+            return strtoupper(trim($t->categoria_vehiculo)) === $categoriaInsp
+                && trim($t->tipo_atencion) === $tipoAtencionInsp;
+        });
+
+        // Respaldo por si acaso: buscar solo por categoría si el servicio específico no tuviera tarifa estricta
+        if (!$tarifaRef) {
+            $tarifaRef = $tarifarios->first(function ($t) use ($categoriaInsp) {
+                return strtoupper(trim($t->categoria_vehiculo)) === $categoriaInsp;
+            });
+        }
+
+        if (!$tarifaRef) {
+            return ['estado' => 'sin_configuracion', 'mensaje' => 'Sin tarifario definido'];
+        }
+
+        $monto = (float) $insp->monto_total;
+
+        if ($monto < (float) $tarifaRef->precio_minimo) {
+            return [
+                'estado' => 'subcobro',
+                'mensaje' => "Cobro bajo el mínimo (Mín: S/ {$tarifaRef->precio_minimo})"
+            ];
+        }
+
+        if ($monto > (float) $tarifaRef->precio_maximo) {
+            return [
+                'estado' => 'sobrecobro',
                 'mensaje' => "Supera el máximo permitido (Máx: S/ {$tarifaRef->precio_maximo})"
             ];
         }
