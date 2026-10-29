@@ -182,7 +182,7 @@ class ReportesInspeccionesEjecutivo extends Component
 
         // Efectivo esperado = Suma de pagos en efectivo - gastos
         $ingresosEfectivo = $resumenPagos['EFECTIVO']['total'] ?? 0;
-        $totalTarjetasYOtros = $todosLosPagos->whereIn('metodo', ['YAPE', 'VISA', 'TRANSFERENCIA', 'MASTERCARD'])->sum('monto');
+        $totalTarjetasYOtros = $todosLosPagos->whereIn('metodo', ['YAPE', 'VISA', 'TRANSFERENCIA', 'MASTERCARD', 'PLIN'])->sum('monto');
 
         return view('livewire.reportes-inspecciones-ejecutivo', [
             'inspecciones' => $ingresosConsolidados->sortBy('id'),

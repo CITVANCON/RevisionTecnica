@@ -92,7 +92,8 @@ class SincronizacionController extends Controller
                 // 3.3 Sincronizar el método de pago de planta
                 if ($inspeccion && !empty($item['metodo_pago'])) {
 
-                    $metodoPago = trim($item['metodo_pago']);
+                    // Normaliza el nombre de planta al estándar de la web
+                    $metodoPago = $this->normalizarMetodoPago($item['metodo_pago']);
                     $monto = (float) ($item['monto_total'] ?? 0);
 
                     if ($metodoPago !== '' && $monto > 0) {
@@ -145,7 +146,7 @@ class SincronizacionController extends Controller
                 $procesadosExitosamente++;
 
             } catch (\Exception $e) {
-                
+
                 $msgError = "ID Local " . ($item['id_inspeccion_local'] ?? 'unk') . ": " . $e->getMessage();
                 Log::error("Error en sincronización: " . $msgError);
                 $errores[] = $msgError;
@@ -159,5 +160,23 @@ class SincronizacionController extends Controller
             'fallidos' => count($errores),
             'status'   => 'success'
         ], 200);
+    }
+
+    /**
+     * Normaliza los nombres de TipoPago de planta
+     * a los valores usados por el sistema web.
+     */
+    private function normalizarMetodoPago(string $metodo): string
+    {
+        $metodo = mb_strtoupper(trim($metodo));
+
+        return match ($metodo) {
+            'EFECTIVO' => 'EFECTIVO',
+            'YAPE' => 'YAPE',
+            'TARJETA VISA', 'VISA', 'VISA (POS)' => 'VISA',
+            'DEPÓSITO', 'DEPOSITO' => 'TRANSFERENCIA',
+            'PLIN' => 'PLIN',
+            default => $metodo,
+        };
     }
 }
