@@ -110,7 +110,7 @@
                 </div>
             </div>
 
-            <!-- TABLA 3: ALERTA AMARILLA (Certificado sin paso por cámara) -->
+            <!-- TABLA 2: ALERTA AMARILLA (Certificado sin paso por cámara) -->
             <div class="px-2 mb-4">
                 <h3 class="text-lg font-bold text-gray-700 mb-2 flex items-center">
                     <i class="fas fa-search text-amber-500 mr-2"></i> Certificados Emitidos sin Registro de Cámara (Posible registro manual / fantasma)
@@ -151,7 +151,7 @@
                 </div>
             </div>
 
-            <!-- TABLA 2: ALERTA ROJA (En línea sin certificado) -->
+            <!-- TABLA 3: ALERTA ROJA (En línea sin certificado) -->
             <div class="px-2 mb-6">
                 <h3 class="text-lg font-bold text-gray-700 mb-2 flex items-center">
                     <i class="fas fa-exclamation-triangle text-rose-500 mr-2"></i> Vehículos Detectados en Línea pero SIN Certificado (Posible ingreso sin registro)

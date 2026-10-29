@@ -294,6 +294,7 @@
                                 <option value="">Método...</option>
                                 <option value="EFECTIVO">EFECTIVO</option>
                                 <option value="YAPE">YAPE</option>
+                                <option value="PLIN">PLIN</option>
                                 <option value="VISA">VISA (POS)</option>
                                 <option value="TRANSFERENCIA">TRANSFERENCIA</option>
                             </select>

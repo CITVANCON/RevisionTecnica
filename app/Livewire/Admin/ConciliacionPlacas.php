@@ -21,68 +21,6 @@ class ConciliacionPlacas extends Component
         $this->mostrarTarifarioModal = true;
     }
 
-    /*public function render()
-    {
-        // 1. Obtener capturas de la cámara en esa fecha
-        $capturas = DB::table('capturas_placas')
-            ->whereDate('fecha_captura', $this->fecha)
-            ->get();
-
-        // 2. Obtener inspecciones maestras (sistema) en esa fecha usando placa_vehiculo
-        $inspecciones = DB::table('inspecciones_maestras')
-            ->whereDate('fecha_inspeccion', $this->fecha)
-            ->get();
-
-        // Normalizar placas para un cruce limpio (sin guiones y en mayúsculas)
-        $placasCapturadas = $capturas->keyBy(function ($item) {
-            return strtoupper(trim(str_replace('-', '', $item->numero_placa)));
-        });
-
-        $placasInspeccionadas = $inspecciones->keyBy(function ($item) {
-            return strtoupper(trim(str_replace('-', '', $item->placa_vehiculo)));
-        });
-
-        $coincidentes = [];
-        $soloEnLinea = [];     // En cámara pero NO en sistema (Alerta Roja)
-        $soloEnSistema = [];   // En sistema pero NO en cámara (Alerta Amarilla)
-
-        // Evaluar capturas de línea
-        foreach ($placasCapturadas as $placaNorm => $captura) {
-            if ($placasInspeccionadas->has($placaNorm)) {
-                $coincidentes[] = [
-                    'placa' => $captura->numero_placa,
-                    'hora_camara' => $captura->fecha_captura,
-                    'inspeccion_id' => $placasInspeccionadas[$placaNorm]->id,
-                    'resultado' => $placasInspeccionadas[$placaNorm]->resultado_estado
-                ];
-            } else {
-                $soloEnLinea[] = [
-                    'placa' => $captura->numero_placa,
-                    'hora_captura' => $captura->fecha_captura,
-                    'confianza' => $captura->nivel_confianza
-                ];
-            }
-        }
-
-        // Evaluar inspecciones de sistema que no pasaron por la cámara
-        foreach ($placasInspeccionadas as $placaNorm => $inspeccion) {
-            if (!$placasCapturadas->has($placaNorm)) {
-                $soloEnSistema[] = [
-                    'placa' => $inspeccion->placa_vehiculo,
-                    'hora_inicio' => $inspeccion->hora_inicio,
-                    'propietario' => $inspeccion->propietario_nombre,
-                    'resultado' => $inspeccion->resultado_estado
-                ];
-            }
-        }
-
-        return view('livewire.admin.conciliacion-placas', [
-            'coincidentes' => $coincidentes,
-            'soloEnLinea' => $soloEnLinea,
-            'soloEnSistema' => $soloEnSistema
-        ]);
-    }*/
-
     public function render()
     {
         // 1. Obtener capturas de la cámara en esa fecha
@@ -172,44 +110,6 @@ class ConciliacionPlacas extends Component
             'listaTarifarios' => $tarifarios
         ]);
     }
-
-    /*private function evaluarTarifa($insp, $tarifarios)
-    {
-        // Buscar coincidencia en el tarifario por categoría y tipo de atención
-        $tarifaRef = $tarifarios->first(function ($t) use ($insp) {
-            return strtoupper(trim($t->categoria_vehiculo)) === strtoupper(trim($insp->categoria_vehiculo))
-                && strtoupper(trim($t->tipo_atencion)) === strtoupper(trim($insp->tipo_atencion));
-        });
-
-        // Si no encuentra por tipo de atención exacto, busca al menos por categoría general
-        if (!$tarifaRef) {
-            $tarifaRef = $tarifarios->first(function ($t) use ($insp) {
-                return strtoupper(trim($t->categoria_vehiculo)) === strtoupper(trim($insp->categoria_vehiculo));
-            });
-        }
-
-        if (!$tarifaRef) {
-            return ['estado' => 'sin_configuracion', 'mensaje' => 'Sin tarifario definido'];
-        }
-
-        $monto = (float) $insp->monto_total;
-
-        if ($monto < (float) $tarifaRef->precio_minimo) {
-            return [
-                'estado' => 'subcobro', 
-                'mensaje' => "Cobro bajo el mínimo (Mín: S/ {$tarifaRef->precio_minimo})"
-            ];
-        }
-
-        if ($monto > (float) $tarifaRef->precio_maximo) {
-            return [
-                'estado' => 'sobrecobro', 
-                'mensaje' => "Supera el máximo permitido (Máx: S/ {$tarifaRef->precio_maximo})"
-            ];
-        }
-
-        return ['estado' => 'correcto', 'mensaje' => 'Tarifa Correcta'];
-    }*/
 
     private function evaluarTarifa($insp, $tarifarios)
     {

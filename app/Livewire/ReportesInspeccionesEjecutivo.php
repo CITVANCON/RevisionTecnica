@@ -7,7 +7,6 @@ use App\Models\Gasto;
 use App\Models\InspeccionExtra;
 use App\Models\InspeccionMaestra;
 use Livewire\Component;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
@@ -152,6 +151,15 @@ class ReportesInspeccionesEjecutivo extends Component
         $this->total_comisiones = $inspeccionesActivas->sum('comision');
         $this->total_inspecciones = $inspeccionesActivas->count();
 
+        // Franja de contadores por estado para el resumen de la tabla
+        $statsResumen = [
+            'aprobados'      => $inspeccionesActivas->where('resultado', 'A')->count(),
+            'desaprobados'   => $inspeccionesActivas->where('resultado', 'D')->count(),
+            'anulados'       => $ingresosConsolidados->where('activo', false)->count(),
+            'reinspecciones' => $inspeccionesActivas->where('reinspeccion', true)->count(),
+            'sin_resultado'  => $inspeccionesActivas->filter(fn ($i) => !in_array($i['resultado'], ['A', 'D'], true))->count(),
+        ];
+
         // --- NUEVA LÓGICA DE RESUMEN DE PAGOS ---
         // Extraemos todos los pagos individuales de todas las inspecciones activas
         $todosLosPagos = $inspeccionesActivas->pluck('detalles_pago')->flatten(1);
@@ -183,7 +191,8 @@ class ReportesInspeccionesEjecutivo extends Component
             'gastos' => $gastos,
             'efectivo_neto' => $ingresosEfectivo - $this->total_gastos,
             'total_tarjetas' => $totalTarjetasYOtros,
-            'cierreActual' => CierreDiario::find($this->fecha)
+            'cierreActual' => CierreDiario::find($this->fecha),
+            'statsResumen' => $statsResumen
         ]);
     }
 
@@ -210,7 +219,9 @@ class ReportesInspeccionesEjecutivo extends Component
             'comprobante'   => $i->nro_comprobante ?? 'NN',
             'activo'        => is_null($i->fecha_anulacion) && $i->estado_inspeccion !== 'Anulada',
             'clase_fila'    => $this->getClaseMaestra($i),
-            'badge'         => $i->es_reinspeccion === 'S' ? 'REINSP.' : ($i->resultado_estado === 'D' ? 'DESAPROB.' : null)
+            'badge'         => $i->es_reinspeccion === 'S' ? 'REINSP.' : ($i->resultado_estado === 'D' ? 'DESAPROB.' : null),
+            'resultado'     => $i->resultado_estado,   // 'A', 'D' o null
+            'reinspeccion'  => $i->es_reinspeccion === 'S'
         ]);
     }
 
@@ -232,7 +243,9 @@ class ReportesInspeccionesEjecutivo extends Component
             'comprobante'   => $i->nro_comprobante ?? 'NN',
             'activo'        => $i->estado !== 'Anulada',
             'clase_fila'    => $i->estado === 'Anulada' ? 'bg-red-50 italic text-gray-400' : '',
-            'badge'         => null
+            'badge'         => null,
+            'resultado'     => null,
+            'reinspeccion'  => false
         ]);
     }
 
@@ -242,65 +255,3 @@ class ReportesInspeccionesEjecutivo extends Component
         return '';
     }
 }
-
-
-/**public function render()
-    {
-        // Ingresos
-        $queryInspecciones = InspeccionMaestra::query();
-        if ($this->fecha) {
-            $queryInspecciones->whereDate('fecha_inspeccion', $this->fecha);
-        }
-        $inspecciones = $queryInspecciones->orderBy('id_inspeccion_local', 'asc')->get();
-
-        // Una inspección es "Activa" (suma dinero) solo si: No tiene fecha de anulación post-cierre ; Su estado de proceso NO es 'Anulada'
-        //$inspeccionesActivas = $inspecciones->whereNull('fecha_anulacion');
-        $inspeccionesActivas = $inspecciones->filter(function($item) {
-            return is_null($item->fecha_anulacion) && $item->estado_inspeccion !== 'Anulada';
-        });
-
-        $this->total_monto = $inspeccionesActivas->sum('monto_total');
-        $this->total_inspecciones = $inspeccionesActivas->count();
-        $this->total_comisiones = $inspeccionesActivas->sum('comision_monto');
-
-        // Resumen de Pagos para los indicadores
-        $resumenPagos = $inspeccionesActivas->groupBy('metodo_pago')
-            ->map(fn($row) => [
-                'cantidad' => $row->count(),
-                'total' => $row->sum('monto_total')
-            ]);
-
-        // Egresos diarios
-        $gastos = Gasto::diarios($this->fecha)->orderBy('id', 'asc')->get();
-        $this->total_gastos = $gastos->sum('monto');
-
-        // Obtener el total de ingresos en EFECTIVO desde el resumen que ya tienes
-        $ingresosEfectivo = $resumenPagos['EFECTIVO']['total'] ?? 0;
-        // Calcular el efectivo real (Ingreso Efectivo - Gastos)
-        $efectivo_neto = $ingresosEfectivo - $this->total_gastos;
-
-        // Sumamos todo lo que NO es efectivo para el esperado de POS/Tarjetas
-        //$total_tarjetas = $inspeccionesActivas->where('metodo_pago', '!=', 'EFECTIVO')->sum('monto_total');
-        // Esto excluye automáticamente los NULL y cualquier otro texto extraño
-        $metodosPOS = ['YAPE', 'VISA', 'TRANSFERENCIA'];    
-        $total_tarjetas = $inspeccionesActivas->whereIn('metodo_pago', $metodosPOS)->sum('monto_total');
-
-        // (Opcional) Alerta de registros sin método de pago
-        $sinMetodo = $inspeccionesActivas->whereNull('metodo_pago')->sum('monto_total');
-
-        // Consultamos el estado actual del cierre para mostrarlo en la vista
-        $cierreActual = CierreDiario::find($this->fecha);
-
-        return view('livewire.reportes-inspecciones-ejecutivo', [
-            'inspecciones' => $inspecciones,
-            'resumenPagos' => $resumenPagos,
-            'gastos' => $gastos,
-            'saldo_neto' => $this->total_monto - $this->total_gastos,
-            'efectivo_neto' => $efectivo_neto,
-            'total_comisiones' => $this->total_comisiones,
-            'total_tarjetas' => $total_tarjetas,
-            'monto_sin_metodo' => $sinMetodo,
-            'cierreActual' => $cierreActual
-
-        ]);
-    }**/

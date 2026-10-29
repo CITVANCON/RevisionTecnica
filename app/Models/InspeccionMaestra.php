@@ -45,7 +45,7 @@ class InspeccionMaestra extends Model
         'codigos_defectos',
 
         // informacion que se trabaja desde el sistema web
-        'metodo_pago',
+        'metodo_pago', // obsoleto se guarda en la tabla de detalles_pagos
         'nro_comprobante',
         'nro_orden',
         'comision_monto',

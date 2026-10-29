@@ -9,45 +9,6 @@ use Illuminate\Support\Facades\Log;
 
 class SincronizacionController extends Controller
 {
-    /*public function recibirDatos(Request $request)
-    {
-        // llave simple que solo codigo y el script del servidor conocen
-        $tokenSeguridad = "CITV_ANCON_SECRET_2026";
-
-        if ($request->header('X-Plant-Token') !== $tokenSeguridad) {
-            return response()->json(['error' => 'No autorizado'], 401);
-        }
-
-        $datos = $request->all();
-
-        foreach ($datos as $item) {
-            try {
-                InspeccionMaestra::updateOrCreate(
-                    ['id_inspeccion_local' => $item['id_inspeccion_local']],
-                    [
-                        'placa_vehiculo'          => $item['placa'] ?? 'SIN_PLACA',
-                        'categoria_vehiculo'      => $item['categoria'] ?? null,
-                        'fecha_inspeccion'        => $item['fecha'] ?? null,
-                        'hora_inicio'             => $item['finicio'] ?? null,
-                        'hora_fin'                => $item['ffin'] ?? null,
-                        'resultado_estado'        => $item['resultado'] ?? null,
-                        'monto_total'             => $item['monto_total'] ?? 0,
-                        'tipo_atencion'           => $item['tipo_atencion'] ?? null,
-                        'numero_certificado_mtc'  => $item['ncertificado'] ?? null,
-                        'serie_certificado'       => $item['serie'] ?? null,
-                        'correlativo_certificado' => $item['correlativo'] ?? null,
-                        'fecha_anulacion'         => $item['fanulacion'] ?? null,
-                    ]
-                );
-            } catch (\Exception $e) {
-                Log::error("Error procesando ID Local " . ($item['id_inspeccion_local'] ?? 'unk') . ": " . $e->getMessage());
-                continue;
-            }
-        }
-
-        return response()->json(['mensaje' => 'Sincronización exitosa', 'cantidad' => count($datos)], 200);
-    }*/
-
     public function recibirDatos(Request $request)
     {
         $tokenSeguridad = "CITV_ANCON_SECRET_2026";
@@ -121,6 +82,55 @@ class SincronizacionController extends Controller
                         'codigos_defectos'   => $item['codigos_defectos'] ?? null,
                     ]
                 );
+
+                $inspeccion = InspeccionMaestra::where(
+                    'id_inspeccion_local',
+                    (string) $item['id_inspeccion_local']
+                )->first();
+
+                if ($inspeccion && !empty($item['metodo_pago'])) {
+
+                    $metodoPago = trim($item['metodo_pago']);
+                    $monto = (float) ($item['monto_total'] ?? 0);
+
+                    if ($metodoPago !== '' && $monto > 0) {
+
+                        /*$inspeccion->pagos()->updateOrCreate(
+                            [
+                                'metodo_pago' => $metodoPago,
+                                'nro_referencia' => null,
+                            ],
+                            [
+                                'monto' => $monto,
+                                'fecha_pago' => !empty($item['ffin']) 
+                                    ? $item['ffin'] 
+                                    : (!empty($item['fecha']) ? $item['fecha'] . ' 00:00:00' : now()),
+                                'user_id' => null,
+                            ]
+                        );*/
+
+                        $inspeccion->pagos()->updateOrCreate(
+                            [
+                                'origen' => 'PLANTA',
+                            ],
+                            [
+                                'metodo_pago' => $metodoPago,
+                                'monto' => $monto,
+                                'nro_referencia' => null,
+                                'fecha_pago' => !empty($item['ffin']) 
+                                    ? $item['ffin'] 
+                                    : (!empty($item['fecha']) ? $item['fecha'] . ' 00:00:00' : now()),
+                                'user_id' => null,
+                            ]
+                        );
+
+                        // Compatibilidad con el campo antiguo
+                        $inspeccion->update([
+                            'metodo_pago' => $metodoPago,
+                        ]);
+                    }
+                }
+
                 $procesadosExitosamente++;
 
             } catch (\Exception $e) {

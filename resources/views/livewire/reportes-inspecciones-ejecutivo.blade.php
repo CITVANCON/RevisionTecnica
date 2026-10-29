@@ -77,6 +77,29 @@
                     <h3 class="text-lg font-bold text-gray-700 mb-2 flex items-center">
                         Inspecciones Realizadas
                     </h3>
+                    <!-- Franja de contadores por estado -->
+                    <div class="grid grid-cols-2 md:grid-cols-5 gap-2 mb-3">
+                        <div class="bg-white p-2 rounded-lg shadow-sm border-l-4 border-green-500 flex justify-between items-center">
+                            <span class="text-[10px] text-gray-500 font-bold uppercase">Aprobados</span>
+                            <span class="text-lg font-black text-green-600">{{ $statsResumen['aprobados'] }}</span>
+                        </div>
+                        <div class="bg-white p-2 rounded-lg shadow-sm border-l-4 border-blue-500 flex justify-between items-center">
+                            <span class="text-[10px] text-gray-500 font-bold uppercase">Desaprobados</span>
+                            <span class="text-lg font-black text-blue-600">{{ $statsResumen['desaprobados'] }}</span>
+                        </div>
+                        <div class="bg-white p-2 rounded-lg shadow-sm border-l-4 border-red-500 flex justify-between items-center">
+                            <span class="text-[10px] text-gray-500 font-bold uppercase">Anulados</span>
+                            <span class="text-lg font-black text-red-600">{{ $statsResumen['anulados'] }}</span>
+                        </div>
+                        <div class="bg-white p-2 rounded-lg shadow-sm border-l-4 border-amber-400 flex justify-between items-center">
+                            <span class="text-[10px] text-gray-500 font-bold uppercase">Reinspecciones</span>
+                            <span class="text-lg font-black text-amber-600">{{ $statsResumen['reinspecciones'] }}</span>
+                        </div>
+                        <div class="bg-white p-2 rounded-lg shadow-sm border-l-4 border-gray-400 flex justify-between items-center">
+                            <span class="text-[10px] text-gray-500 font-bold uppercase">Sin Resultado</span>
+                            <span class="text-lg font-black text-gray-600">{{ $statsResumen['sin_resultado'] }}</span>
+                        </div>
+                    </div>
                     <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-100">
                         <div class="overflow-x-auto">
                             <table class="min-w-full leading-normal table-auto">
