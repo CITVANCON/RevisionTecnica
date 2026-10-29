@@ -306,7 +306,7 @@
                             <x-input type="text" class="w-full" placeholder="Ref/Operación" wire:model="lista_pagos.{{ $index }}.nro_referencia" />
                         </div>
                         <div class="col-span-1 text-center">
-                            @if(count($lista_pagos) > 1)
+                            @if(count($lista_pagos) > 1 && ($pago['origen'] ?? 'WEB') === 'WEB')
                                 <button wire:click="quitarPago({{ $index }})" class="text-red-500 hover:text-red-700">
                                     <i class="fas fa-times-circle"></i>
                                 </button>

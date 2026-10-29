@@ -69,7 +69,142 @@ class AdministracionInspecciones extends Component
 
     public function editInspeccion($id)
     {
-        //$inspeccion = InspeccionMaestra::findOrFail($id);
+        $inspeccion = InspeccionMaestra::with('pagos')->findOrFail($id);
+
+        $this->selected_id = $id;
+        $this->monto_total_inspeccion = $inspeccion->monto_total;
+
+        $this->vendedor_id = $inspeccion->vendedor_id;
+        $this->metodo_pago = $inspeccion->metodo_pago;
+        $this->nro_orden = $inspeccion->nro_orden ?? 1;
+        $this->comision_monto = $inspeccion->comision_monto ?? 0;
+        $this->observaciones = $inspeccion->observaciones;
+
+        if ($inspeccion->pagos->count() > 0) {
+            $this->lista_pagos = $inspeccion->pagos->map(fn($p) => [
+                'id' => $p->id,
+                'origen' => $p->origen ?? 'WEB',
+                'metodo_pago' => $p->metodo_pago,
+                'monto' => $p->monto,
+                'nro_referencia' => $p->nro_referencia,
+            ])->toArray();
+        } else {
+            $this->lista_pagos = [[
+                'id' => null,
+                'origen' => 'WEB',
+                'metodo_pago' => '',
+                'monto' => $this->monto_total_inspeccion,
+                'nro_referencia' => '',
+            ]];
+        }
+
+        $this->modalDetallesCaja = true;
+    }
+
+    public function agregarPago()
+    {
+        $this->lista_pagos[] = [
+            'id' => null,
+            'origen' => 'WEB',
+            'metodo_pago' => '',
+            'monto' => 0,
+            'nro_referencia' => '',
+        ];
+    }
+
+    public function quitarPago($index)
+    {
+        unset($this->lista_pagos[$index]);
+        $this->lista_pagos = array_values($this->lista_pagos);
+    }
+
+    public function updateInspeccion()
+    {
+        $this->validate([
+            'lista_pagos.*.metodo_pago' => 'required',
+            'lista_pagos.*.monto' => 'required',
+            'nro_comprobante' => 'nullable',
+            'nro_orden' => 'nullable|integer',
+            'vendedor_id' => 'nullable',
+        ], [
+            'lista_pagos.*.metodo_pago.required' => 'Seleccione método.',
+            'lista_pagos.*.monto.required' => 'Ingrese monto.',
+        ]);
+
+        $sumaPagos = collect($this->lista_pagos)->sum('monto');
+
+        if (round($sumaPagos, 2) != round($this->monto_total_inspeccion, 2)) {
+            $this->addError('suma_pagos', "La suma de pagos (S/ $sumaPagos) no coincide con el total (S/ $this->monto_total_inspeccion)");
+            return;
+        }
+
+        $inspeccion = InspeccionMaestra::findOrFail($this->selected_id);
+
+        // 1. Actualizar datos generales de la inspección
+        $inspeccion->update([
+            'nro_comprobante' => $this->nro_comprobante,
+            'nro_orden' => $this->nro_orden,
+            'comision_monto' => $this->comision_monto,
+            'vendedor_id' => $this->vendedor_id,
+            'observaciones' => $this->observaciones,
+        ]);
+
+        $userId = Auth::id();
+        $idsMantenidos = [];
+
+        // 2. Actualizar pagos existentes o crear los nuevos
+        foreach ($this->lista_pagos as $pago) {
+
+            if (!empty($pago['id'])) {
+
+                $pagoExistente = $inspeccion->pagos()->find($pago['id']);
+
+                if ($pagoExistente) {
+
+                    // Nunca cambiamos el origen:
+                    // PLANTA sigue siendo PLANTA y WEB sigue siendo WEB.
+                    $pagoExistente->update([
+                        'metodo_pago' => $pago['metodo_pago'],
+                        'monto' => $pago['monto'],
+                        'nro_referencia' => $pago['nro_referencia'],
+                    ]);
+
+                    $idsMantenidos[] = $pagoExistente->id;
+                }
+
+            } else {
+
+                $nuevoPago = $inspeccion->pagos()->create([
+                    'origen' => 'WEB',
+                    'metodo_pago' => $pago['metodo_pago'],
+                    'monto' => $pago['monto'],
+                    'nro_referencia' => $pago['nro_referencia'],
+                    'fecha_pago' => now(),
+                    'user_id' => $userId,
+                ]);
+
+                $idsMantenidos[] = $nuevoPago->id;
+            }
+        }
+
+        // 3. Eliminar solamente pagos WEB que el usuario quitó del modal.
+        // El pago PLANTA nunca se elimina desde aquí.
+        $inspeccion->pagos()
+            ->where('origen', 'WEB')
+            ->whereNotIn('id', $idsMantenidos)
+            ->delete();
+
+        // 4. Mantener el campo legacy con el primer método
+        $inspeccion->update([
+            'metodo_pago' => $this->lista_pagos[0]['metodo_pago'] ?? null,
+        ]);
+
+        $this->modalDetallesCaja = false;
+        $this->dispatch('minAlert', titulo: 'ÉXITO', mensaje: 'Actualizado correctamente', icono: 'success');
+    }
+
+    /*public function editInspeccion($id)
+    {
         $inspeccion = InspeccionMaestra::with('pagos')->findOrFail($id);
         $this->selected_id = $id;
         $this->monto_total_inspeccion = $inspeccion->monto_total;
@@ -103,25 +238,6 @@ class AdministracionInspecciones extends Component
         unset($this->lista_pagos[$index]);
         $this->lista_pagos = array_values($this->lista_pagos);
     }
-    /*public function updateInspeccion()
-    {
-        $this->validate([
-            'metodo_pago' => 'required',
-            'nro_comprobante' => 'nullable',
-            'nro_orden' => 'nullable|integer',
-        ]);
-        $inspeccion = InspeccionMaestra::find($this->selected_id);
-        $inspeccion->update([
-            'metodo_pago' => $this->metodo_pago,
-            'nro_comprobante' => $this->nro_comprobante,
-            'nro_orden' => $this->nro_orden,
-            'comision_monto' => $this->comision_monto,
-            'observaciones' => $this->observaciones,
-        ]);
-        $this->modalDetallesCaja = false;
-        $this->dispatch('minAlert', titulo: 'ÉXITO', mensaje: 'Actualizado correctamente', icono: 'success');
-    }
-    */
     public function updateInspeccion()
     {
         $this->validate([
@@ -169,7 +285,7 @@ class AdministracionInspecciones extends Component
 
         $this->modalDetallesCaja = false;
         $this->dispatch('minAlert', titulo: 'ÉXITO', mensaje: 'Actualizado correctamente', icono: 'success');
-    }
+    }*/
 
 
     #[On('deleteConfirmed')]
