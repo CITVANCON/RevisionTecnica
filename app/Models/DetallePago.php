@@ -16,7 +16,8 @@ class DetallePago extends Model
         'monto',
         'nro_referencia',
         'fecha_pago',
-        'user_id'
+        'user_id',
+        'origen',
     ];
 
     protected $casts = [

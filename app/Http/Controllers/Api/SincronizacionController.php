@@ -42,7 +42,8 @@ class SincronizacionController extends Controller
                     Log::warning("Registro omitido: No se encontró id_inspeccion_local.");
                     continue;
                 }
-
+            
+                // 3.1 Guardar o actualizar la inspección
                 InspeccionMaestra::updateOrCreate(
                     ['id_inspeccion_local' => (string)$item['id_inspeccion_local']],
                     [
@@ -61,7 +62,6 @@ class SincronizacionController extends Controller
                         'correlativo_certificado' => $item['correlativo'] ?? null,
                         'fecha_anulacion'         => $item['fanulacion'] ?? null,
 
-                        // nuevos campos
                         'kilometraje'        => $item['kilometraje'] ?? null,
                         'peso_bruto_v'       => $item['peso_bruto'] ?? 0,
                         'peso_neto_v'        => $item['peso_neto'] ?? 0,
@@ -83,11 +83,13 @@ class SincronizacionController extends Controller
                     ]
                 );
 
+                // 3.2 Recuperar la inspección recién creada o actualizada
                 $inspeccion = InspeccionMaestra::where(
                     'id_inspeccion_local',
                     (string) $item['id_inspeccion_local']
                 )->first();
 
+                // 3.3 Sincronizar el método de pago de planta
                 if ($inspeccion && !empty($item['metodo_pago'])) {
 
                     $metodoPago = trim($item['metodo_pago']);
@@ -109,6 +111,17 @@ class SincronizacionController extends Controller
                             ]
                         );*/
 
+                        // Fecha y hora del pago:
+                        // 1) Usa la hora de fin de inspección.
+                        // 2) Si no existe, usa la fecha de inspección a medianoche.
+                        // 3) Como último recurso, usa la fecha actual.
+                        $fechaPago = !empty($item['ffin'])
+                            ? $item['ffin']
+                            : (!empty($item['fecha']) 
+                                ? $item['fecha'] . ' 00:00:00' 
+                                : now());
+                        
+                        // Busca o crea UN SOLO pago proveniente de planta
                         $inspeccion->pagos()->updateOrCreate(
                             [
                                 'origen' => 'PLANTA',
@@ -117,14 +130,12 @@ class SincronizacionController extends Controller
                                 'metodo_pago' => $metodoPago,
                                 'monto' => $monto,
                                 'nro_referencia' => null,
-                                'fecha_pago' => !empty($item['ffin']) 
-                                    ? $item['ffin'] 
-                                    : (!empty($item['fecha']) ? $item['fecha'] . ' 00:00:00' : now()),
+                                'fecha_pago'     => $fechaPago,
                                 'user_id' => null,
                             ]
                         );
 
-                        // Compatibilidad con el campo antiguo
+                        // Campo antiguo de la inspección, solo para compatibilidad
                         $inspeccion->update([
                             'metodo_pago' => $metodoPago,
                         ]);
@@ -134,6 +145,7 @@ class SincronizacionController extends Controller
                 $procesadosExitosamente++;
 
             } catch (\Exception $e) {
+                
                 $msgError = "ID Local " . ($item['id_inspeccion_local'] ?? 'unk') . ": " . $e->getMessage();
                 Log::error("Error en sincronización: " . $msgError);
                 $errores[] = $msgError;
