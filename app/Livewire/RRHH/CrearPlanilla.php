@@ -17,7 +17,7 @@ class CrearPlanilla extends Component
     public $lista_planilla = [];
 
     // Constante mensual, se dividirá en la lógica
-    const MONTO_ASIGNACION_MENSUAL = 113.00;
+    const MONTO_ASIGNACION_MENSUAL = 123.00;
 
     #[On('abrir-modal-planilla')]
     public function abrirModal()
