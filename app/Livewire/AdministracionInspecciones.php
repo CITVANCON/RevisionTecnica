@@ -74,13 +74,16 @@ class AdministracionInspecciones extends Component
         $this->selected_id = $id;
         $this->monto_total_inspeccion = $inspeccion->monto_total;
 
+        // Cargar campos generales
         $this->vendedor_id = $inspeccion->vendedor_id;
         $this->metodo_pago = $inspeccion->metodo_pago;
         $this->nro_orden = $inspeccion->nro_orden ?? 1;
         $this->comision_monto = $inspeccion->comision_monto ?? 0;
         $this->observaciones = $inspeccion->observaciones;
 
+        // Cargar pagos existentes
         if ($inspeccion->pagos->count() > 0) {
+
             $this->lista_pagos = $inspeccion->pagos->map(fn($p) => [
                 'id' => $p->id,
                 'origen' => $p->origen ?? 'WEB',
@@ -88,7 +91,9 @@ class AdministracionInspecciones extends Component
                 'monto' => $p->monto,
                 'nro_referencia' => $p->nro_referencia,
             ])->toArray();
+
         } else {
+
             $this->lista_pagos = [[
                 'id' => null,
                 'origen' => 'WEB',
@@ -118,7 +123,7 @@ class AdministracionInspecciones extends Component
         $this->lista_pagos = array_values($this->lista_pagos);
     }
 
-    public function updateInspeccion()
+    /*public function updateInspeccion()
     {
         $this->validate([
             'lista_pagos.*.metodo_pago' => 'required',
@@ -195,6 +200,119 @@ class AdministracionInspecciones extends Component
             ->delete();
 
         // 4. Mantener el campo legacy con el primer método
+        $inspeccion->update([
+            'metodo_pago' => $this->lista_pagos[0]['metodo_pago'] ?? null,
+        ]);
+
+        $this->modalDetallesCaja = false;
+        $this->dispatch('minAlert', titulo: 'ÉXITO', mensaje: 'Actualizado correctamente', icono: 'success');
+    }*/
+    public function updateInspeccion()
+    {
+        $this->validate([
+            'lista_pagos.*.metodo_pago' => 'required',
+            'lista_pagos.*.monto' => 'required',
+            'nro_comprobante' => 'nullable',
+            'nro_orden' => 'nullable|integer',
+            'vendedor_id' => 'nullable',
+        ], [
+            'lista_pagos.*.metodo_pago.required' => 'Seleccione método.',
+            'lista_pagos.*.monto.required' => 'Ingrese monto.',
+        ]);
+
+        // Validación de suma total
+        $sumaPagos = collect($this->lista_pagos)->sum('monto');
+
+        if (round($sumaPagos, 2) != round($this->monto_total_inspeccion, 2)) {
+            $this->addError('suma_pagos', "La suma de pagos (S/ $sumaPagos) no coincide con el total (S/ $this->monto_total_inspeccion)");
+            return;
+        }
+
+        $inspeccion = InspeccionMaestra::findOrFail($this->selected_id);
+
+        // 1. Actualizar datos generales de la inspección
+        $inspeccion->update([
+            'nro_comprobante' => $this->nro_comprobante,
+            'nro_orden' => $this->nro_orden,
+            'comision_monto' => $this->comision_monto,
+            'vendedor_id' => $this->vendedor_id,
+            'observaciones' => $this->observaciones,
+        ]);
+
+        $userId = Auth::id();
+        $idsMantenidos = [];
+
+        // 2. Comparar los pagos actuales con los pagos enviados desde el modal
+        $pagosActuales = $inspeccion->pagos
+            ->map(fn($p) => [
+                'metodo_pago' => $p->metodo_pago,
+                'monto' => (float) $p->monto,
+                'nro_referencia' => $p->nro_referencia,
+            ])
+            ->sortBy('metodo_pago')
+            ->values();
+
+        $pagosNuevos = collect($this->lista_pagos)
+            ->map(fn($p) => [
+                'metodo_pago' => $p['metodo_pago'],
+                'monto' => (float) $p['monto'],
+                'nro_referencia' => $p['nro_referencia'] ?? null,
+            ])
+            ->sortBy('metodo_pago')
+            ->values();
+
+        $pagosFueronModificados = $pagosActuales->toJson() !== $pagosNuevos->toJson();
+
+        // 3. Actualizar pagos existentes o crear los nuevos
+        foreach ($this->lista_pagos as $pago) {
+
+            if (!empty($pago['id'])) {
+
+                $pagoExistente = $inspeccion->pagos()->find($pago['id']);
+
+                if ($pagoExistente) {
+
+                    // Importante: no se cambia el origen.
+                    // PLANTA sigue siendo PLANTA y WEB sigue siendo WEB.
+                    $pagoExistente->update([
+                        'metodo_pago' => $pago['metodo_pago'],
+                        'monto' => $pago['monto'],
+                        'nro_referencia' => $pago['nro_referencia'],
+                    ]);
+
+                    $idsMantenidos[] = $pagoExistente->id;
+                }
+
+            } else {
+
+                $nuevoPago = $inspeccion->pagos()->create([
+                    'origen' => 'WEB',
+                    'metodo_pago' => $pago['metodo_pago'],
+                    'monto' => $pago['monto'],
+                    'nro_referencia' => $pago['nro_referencia'],
+                    'fecha_pago' => now(),
+                    'user_id' => $userId,
+                ]);
+
+                $idsMantenidos[] = $nuevoPago->id;
+            }
+        }
+
+        // 4. Eliminar solamente pagos WEB que fueron quitados del modal.
+        // Nunca se elimina el pago PLANTA desde la web.
+        $inspeccion->pagos()
+            ->where('origen', 'WEB')
+            ->whereNotIn('id', $idsMantenidos)
+            ->delete();
+
+        // 5. Si el usuario modificó los pagos, la planta ya no debe sobrescribirlos
+        if ($pagosFueronModificados) {
+            $inspeccion->update([
+                'pago_ajustado_web' => true,
+            ]);
+        }
+
+        // 6. Mantener el campo legacy con el primer método de pago
         $inspeccion->update([
             'metodo_pago' => $this->lista_pagos[0]['metodo_pago'] ?? null,
         ]);

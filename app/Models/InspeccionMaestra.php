@@ -51,6 +51,9 @@ class InspeccionMaestra extends Model
         'comision_monto',
         'vendedor_id',
         'observaciones',
+
+        // marca: la web corrigió o dividió los pagos
+        'pago_ajustado_web', //Valor inicial: 0, es decir, la planta todavía puede sincronizar el pago
     ];
 
     protected $casts = [
@@ -58,6 +61,8 @@ class InspeccionMaestra extends Model
         'fecha_vencimiento' => 'date',
         'monto_total' => 'decimal:2',
         'comision_monto' => 'decimal:2',
+
+        'pago_ajustado_web' => 'boolean',
     ];
 
     public function pagos()

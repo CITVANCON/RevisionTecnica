@@ -821,3 +821,7 @@ INSERT INTO `tarifarios` (`categoria_vehiculo`, `tipo_atencion`, `precio_minimo`
 
 ALTER TABLE detalles_pagos
 ADD COLUMN origen VARCHAR(20) NOT NULL DEFAULT 'WEB';
+
+ALTER TABLE inspecciones_maestras
+ADD COLUMN pago_ajustado_web TINYINT(1) NOT NULL DEFAULT 0
+AFTER observaciones;

@@ -90,27 +90,14 @@ class SincronizacionController extends Controller
                 )->first();
 
                 // 3.3 Sincronizar el método de pago de planta
-                if ($inspeccion && !empty($item['metodo_pago'])) {
+                // Si la web corrigió o dividió los pagos, planta ya no debe tocarlos.
+                if ($inspeccion && !$inspeccion->pago_ajustado_web && !empty($item['metodo_pago'])) {
 
                     // Normaliza el nombre de planta al estándar de la web
                     $metodoPago = $this->normalizarMetodoPago($item['metodo_pago']);
                     $monto = (float) ($item['monto_total'] ?? 0);
 
                     if ($metodoPago !== '' && $monto > 0) {
-
-                        /*$inspeccion->pagos()->updateOrCreate(
-                            [
-                                'metodo_pago' => $metodoPago,
-                                'nro_referencia' => null,
-                            ],
-                            [
-                                'monto' => $monto,
-                                'fecha_pago' => !empty($item['ffin']) 
-                                    ? $item['ffin'] 
-                                    : (!empty($item['fecha']) ? $item['fecha'] . ' 00:00:00' : now()),
-                                'user_id' => null,
-                            ]
-                        );*/
 
                         // Fecha y hora del pago:
                         // 1) Usa la hora de fin de inspección.
@@ -121,18 +108,18 @@ class SincronizacionController extends Controller
                             : (!empty($item['fecha']) 
                                 ? $item['fecha'] . ' 00:00:00' 
                                 : now());
-                        
+
                         // Busca o crea UN SOLO pago proveniente de planta
                         $inspeccion->pagos()->updateOrCreate(
                             [
-                                'origen' => 'PLANTA',
+                                'origen' => 'PLANTA'
                             ],
                             [
-                                'metodo_pago' => $metodoPago,
-                                'monto' => $monto,
+                                'metodo_pago'    => $metodoPago,
+                                'monto'          => $monto,
                                 'nro_referencia' => null,
                                 'fecha_pago'     => $fechaPago,
-                                'user_id' => null,
+                                'user_id'        => null,
                             ]
                         );
 
